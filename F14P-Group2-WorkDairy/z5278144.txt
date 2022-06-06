@@ -1,0 +1,12 @@
+Week 1
+
+The group was formed, researched the topic with teammates, compared the differences in the available options, and finalized the selection.
+Create a JIRA and Github account. Read the requirements for the film project. Discussed the choice of movie recommendation algorithm with the group members.
+Joined the Teams team created for the project to facilitate saving project data.
+
+Week 2 Plan
+
+Complete the user requirements analysis and later design and define the structure of the database.
+Build the back-end front-end framework for the project.
+
+write date: 2022/06/05

@@ -1,0 +1,14 @@
+{\rtf1\ansi\ansicpg936\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ZID: z5239738\
+Name: Baipeng Li\
+\
+
+\f1\b\fs26 Week1
+\f0\b0\fs24 \
+Group formed, research topics with teammates, and finally choose movie. Create a jira account. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. In addition, I studied the Django framework of Python. As the admin of the team, I created the teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies in the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. Week2 plan: complete the user story, design and determine the structure of the database after discussing the user story and requirements. Build the back-end front-end framework of the project.s}

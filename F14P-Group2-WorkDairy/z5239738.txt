@@ -6,13 +6,15 @@ ZID: z5239738
 -----------------------------------------------------------------------------------------
 Week1
 
-
 week1 done work: Group formed, research topics with teammates, and finally choose movie.
-Create a JIRA account. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. In addition, I studied the Django framework of Python. As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies in the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
+Create a JIRA account. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. 
+In addition, I studied the Django framework of Python. 
+As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies in the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
 
-Week2 plan: complete the user story, design and determine the structure of the database after discussing the user story and requirements. Build the back-end front-end framework of the project.
+Week2 plan: complete the user story, design and determine the structure of the database after discussing the user story and requirements. 
+Build the back-end front-end framework of the project.
 
 write date: 05/06/2022
 
-
+-----------------------------------------------------------------------------------------
 

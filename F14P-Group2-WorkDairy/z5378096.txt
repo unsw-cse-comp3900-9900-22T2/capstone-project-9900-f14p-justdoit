@@ -1,0 +1,20 @@
+
+Work Dairy
+
+name: Shaoqiu Pan
+zID: z5378096
+
+
+Week1 DONE:
+
+For Group part, We formed the group. Our group did the reseach together and select the MOVIE topic as our main project. Then we create a JIRA account and Github account, and join the same organisation.
+
+For individual part, I learn Flask related infomation from Youtube.
+
+Week2 PLAN:
+
+Consider the most suitable framework, Flask or Django?
+Analysis the user requirement.
+Identify the database structure.
+
+write date: 05/06/2022

@@ -1,0 +1,26 @@
+Work Dairy
+
+name: Xiaomin Hou
+ZID: z5304428
+
+-----------------------------------------------------------------------------------------
+Week1
+We set up a group and choose our team name. Next, we discussed the topic and needs we wanted to do. Then, I create a github account, a jira account 
+and then learn how to use jira software and connect it to github as well as how to upload and update files through terminal.
+In addition, I read the project 2 documents which is movie finder system carefully. Then, I start to search and read some related papers on our topic 
+so as to be good for brainstorming. At the same time, I studied some typical algorithms which are involved in the paper.
+
+write date: 05/06/2022
+
+-----------------------------------------------------------------------------------------
+Week2
+I attended a meeting with other team members. We discussed about the design of the software requirements and architecture. 
+In addition, I wrote part of the user stories and came up with some novel ideas. I've been learning the fundamental algorithm knowledge 
+and learn how to use Jira software throughout the whole week. And we also plan to start writing our proposal.
+
+write date: 12/06/2022
+
+-----------------------------------------------------------------------------------------
+
+
+

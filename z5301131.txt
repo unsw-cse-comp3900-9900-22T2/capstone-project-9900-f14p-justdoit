@@ -1,0 +1,9 @@
+Week 1
+
+Formed a group with Baipeng Li, Xin Qiu, Xiaomin Hou, and Shaoqiu Pan. And we chose movie finder system to be our project. 
+I created Jira and Github accounts to work with my group members. And I also searched and discussed available tools and models with them.
+Analized user requirments and wrote an user story.
+
+Week 2
+I wrote user stories about wishing list and watched list.
+Talked about requirements details.

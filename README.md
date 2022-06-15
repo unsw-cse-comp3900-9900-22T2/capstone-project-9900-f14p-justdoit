@@ -25,10 +25,7 @@ models.py: database tables create
 
 config.py:  config
 
-
-
-
-###if you want to change tables in database
+### if you want to change tables in database
 ```shell
 flask db update
 ```

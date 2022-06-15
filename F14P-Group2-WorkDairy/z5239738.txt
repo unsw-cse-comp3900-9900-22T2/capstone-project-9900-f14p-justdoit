@@ -18,7 +18,10 @@ write date: 05/06/2022
 
 -----------------------------------------------------------------------------------------
 Week2
-week2 done work: Sort out the complete requirements and organize a group meeting for discussion and confirmation. According to the needs of the discussion, write user stories and assign the user story task to other team members to jointly write the remaining user stories. Set the back-end frame (python3 flask) and front-end frame. Call simple registration (just to start project testing).
+week2 done work: Sort out the complete requirements and organize a group meeting for discussion and confirmation. 
+According to the needs of the discussion, write user stories and assign the user story task to other team members to jointly write the remaining user stories.
+ Set the back-end frame (python3 flask) and front-end frame. 
+Call simple registration (just to start project testing).
 
 Week3 plan: design the database, complete the registration interface, and login interface, and complete the project proposal
 

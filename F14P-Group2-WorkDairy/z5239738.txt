@@ -6,15 +6,22 @@ ZID: z5239738
 -----------------------------------------------------------------------------------------
 Week1
 
-week1 done work: Group formed, research topics with teammates, and finally choose movie.
+week1 done work: Group formed, research topics with teammates, and finally, choose the movie.
 Create a JIRA account. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. 
 In addition, I studied the Django framework of Python. 
-As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies in the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
+As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies for the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
 
-Week2 plan: complete the user story, design and determine the structure of the database after discussing the user story and requirements. 
+Week2 plan: complete the user story, design, and determine the structure of the database after discussing the user story and requirements. 
 Build the back-end front-end framework of the project.
 
 write date: 05/06/2022
 
 -----------------------------------------------------------------------------------------
+Week2
+week2 done work: Sort out the complete requirements and organize a group meeting for discussion and confirmation. According to the needs of the discussion, write user stories and assign the user story task to other team members to jointly write the remaining user stories. Set the back-end frame (python3 flask) and front-end frame. Call simple registration (just to start project testing).
 
+Week3 plan: design the database, complete the registration interface, and login interface, and complete the project proposal
+
+write date: 12/06/2022
+
+-----------------------------------------------------------------------------------------

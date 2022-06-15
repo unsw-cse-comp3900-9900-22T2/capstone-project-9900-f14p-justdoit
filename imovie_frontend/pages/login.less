@@ -1,0 +1,127 @@
+.login_big_box{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-image: linear-gradient(to bottom right, #1faba0, #49a4e9);
+    background-image: -webkit-linear-gradient(to bottom right, #1faba0, #49a4e9);
+    background-image: -o-linear-gradient(to bottom right, #1faba0, #49a4e9);
+    background-image: -moz-linear-gradient(to bottom right, #1faba0, #49a4e9);
+    background-image: linear-gradient(to bottom right, #1faba0, #49a4e9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .loginBox {
+      margin-top: -200px;
+      .loginInputBox {
+        width: 350px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        padding: 40px;
+        box-sizing: border-box;
+        box-shadow: 0 0 15px #2fa8bc;
+        .loginImage {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: #1faba0;
+          margin: 0 auto 20px auto;
+        }
+        .ant-input-affix-wrapper {
+          margin-bottom: 10px;
+        }
+        h6 {
+          text-align: right;
+          font-size: 12px;
+          color: #333;
+          margin: 5px 0 10px 0;
+          cursor: pointer;
+        }
+        .ant-btn {
+          width: 100%;
+          font-size: 14px;
+          height: 40px;
+        }
+        .ant-btn-primary {
+          background: #1faba0;
+          border-color: #1faba0;
+        }
+      }
+      p {
+        font-size: 35px;
+        line-height: 35px;
+        color: white;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+    }
+  .register{
+    cursor: pointer;
+  }
+}
+.modal_box{
+  width: 100%;
+  margin-bottom: 10px;
+  .addPageBoxScroll {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .scrollH6 {
+      font-size: 14px;
+      margin-left: 16px;
+      color: #333;
+      margin-bottom: 0;
+    }
+  }
+  .addPageBoxScroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .addPageBoxScroll::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .addPageBoxScroll::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+  }
+  .box {
+    display: flex;
+    margin-bottom: 10px;
+    h6 {
+      font-size: 14px;
+      min-width: 70px;
+      line-height: 30px;
+      margin: 0;
+    }
+    textarea {
+      resize: none;
+    }
+    .switch_box {
+      display: flex;
+      align-items: center;
+      word-break: break-all;
+      width : calc(100% - 100px)
+    }
+    .imgBox {
+      width: 104px;
+      height: 104px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      .imgSmallBox {
+        width: 86px;
+        height: 86px;
+        margin: 9px auto;
+        position: relative;
+        overflow: hidden;
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 # capstone-project-9900-f14p-justdoit
-##Backend setting
+## Backend setting
 ### creat a database named iMovie
 ```shell
 mysql -u root -p

@@ -4,7 +4,7 @@ Work Dairy
 name: Shaoqiu Pan
 zID: z5378096
 
-
+Week2-----
 Week1 DONE:
 
 For Group part, We formed the group. Our group did the reseach together and select the MOVIE topic as our main project. Then we create a JIRA account and Github account, and join the same organisation.
@@ -18,3 +18,25 @@ Analysis the user requirement.
 Identify the database structure.
 
 write date: 05/06/2022
+
+
+
+WEEK3
+* week2 done work: 
+1. Discusss the requirement
+2. According to the requirement, done the  user storie
+3. Call simple registration (just to start project testing).
+
+* week3 plan
+1.  done the interface prototype
+
+write date: 12/06/2022
+
+WEEK4
+*week3 done work
+1. Done the prototype design
+
+*week4 plan
+1. collect movie data
+2. rate movie back-end function
+write date: 19/06/2022

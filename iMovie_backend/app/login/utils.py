@@ -63,9 +63,10 @@ def validateEmail(email):
             print("good")
             return 1
     return 0
+
 # generate random String
 def randomString(num):
-    a = random.sample('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',num)
+    a = random.sample('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', num)
     return ''.join(a)
 # get datetime and timestamp
 def getTime():

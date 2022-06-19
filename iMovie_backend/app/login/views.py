@@ -37,6 +37,9 @@ def register():
     print(username, password, email)
     if not username or not password or not email:
         return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
+    # username is too long
+    if len(username) > 50:
+        return jsonify({'code': 400, 'msg': 'Your username is too long.'})
     # valid email
     if not validateEmail(email):
         return jsonify({'code': 400, 'msg': 'Please enter a right email'})
@@ -58,16 +61,21 @@ def register():
         time_form = getTime()[0]
         uid = getUniqueid()
 
-        user = UserModel(username=username, password=en_pass,email=email,uid=uid,ctime= time_form,utime= time_form)
+        user = UserModel(username=username, password=en_pass, email=email, uid=uid, ctime=time_form, utime=time_form)
         db.session.add(user)
         db.session.commit()
-        return jsonify({'code': 200, 'msg': '注册成功'})
+        return jsonify({'code': 200, 'msg': 'Successful registration'})
     except Exception as e:
-        return jsonify({'code': 400, 'msg': '注册异常', 'error_msg': str(e)})
+        return jsonify({'code': 400, 'msg': 'Registration failure', 'error_msg': str(e)})
+
+
+
+
+
 
 
 @login_require
 def check_login():
-    return jsonify({'code': 200, 'msg': '已登陆', 'user': g.user})
+    return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
 
 

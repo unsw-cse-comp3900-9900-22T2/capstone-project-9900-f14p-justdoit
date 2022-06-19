@@ -11,7 +11,7 @@ def init_db(app):
     migrate.init_app(app, db)
     return db
 
-
+# users
 class UserModel(db.Model):
     __tablename__ = 'users'
 
@@ -20,9 +20,10 @@ class UserModel(db.Model):
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
-    role = db.Column(db.Integer, nullable=False, default=0) # 0:user,  1:admin
-    verifycode = db.Column(db.Integer, nullable=True) # change password send verifycode to email
-    active = db.Column(db.Integer, nullable=False, default=1) # 0:delete,  1:not delete
+    role = db.Column(db.Integer, nullable=False, default=0)   # 0:user,  1:admin
+    verifycode = db.Column(db.Integer, nullable=True)  # change password send verifycode to email
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    description = db.Column(db.TEXT)  # user description in user profile
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 
@@ -30,7 +31,7 @@ class UserModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
+# movies
 class MoviesModel(db.Model):
     __tablename__ = 'movies'
 
@@ -47,8 +48,8 @@ class MoviesModel(db.Model):
     language = db.Column(db.String(120), nullable=True)  # dict
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     avg_rate = db.Column(db.FLOAT, nullable=True)
-    release_date  = db.Column(db.DateTime)  # release_date
-    Off_data  = db.Column(db.DateTime)  # Off_data
+    release_date = db.Column(db.DateTime)  # release_date
+    Off_data = db.Column(db.DateTime)  # Off_data
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 
@@ -63,7 +64,7 @@ class GenreModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gid = db.Column(db.String(256), unique=True, nullable=False)
     genrename = db.Column(db.String(256), unique=True, nullable=False)
-    active = db.Column(db.Integer, nullable=False, default=1) # 0:delete,  1:not delete
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 
@@ -122,8 +123,25 @@ class movielikeModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-class wishModel(db.Model):
-    __tablename__ = 'wish'
+
+class reviewlikeModel(db.Model):
+    __tablename__ = 'reviewlike'
+
+    id = db.Column(db.Integer, primary_key=True)
+    rlid = db.Column(db.String(256), unique=True, nullable=False)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid
+    urid = db.Column(db.String(256), nullable=False)  # userreview.uid
+    # type = db.Column(db.Integer, nullable=False, default=0)  # 0:like,  1:dislike
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+class wishWatchModel(db.Model):
+    __tablename__ = 'wishWatch'
 
     id = db.Column(db.Integer, primary_key=True)
     wid = db.Column(db.String(256), unique=True, nullable=False)
@@ -147,6 +165,56 @@ class movielistModel(db.Model):
     mid = db.Column(db.String(256), nullable=False)  # movies.uid
     title = db.Column(db.String(256), nullable=False)
     description = db.Column(db.TEXT)
+    # public = db.Column(db.Integer, nullable=False, default=1) # 0:not public,  1: public
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+class viewhistoryModel(db.Model):
+    __tablename__ = 'viewHistory'
+
+    id = db.Column(db.Integer, primary_key=True)
+    vid = db.Column(db.String(256), unique=True, nullable=False)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid
+    mid = db.Column(db.String(256), nullable=False)  # movies.uid
+    frequency = db.Column(db.Integer, nullable=False, default=1)  # view frequency
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+class blocklistModel(db.Model):
+    __tablename__ = 'blockList'
+
+    id = db.Column(db.Integer, primary_key=True)
+    bid = db.Column(db.String(256), unique=True, nullable=False)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid (ban)
+    buid = db.Column(db.String(256), nullable=False)  # users.uid (be banned)
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+
+class followModel(db.Model):
+    __tablename__ = 'follow'
+
+    id = db.Column(db.Integer, primary_key=True)
+    fid = db.Column(db.String(256), unique=True, nullable=False)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid (follow)
+    fuid = db.Column(db.String(256), nullable=False)  # users.uid (be followed)
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time

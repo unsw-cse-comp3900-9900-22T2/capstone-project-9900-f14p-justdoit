@@ -6,25 +6,51 @@ ZID: z5239738
 -----------------------------------------------------------------------------------------
 Week1
 
-week1 done work: Group formed, research topics with teammates, and finally, choose the movie.
-Create a JIRA account. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. 
-In addition, I studied the Django framework of Python. 
-As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies for the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
+* week1 done work: 
+1. Group formed, research topics with teammates, and finally, choose the movie.
+2. Create a JIRA account.
+3. Read the requirements of project 2:movie carefully. Sort out the project requirements and output the brain map. 
+4. I studied the Django and Flask framework of Python. 
+5. As the admin of the team, I created the Teams team to facilitate the organization of meetings and the collection of project data, especially with regard to the need to recommend movies for the project, and studied the paper documents related to the recommendation algorithm and collaborative filtering algorithm. 
 
-Week2 plan: complete the user story, design, and determine the structure of the database after discussing the user story and requirements. 
-Build the back-end front-end framework of the project.
+* Week2 plan: 
+1. complete the user story, 
+2. Design, and determine the structure of the database after discussing the user story and requirements. 
+3. Build the back-end front-end framework of the project.
 
 write date: 05/06/2022
 
 -----------------------------------------------------------------------------------------
 Week2
-week2 done work: Sort out the complete requirements and organize a group meeting for discussion and confirmation. 
-According to the needs of the discussion, write user stories and assign the user story task to other team members to jointly write the remaining user stories.
- Set the back-end frame (python3 flask) and front-end frame. 
-Call simple registration (just to start project testing).
 
-Week3 plan: design the database, complete the registration interface, and login interface, and complete the project proposal
+* week2 done work: 
+1. Sort out the complete requirements and organize a group meeting for discussion and confirmation. 
+2. According to the needs of the discussion, write user stories and assign the user story task to other team members to jointly write the remaining user stories.
+3. Set the back-end frame (python3 flask) and front-end frame. 
+4. Call simple registration (just to start project testing).
+
+* Week3 plan: 
+1. design the database,
+2. Complete the registration interface and login interface, 
+3. and complete the project proposal
 
 write date: 12/06/2022
 
 -----------------------------------------------------------------------------------------
+Week3
+
+* week3 done work:
+1. Organize the meeting again to quickly sort out the project requirements, and carefully divide the work of the proposal.
+2. Complete the preparation of the proposal system architecture,
+3. Draw the interface: the home page, movie details page, user profile, attention page, and pop-up box for movie reviews and ratings. Admin inserts a new movie page, browse by and search interacting with movie search.
+4. Complete the code for the front-end (JS) to draw the main page (The connection with the backend has not been completed).
+
+* Week4 plan: 
+
+1. collect movie data
+2. rate movie back-end function(py)
+3. movie detail front-end page(js)
+4. browse movies in a high rate order, back-end function(py)
+
+
+write date: 19/06/2022

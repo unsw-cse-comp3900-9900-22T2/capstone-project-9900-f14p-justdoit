@@ -75,3 +75,48 @@ def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
 
 
+def get_user_detial():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    print(uid)
+    # find in database
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    # if there is not movie
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User not be defend'})
+    result = {}
+    result["username"] = user.username
+    result["email"] = user.email
+    result["description"] = user.description
+    # should add follow number
+
+    return jsonify({'code': 200, 'result': result})
+
+
+
+
+
+
+def insert():
+    mid = request.json.get('mid')
+    # mid = "qawdadasd123718432312"
+    moviename = "ambermovie"
+    coverimage = "www.baidu.com"
+    description = "good movies"
+    genre = "A,B,C"
+    cast = "asdasda"
+    crew = "asdasasd"
+    director = "asdas"
+    country = 'asdasd'
+    language = 'asdasdasd'
+    avg_rate = 3.5
+    ctime = time.localtime(time.time())
+    utime = time.localtime(time.time())
+
+    Movies = MoviesModel(mid=mid, moviename=moviename, coverimage=coverimage, description=description, genre=genre,
+                         cast=cast, crew=crew, director=director, country=country,
+                         language=language, avg_rate=avg_rate, ctime=ctime, utime=utime)
+
+    db.session.add(Movies)
+    db.session.commit()
+    return jsonify({'code': 200})

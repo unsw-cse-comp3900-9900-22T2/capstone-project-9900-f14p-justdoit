@@ -79,7 +79,7 @@ class movieReviewModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mrid = db.Column(db.String(256), unique=True, nullable=False)
     uid = db.Column(db.String(256), nullable=False)  # users.uid
-    mid = db.Column(db.String(256), nullable=False)  # movies.uid
+    mid = db.Column(db.String(256), nullable=False)  # movies.mid
     review = db.Column(db.TEXT)
     rate = db.Column(db.FLOAT)
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
@@ -147,7 +147,7 @@ class wishWatchModel(db.Model):
     wid = db.Column(db.String(256), unique=True, nullable=False)
     type = db.Column(db.Integer, nullable=False, default=0)  # 0:wish, 1: watched
     uid = db.Column(db.String(256), nullable=False)  # users.uid
-    mid = db.Column(db.String(256), nullable=False)  # movies.uid
+    mid = db.Column(db.String(256), nullable=False)  # movies.mid
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time

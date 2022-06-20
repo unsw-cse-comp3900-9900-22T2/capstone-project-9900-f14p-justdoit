@@ -52,10 +52,10 @@ const UgcLogin = ({}) => {
     }
     const _pass = Base64.encode(md5(_password));
     userLogin({
-      username : _user,
+      userName : _user,
       password : _pass
     }).then(res => {
-      if(res.code === 200){
+      if(res.status === 0){
         message.success("login was successful");
          setCookie("USER_MESSAGE",JSON.stringify(res.data || {}),10);
         localStorage.setItem(
@@ -131,9 +131,9 @@ const UgcLogin = ({}) => {
            }
           const _pass = Base64.encode(md5(password))
           userRegister({
-            username:userName,password : _pass,email
+            userName,password : _pass,email
           }).then(res => {
-            if(res.code === 200){
+            if(res.status === 0){
               message.success("register was successful");
               changeRegisterVisible(false);
               changeNewUser({

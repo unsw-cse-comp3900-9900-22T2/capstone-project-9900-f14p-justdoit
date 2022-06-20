@@ -70,10 +70,6 @@ def register():
 
 
 
-
-
-
-
 @login_require
 def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})

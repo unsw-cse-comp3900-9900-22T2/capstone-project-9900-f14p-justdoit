@@ -78,6 +78,11 @@ module.exports = (phase, { defaultConfig }) => {
                     'css-loader'
                 ]
             });
+            config.module.rules.push({
+                test: /\.jpg|.png$/,
+                loader: require.resolve('url-loader'),
+                options: { limit: 10000, name: 'static/[name].[ext]', },
+            });
             return config
         },
         webpackDevMiddleware: config => {

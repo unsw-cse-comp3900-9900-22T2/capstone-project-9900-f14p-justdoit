@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react'
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.css';
 import { getCookie } from '../util/common'
 import {Container} from 'next/app'
 const theme = {

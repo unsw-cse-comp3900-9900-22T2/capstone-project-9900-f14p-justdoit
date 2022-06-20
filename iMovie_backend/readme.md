@@ -3,6 +3,11 @@
 mysql -u root -p
 create database imovie
 ```
+### install package
+```shell
+pip install -r requirement.txt
+```
+
 ### create tables
 ```shell
 flask db migrate
@@ -11,8 +16,6 @@ flask db upgrade
 
 ### run this project
 ```shell
-pip install -r requirement.txt
-
 python3 app.py runserver
 ```
 

@@ -5,8 +5,8 @@ const fetchData = (url, param) => {
 };
 
 export function userRegister(param) {
-    return fetchData('http://localhost:5000/register', param);
+    return fetchData('http://a.uat.qa.nt.ctripcorp.com:5000/register', param);
 }
 export function userLogin(param) {
-    return fetchData('http://localhost:5000/login', param);
+    return fetchData('http://a.uat.qa.nt.ctripcorp.com:5000/login', param);
 }

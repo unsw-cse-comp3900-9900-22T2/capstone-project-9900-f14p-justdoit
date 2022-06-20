@@ -1,0 +1,177 @@
+.base_page{
+  width : 100%;
+  background : #fff;
+  position: absolute;
+  height : 100%;
+  left :0;
+  top :0;
+  overflow: auto;
+  .tab_choose_scroll{
+    width : 100%;
+    height : 64px;
+  }
+  .base_page_choose{
+     width : 100%;
+     height : 64px;
+     box-shadow: 0 2px 8px #f0f1f2;
+     position: relative;
+     z-index: 10;
+    background: #fff;
+    &.base_page_choose_fixed{
+        position: fixed;
+        top :0;
+        left :0;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        animation: animate 0.3s;
+        -moz-animation: animate 0.3s;	/* Firefox */
+        -webkit-animation: animate 0.3s;	/* Safari 和 Chrome */
+        -o-animation: animate 0.3s;	/* Opera */
+    }
+    @keyframes animate{
+      from {
+        top : -60px;
+        opacity: 0;
+      }
+      to {
+        top : 0;
+        opacity: 1;
+      }
+    }
+    .tab-row{
+      display: flex;
+      flex-flow: nowrap;
+      .logo{
+        width: 11%;
+        height: 64px;
+        background-image: url("/static/logo3.png");
+        background-position: -100px 50%;
+        background-repeat: no-repeat;
+        background-size: 268px;
+        margin-left: calc(5% + 50px);
+      }
+      .tab-select{
+        width: 64%;
+        display: flex;
+        position: relative;
+        margin-left: 8%;
+        .tab-select-line{
+          position: absolute;
+          height: 22px;
+          width : 1px;
+          background-color : rgba(0,0,0,0.06);
+          left :0;
+          top : 50%;
+          margin-top: -11px;
+        }
+        .tab-search{
+          width : 32%;
+          align-items: center;
+          display: flex;
+          .tag-search-logo{
+             width : 10%;
+            text-align: right;
+            color : #999;
+          }
+        }
+        .tab-select-list{
+          width : 68%;
+          display: flex;
+          padding-left: 16px;
+          box-sizing: border-box;
+          .tab-select-item{
+            min-width: 20%;
+            height: 64px;
+            padding-right: 2%;
+            padding-left: 2%;
+            line-height: 64px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            &.tab-select-item-choose{
+              color : #1890ff;
+            }
+            .tab-select-item-top-line{
+              height : 2px;
+              width : 60%;
+              background-color: #1890ff;
+              position: absolute;
+              top :0;
+              left :20%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.modal_box{
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  .addPageBoxScroll {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .scrollH6 {
+      font-size: 14px;
+      margin-left: 16px;
+      color: #333;
+      margin-bottom: 0;
+    }
+  }
+  .addPageBoxScroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .addPageBoxScroll::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .addPageBoxScroll::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+  }
+  .box {
+    display: flex;
+    margin-bottom: 10px;
+    h6 {
+      font-size: 14px;
+      min-width: 80px;
+      line-height: 30px;
+      margin: 0;
+    }
+    textarea {
+      resize: none;
+    }
+    .switch_box {
+      display: flex;
+      align-items: center;
+      word-break: break-all;
+      width : calc(100% - 100px)
+    }
+    .imgBox {
+      width: 104px;
+      height: 104px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      .imgSmallBox {
+        width: 86px;
+        height: 86px;
+        margin: 9px auto;
+        position: relative;
+        overflow: hidden;
+      }
+    }
+  }
+  .forgetPassword{
+    text-align: right;
+    color : #1d39c4;
+    cursor: pointer;
+    margin: 5px 20px 15px 0;
+
+  }
+}

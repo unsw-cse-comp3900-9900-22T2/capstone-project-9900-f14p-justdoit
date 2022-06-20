@@ -7,13 +7,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 node -v
 ```
 2. install package.json
-1) if you in China:
 ```bash
-npm run inChina
-```
-2) if you in global:
-```bash
- 
+npm config set registry https://registry.npmjs.org
+npm install
+or
+npm run bootstrap
 ```
 3 run the development server:
 ```bash
@@ -21,6 +19,10 @@ npm run dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
+
+home page url
+
+http://localhost:8080/movie/home
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
@@ -38,7 +40,6 @@ You can check out [the Next.js GitHub repository](https://github.com/zeit/next.j
 The easiest way to deploy your Next.js app is to use the [ZEIT Now Platform](https://zeit.co/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
 
 
 

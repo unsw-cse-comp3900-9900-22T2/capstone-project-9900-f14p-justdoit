@@ -59,19 +59,19 @@ class MoviesModel(db.Model):
         db.session.commit()
 
 
-# class GenreModel(db.Model):
-#     __tablename__ = 'genre'
-#
-#     id = db.Column(db.Integer, primary_key=True)
-#     gid = db.Column(db.String(256), unique=True, nullable=False)
-#     genrename = db.Column(db.String(256), unique=True, nullable=False)
-#     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
-#     ctime = db.Column(db.DateTime, nullable=False)  # create time
-#     utime = db.Column(db.DateTime, nullable=False)  # update time
-#
-#     def save_to_db(self):
-#         db.session.add(self)
-#         db.session.commit()
+class GenreModel(db.Model):
+    __tablename__ = 'genre'
+
+    id = db.Column(db.Integer, primary_key=True)
+    gid = db.Column(db.String(256), unique=True, nullable=False)
+    genrename = db.Column(db.String(256), unique=True, nullable=False)
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 class movieReviewModel(db.Model):

@@ -26,8 +26,12 @@ def login():
         return jsonify({'code': 400, 'msg': 'Password error'})
     # uid :
     token = GenToken(user)
+    result = {}
+    result["username"] = user.username
+    result["email"] = user.email
+    result["description"] = user.description
 
-    return jsonify({'code': 200, 'msg': 'Login successful', 'token': token})
+    return jsonify({'code': 200, 'msg': 'Login successful', 'token': token, "result": result})
 
 
 

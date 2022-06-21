@@ -3,14 +3,14 @@
   overflow:hidden;
   width : 90%;
   margin-left: 5%;
-  height: 380px;
+ /* height: 380px;*/
   padding:50px 50px 50px 50px;
   margin-top: -50px;
   overflow: hidden;
   .swiper-slide {
     background-position: center;
     background-size: cover;
-    height: 300px;
+  /*  height: 300px;*/
     background-color: #fff;
     overflow: hidden;
   }
@@ -26,81 +26,68 @@
        width : 100%;
      display: flex;
      justify-content: space-between;
-     height: 300px;
+    /* height: 300px;*/
      overflow : hidden;
     .swiper-image-list-item{
        width : 23%;
-       height : 300px;
-      position: relative;
-      .swiper-image-list-item-image-black{
+       /*height : 300px;*/
+       position: relative;
+      .swiper-image-list-item-image-black-box{
+         width : 100%;
         position: absolute;
-        width : 100%;
-        height : 260px;
+        right: calc(-100%);
+        z-index: 12;
         background: rgba(0,0,0,0.7);
-        left :0;
-        top:0;
-        color :#fff;
-        padding: 5px 10px;
-        box-sizing: border-box;
-        h6{
-          font-size: 18px;
-          margin :0;
-          color :#fff;
+        animation: animate 0.2s;
+        -moz-animation: animate 0.2s;	/* Firefox */
+        -webkit-animation: animate 0.2s;	/* Safari 和 Chrome */
+        -o-animation: animate 0.2s;	/* Opera */
+        &.swiper-image-list-item-image-black-box-last{
+          left :calc(-100% - 15px);
+          right : auto;
         }
-        .rate_msg{
-           .rate_msg_get{
-              font-size: 16px;
-             margin-left: 10px;
-           }
+      }
+      @keyframes animate{
+        from {
+          right : -70%;
+          opacity: 0.6;
+          width : 60%;
         }
-        .tags{
+        to {
+          right: calc(-100% - 15px);
+          opacity: 1;
           width : 100%;
-          display: flex;
-          flex-wrap: wrap;
-          margin-top:5px;
-          .tags-item{
-            padding: 1px 3px;
-            background: #fff;
-            color : #666;
-            margin-right: 5px;
-            font-size: 12px;
-          }
-        }
-        .cast{
-          font-size: 14px;
-          margin :5px 0 0 0;
-          color :#fff;
-        }
-        .operation{
-           display: flex;
-          flex-wrap: wrap;
-          margin-top: 10px;
-          .operation-image{
-            margin-right: 10px;
-            img{
-              width : 20px;
-              cursor: pointer
-            }
-          }
         }
       }
       .swiper-image-list-item-image{
         width : 100%;
-        height : 260px;
+       /* height : 260px;*/
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
+        display: flex;
+        &:after{
+          content: "";
+          padding-top: 150%;
+        }
       }
       .image-message{
          h6{
            font-size: 14px;
            margin :0;
            color :#666;
+           text-decoration: underline;
+           cursor:pointer;
          }
         .image-message-show{
           display: flex;
           .image-message-show-icon{
             margin-right: 10px;
+            img{
+              display: inline-block;
+              width: 16px;
+              margin-top: -3px;
+            }
           }
         }
       }
@@ -119,11 +106,12 @@
   box-sizing: border-box;
   padding :5px 10px;
   .swiper-component-operation-item{
-    border-bottom: 1px solid #dcdcdc;
+    border-bottom: 1px solid #fff;
     padding: 5px 0;
     cursor: pointer;
+    color:#fff;
     &:hover{
-      color : #1d39c4;
+      color : #999;
     }
     &.border-no{
       border:none;
@@ -133,6 +121,70 @@
     }
     &.padding2{
       padding-bottom: 0;
+    }
+  }
+}
+.swiper-image-list-item-image-black{
+  width : 400px;
+  margin-left: 15px;
+  color :#fff;
+  padding: 10px 5px;
+  box-sizing: border-box;
+  h6{
+    font-size: 18px;
+    margin :0;
+    color :#fff;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+  .rate_msg{
+    .rate_msg_get{
+      font-size: 16px;
+      margin-left: 10px;
+    }
+  }
+  .tags{
+    width : 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top:5px;
+    .tags-item{
+      padding: 1px 3px;
+      background: #fff;
+      color : #666;
+      margin-right: 5px;
+      font-size: 12px;
+    }
+  }
+  .cast{
+    font-size: 14px;
+    margin :5px 0 0 0;
+    color :#fff;
+  }
+  .operation{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    .operation-image{
+      margin-right: 10px;
+      img{
+        width : 20px;
+        cursor: pointer
+      }
+    }
+  }
+}
+.popUpStatus{
+  .ant-popover-content{
+    background-color:rgba(0,0,0,0.7);
+    .ant-popover-arrow{
+      display: none!important;
+    }
+    .ant-popover-inner{
+      background-color:rgba(0,0,0,0.7)!important;
+      .ant-popover-title{
+        color:#fff;
+      }
     }
   }
 }

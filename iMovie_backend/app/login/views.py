@@ -6,6 +6,7 @@ from app.login.utils import *
 from app.models import *
 
 import time
+
 # movie = Blueprint('users', __name__)
 # CORS(movie, resources=r'/*', supports_credentials=True)
 

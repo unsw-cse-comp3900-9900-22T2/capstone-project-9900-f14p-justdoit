@@ -15,7 +15,7 @@ def login():
     password = request.json.get('password')
     if not username or not password:
         return jsonify({'code': 400, 'msg': 'Please enter the account and password'})
-    user = UserModel.query.filter(UserModel.username == username).first()
+    user = UserModel.query.filter(UserModel.username == username, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
 
@@ -24,6 +24,7 @@ def login():
     if en_pass != user.password:
         return jsonify({'code': 400, 'msg': 'Password error'})
     token = GenToken(user)
+
     return jsonify({'code': 200, 'msg': 'Login successful', 'token': token})
 
 
@@ -75,22 +76,7 @@ def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
 
 
-def get_user_detial():
-    data = request.get_json(force=True)
-    uid = data["uid"]
-    print(uid)
-    # find in database
-    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    # if there is not movie
-    if not user:
-        return jsonify({'code': 400, 'msg': 'User not be defend'})
-    result = {}
-    result["username"] = user.username
-    result["email"] = user.email
-    result["description"] = user.description
-    # should add follow number
 
-    return jsonify({'code': 200, 'result': result})
 
 
 

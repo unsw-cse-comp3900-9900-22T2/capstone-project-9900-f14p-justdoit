@@ -4,9 +4,10 @@ import ScrollImageComponent from "../../components/Home/ScrollImage"
 import HomeSearchComponent from "../../components/Home/HomeSearch"
 import homeStyle from "./home.less";
 import {getQueryString} from "../../util/common";
-const TextIndex = () => {
+const Home = () => {
   const [list1,changeList1] = useState([
      [{
+        movieId :123323,
         image : "https://swiperjs.com/demos/images/nature-1.jpg",
         look :23000,
         like :24,
@@ -142,4 +143,4 @@ const TextIndex = () => {
   )
 }
 
-export default TextIndex
+export default Home

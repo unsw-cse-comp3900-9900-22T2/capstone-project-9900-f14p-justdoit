@@ -9,75 +9,35 @@ import DocunceSelectComponent from "../components/DounceSelect"
 import LoginComponent from "../components/Login"
 import RegesterComponent from "../components/Regester"
 import ResetPasswordComponent from "../components/ResetPassword"
-const Page = ({ router, children }) => {
+import { delCookie } from "../util/common";
+import { Base64 } from "js-base64";
+const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
   const [tabList] = useState([{
      value : 1,
      name : "HOME",
      href : "/movie/home",
+    login : true,
   },{
     value : 2,
     name : "LOGIN",
+    login : false,
   },{
     value : 3,
     name : "REGESTER",
+    login : false,
   },{
     value : 4,
     name : "MOVIE LISTS",
     href : "/movie/list",
+    login : true,
   },{
     value : 5,
     name : "BROWSE BY",
     href : "/movie/home?browseBy=1",
+    login : true,
   }]);
-  const [userMsg,changeUserMsg] = useState({
-     name : "jiajie.chen",
-     email : "5123123132@qq.com"
-  });
-  const [userTabList] = useState([{
-     key : 1,
-     value : userMsg.name
-  },{
-    key : 2,
-    value : userMsg.email,
-    hasBorder : true
-  },{
-    key : 3,
-    value : "profile",
-    hasBorder : false
-  },{
-    key : 4,
-    value : "history",
-    hasBorder : false
-  },{
-    key : 5,
-    value : "wishList",
-    hasBorder : false
-  },{
-    key : 6,
-    value : "watched",
-    hasBorder : false
-  },{
-    key : 7,
-    value : "movie lists",
-    hasBorder : false
-  },{
-    key : 8,
-    value : "reviews",
-    hasBorder : false
-  },{
-    key : 9,
-    value : "likes",
-    hasBorder : false
-  },{
-    key : 10,
-    value : "disLikes",
-    hasBorder : true
-  },{
-    key : 11,
-    value : "sight out",
-    hasBorder : false
-  }])
+  const [userTabList,changeUserTabList] = useState([])
   const [enterTab , changeEnterTab] = useState("");
   const [chooseTab,changeChooseTab] = useState("");
   const loginRef=useRef();
@@ -97,6 +57,60 @@ const Page = ({ router, children }) => {
         break;
       }
     }
+    if(!!USERMESSAGE){
+      const USER_MESSAGE_FOR_USER = window.localStorage.getItem("USER_MESSAGE_FOR_USER");
+      let msg = Base64.decode(USER_MESSAGE_FOR_USER);
+      try{
+        msg = JSON.parse(msg);
+      }catch (e) {
+
+      }
+      changeUserTabList([{
+        key : 1,
+        value : msg.username
+      },{
+        key : 2,
+        value : msg.email,
+        hasBorder : true
+      },{
+        key : 3,
+        value : "profile",
+        hasBorder : false
+      },{
+        key : 4,
+        value : "history",
+        hasBorder : false
+      },{
+        key : 5,
+        value : "wishList",
+        hasBorder : false
+      },{
+        key : 6,
+        value : "watched",
+        hasBorder : false
+      },{
+        key : 7,
+        value : "movie lists",
+        hasBorder : false
+      },{
+        key : 8,
+        value : "reviews",
+        hasBorder : false
+      },{
+        key : 9,
+        value : "likes",
+        hasBorder : false
+      },{
+        key : 10,
+        value : "disLikes",
+        hasBorder : true
+      },{
+        key : 11,
+        value : "sight out",
+        hasBorder : false
+      }])
+    }
+
   },[]);
   function tabClick(item) {
     if(!!item.href){
@@ -107,6 +121,14 @@ const Page = ({ router, children }) => {
        }else if(item.value === 3){
          regesterRef && regesterRef.current && regesterRef.current.changeVisible(true);
        }
+    }
+  }
+  function userTabClick(item) {
+    const {key} = item;
+    if(key === 11){
+      delCookie('USER_MESSAGE');
+      window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
+      window.location.reload();
     }
   }
   return (
@@ -124,6 +146,11 @@ const Page = ({ router, children }) => {
                  <div className={"tab-select-list"}>
                    {
                      tabList && tabList.map((item,index) => {
+                       if(!!USERMESSAGE){
+                         if(!item.login){
+                           return null;
+                         }
+                       }
                        return <div
                          onMouseEnter={()=>{
                            changeEnterTab(item.value);
@@ -187,33 +214,40 @@ const Page = ({ router, children }) => {
                                              }}
                                              showSearch />
                   </div>
-                  <div className="user-logo">
-                    <Popover
-                      overlayClassName='user-logo-status'
-                      placement="bottom"
-                      title={null}
-                      content={() => {
-                        return (
-                          <div className={"user-msg-popover-box"}>
-                            <ul style={{
-                              width:  '200px',
-                              margin : 0,
-                              padding:0,
-                              border:"none"
-                            }}>
-                              {userTabList && userTabList.map((item)=>{
-                                return <li className={ `${!item.hasBorder && "no-border" || ""}`}>
-                                  {item.value}
-                                </li>
-                              })}
-                            </ul>
-                          </div>
-                        )
-                      }}
-                      trigger="hover">
-                      <Avatar size={40}  icon={<UserOutlined />} />
-                    </Popover>
-                  </div>
+                  {
+                    !!USERMESSAGE && <div className="user-logo">
+                      <Popover
+                        overlayClassName='user-logo-status'
+                        placement="bottom"
+                        title={null}
+                        content={() => {
+                          return (
+                            <div className={"user-msg-popover-box"}>
+                              <ul style={{
+                                width:  '200px',
+                                margin : 0,
+                                padding:0,
+                                border:"none"
+                              }}>
+                                {userTabList && userTabList.map((item)=>{
+                                  return <li
+                                    onClick={()=>{
+                                      userTabClick(item)
+                                    }}
+                                    className={ `${!item.hasBorder && "no-border" || ""}`}>
+                                    {item.value}
+                                  </li>
+                                })}
+                              </ul>
+                            </div>
+                          )
+                        }}
+                        trigger="hover">
+                        <Avatar size={40}  icon={<UserOutlined />} />
+                      </Popover>
+                    </div>
+                  }
+
                </div>
              </div>
         </div>

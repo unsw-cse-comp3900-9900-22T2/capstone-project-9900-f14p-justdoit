@@ -68,7 +68,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             password : _pass,
             email
           }).then(res => {
-            if(res.status === 200){
+            if(res.code === 200){
               message.success("register was successful");
               changeRegisterVisible(false);
               changeNewUser({

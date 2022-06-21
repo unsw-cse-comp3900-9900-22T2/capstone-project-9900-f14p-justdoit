@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import SwiperImageComponent from "./SwiperImage"
 import ScrollImageStyle from "./ScrollImage.less";
-const ScrollImage = ({list,title,more}) => {
+const ScrollImage = ({list,title,more,isLogin}) => {
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: ScrollImageStyle }} />
@@ -11,7 +11,7 @@ const ScrollImage = ({list,title,more}) => {
               <p>{title}</p>
               <h6>More</h6>
             </div>
-            <SwiperImageComponent list={list}/>
+            <SwiperImageComponent isLogin={isLogin} list={list}/>
         </div>
       </React.Fragment>
     )

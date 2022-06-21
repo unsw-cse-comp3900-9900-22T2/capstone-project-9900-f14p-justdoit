@@ -19,7 +19,7 @@ import { Rate,Popover ,Tooltip} from 'antd';
 import _ from 'lodash'
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
-const SwiperImage = ({list}) => {
+const SwiperImage = ({list,isLogin}) => {
     const [imgList,changeImgList] = useState(list);
     const [visibility,changeVisibility] = useState(false)
     const [mouseList,changeMouseList] = useState("");
@@ -127,7 +127,8 @@ const SwiperImage = ({list}) => {
                                                {_nameList.join(",")}
                                              </div>
                                            }
-                                           <div className={"operation"}>
+                                         {
+                                           isLogin && <div className={"operation"}>
                                              <div
                                                onClick={()=>{
                                                  changeOperation(1,index,index2)
@@ -194,6 +195,8 @@ const SwiperImage = ({list}) => {
                                                </div>
                                              </Popover>
                                            </div>
+                                         }
+
                                          </div>
                                        }
                                      >

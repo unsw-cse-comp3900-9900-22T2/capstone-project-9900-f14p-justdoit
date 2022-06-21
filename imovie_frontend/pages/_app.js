@@ -12,7 +12,7 @@ const App = ({ Component, pageProps, cookie, router }) => {
   let _cookie = getCookie('USER_MESSAGE', cookie)
   try {
     if (!!_cookie) {
-      _cookie = JSON.parse(_cookie)
+      _cookie = _cookie
     } else {
       _cookie = null
     }
@@ -29,7 +29,7 @@ const App = ({ Component, pageProps, cookie, router }) => {
           }
           `}
       </style>
-      <Component {...pageProps} />
+      <Component {...pageProps} USERMESSAGE={_cookie}/>
     </Container>
   )
 }

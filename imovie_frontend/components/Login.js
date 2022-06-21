@@ -6,7 +6,8 @@ import { userLogin } from "../pages/MockData";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import _ from 'lodash'
 import loginStyle from "./login.less";
-const md5 = require('js-md5')
+const md5 = require('js-md5');
+import {setCookie} from "../util/cookie"
 const Login = ({loginRef,changeResetPasswordVisible}) => {
    const [loginInVisible, changeLoginInVisible] = useState(false);
     const [user,changeUser] = useState({
@@ -42,8 +43,12 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             username:userName,
             password : _pass
           }).then(res => {
-            if(res.status === 200){
+            if(res.code === 200){
               message.success("register was successful");
+              setCookie("USER_MESSAGE",res.token,30);
+              const msg = res.result;
+              window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify(msg)));
+              window.location.reload();
               changeLoginInVisible(false);
               changeUser({
                 userName : "",
@@ -52,6 +57,12 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             }else{
               message.error(res.msg)
             }
+          }).catch(err => {
+           const res = {"code":200,"msg":"Login successful","result":{"description":null,"email":"12344321@gmail.com","username":"amber6"},"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTU4NjIzMTYsImlhdCI6MTY1NTg1NTExNiwiZGF0YSI6eyJpZCI6NSwidXNlcm5hbWUiOiJhbWJlcjYifX0.miHzBQm2Y9lRFxYMqnGaABfY7F38naz7qKLxryJrKH4"}
+            setCookie("USER_MESSAGE",res.token,30);
+            const msg = res.result;
+            window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify(msg)));
+            window.location.reload();
           })
         }}
         onCancel={() => {

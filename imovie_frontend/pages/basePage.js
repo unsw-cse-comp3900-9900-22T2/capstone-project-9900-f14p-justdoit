@@ -1,14 +1,14 @@
 import { withRouter } from 'next/router'
 import { useState, useImperativeHandle, useEffect, useRef } from 'react'
 import React from 'react'
-import _ from 'lodash'
-import { Base64 } from 'js-base64'
 import basePageStyle from "./basePage.less"
-import { message, Modal ,Input,Select} from "antd";
+import {Select,Avatar,Popover} from "antd";
 const { Option } = Select;
-import { userLogin, userRegister } from "./MockData";
-import { LockOutlined, MailOutlined, UserOutlined ,SearchOutlined} from "@ant-design/icons";
+import { SearchOutlined,UserOutlined} from "@ant-design/icons";
 import DocunceSelectComponent from "../components/DounceSelect"
+import LoginComponent from "../components/Login"
+import RegesterComponent from "../components/Regester"
+import ResetPasswordComponent from "../components/ResetPassword"
 const Page = ({ router, children }) => {
   const [body, changeBody] = useState(children);
   const [tabList] = useState([{
@@ -17,35 +17,74 @@ const Page = ({ router, children }) => {
      href : "/movie/home",
   },{
     value : 2,
-    name : "LOGIN IN",
+    name : "LOGIN",
   },{
     value : 3,
     name : "REGESTER",
   },{
     value : 4,
-    name : "MOVIELIST",
+    name : "MOVIE LISTS",
     href : "/movie/list",
   },{
     value : 5,
     name : "BROWSE BY",
     href : "/movie/home?browseBy=1",
   }]);
+  const [userMsg,changeUserMsg] = useState({
+     name : "jiajie.chen",
+     email : "5123123132@qq.com"
+  });
+  const [userTabList] = useState([{
+     key : 1,
+     value : userMsg.name
+  },{
+    key : 2,
+    value : userMsg.email,
+    hasBorder : true
+  },{
+    key : 3,
+    value : "profile",
+    hasBorder : false
+  },{
+    key : 4,
+    value : "history",
+    hasBorder : false
+  },{
+    key : 5,
+    value : "wishList",
+    hasBorder : false
+  },{
+    key : 6,
+    value : "watched",
+    hasBorder : false
+  },{
+    key : 7,
+    value : "movie lists",
+    hasBorder : false
+  },{
+    key : 8,
+    value : "reviews",
+    hasBorder : false
+  },{
+    key : 9,
+    value : "likes",
+    hasBorder : false
+  },{
+    key : 10,
+    value : "disLikes",
+    hasBorder : true
+  },{
+    key : 11,
+    value : "sight out",
+    hasBorder : false
+  }])
   const [enterTab , changeEnterTab] = useState("");
   const [chooseTab,changeChooseTab] = useState("");
-  const [newUser,changeNewUser] = useState({
-    userName : "",
-    password : "",
-    email : "",
-    passwordSure : ""
-  });
-  const [user,changeUser] = useState({
-    userName : "",
-    password : "",
-  });
+  const loginRef=useRef();
+  const regesterRef=useRef();
+  const resetPasswordRef=useRef();
   const [scrollTop,changeScrollTop] = useState(0);
   const [searchValue,changeSearchValue] = useState("")
-  const [registerVisible, changeRegisterVisible] = useState(false);
-  const [loginInVisible, changeLoginInVisible] = useState(false);
   if (body !== children) {
     changeBody(children)
   }
@@ -64,9 +103,9 @@ const Page = ({ router, children }) => {
        window.location.href = item.href
     }else{
        if(item.value === 2){
-         changeLoginInVisible(true);
+         loginRef && loginRef.current && loginRef.current.changeVisible(true);
        }else if(item.value === 3){
-         changeRegisterVisible(true);
+         regesterRef && regesterRef.current && regesterRef.current.changeVisible(true);
        }
     }
   }
@@ -148,6 +187,33 @@ const Page = ({ router, children }) => {
                                              }}
                                              showSearch />
                   </div>
+                  <div className="user-logo">
+                    <Popover
+                      overlayClassName='user-logo-status'
+                      placement="bottom"
+                      title={null}
+                      content={() => {
+                        return (
+                          <div className={"user-msg-popover-box"}>
+                            <ul style={{
+                              width:  '200px',
+                              margin : 0,
+                              padding:0,
+                              border:"none"
+                            }}>
+                              {userTabList && userTabList.map((item)=>{
+                                return <li className={ `${!item.hasBorder && "no-border" || ""}`}>
+                                  {item.value}
+                                </li>
+                              })}
+                            </ul>
+                          </div>
+                        )
+                      }}
+                      trigger="hover">
+                      <Avatar size={40}  icon={<UserOutlined />} />
+                    </Popover>
+                  </div>
                </div>
              </div>
         </div>
@@ -155,206 +221,18 @@ const Page = ({ router, children }) => {
           body
         }
       </div>
-      <Modal
-        visible={registerVisible}
-        title={`register`}
-        okText="ok"
-        zIndex={300}
-        cancelText="cancel"
-        onOk={() => {
-          const {userName,passwordSure,password,email} = newUser;
-          if(!userName){
-            message.warn("Please enter userName");
-            return
-          }
-          if(!email){
-            message.warn("Please enter email");
-            return
-          }else{
-            if(!(email.match(/^\w+@\w+\.\w+$/i))){
-              message.warn("Please enter a mailbox in the correct format");
-              return
-            }
-          }
-          if(!password){
-            message.warn("Please enter password");
-            return
-          }
-          if(password !== passwordSure){
-            message.warn("Entered passwords differ!");
-            return
-          }
-          const _pass = Base64.encode(md5(password))
-          userRegister({
-            username:userName,password : _pass,email
-          }).then(res => {
-            if(res.status === 200){
-              message.success("register was successful");
-              changeRegisterVisible(false);
-              changeNewUser({
-                userName : "",
-                password : "",
-                email : "",
-                passwordSure : ""
-              })
-            }else{
-              message.error(res.msg)
-            }
-          })
+      <LoginComponent
+        changeResetPasswordVisible={()=>{
+          resetPasswordRef && resetPasswordRef.current && resetPasswordRef.current.changeVisible(true);
         }}
-        onCancel={() => {
-          changeRegisterVisible(false);
-          changeNewUser({
-            userName : "",
-            password : "",
-            email : "",
-            passwordSure : ""
-          })
-        }}>
-        <div className={"modal_box"}>
-          <div className="box">
-            <h6>UserName</h6>
-            <div className="switch_box">
-              <Input
-                value={newUser.userName}
-                placeholder="Please enter userName"
-                prefix={<UserOutlined />}
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.userName = _value;
-                  changeNewUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>Email</h6>
-            <div className="switch_box">
-              <Input
-                prefix={<MailOutlined />}
-                value={newUser.email}
-                placeholder="Please enter email"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser)
-                  _newPageMessage.email = _value
-                  changeNewUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>PassWord</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={newUser.password}
-                placeholder="Please enter password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.password = _value;
-                  changeNewUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>Confirm</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={newUser.passwordSure}
-                placeholder="Please confirm password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.passwordSure = _value;
-                  changeNewUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </Modal>
-      <Modal
-        visible={loginInVisible}
-        title={`Login In`}
-        okText="ok"
-        zIndex={300}
-        cancelText="cancel"
-        onOk={() => {
-          const {userName,password} = user;
-          if(!userName){
-            message.warn("Please enter userName");
-            return
-          }
-          if(!password){
-            message.warn("Please enter password");
-            return
-          }
-          const _pass = Base64.encode(md5(password))
-          userLogin({
-            username:userName,password : _pass
-          }).then(res => {
-            if(res.status === 200){
-              message.success("register was successful");
-              changeLoginInVisible(false);
-              changeUser({
-                userName : "",
-                password : ""
-              })
-            }else{
-              message.error(res.msg)
-            }
-          })
+        loginRef={loginRef}/>
+      <RegesterComponent
+        changeLoginInVisible={()=>{
+          loginRef && loginRef.current && loginRef.current.changeVisible(true);
         }}
-        onCancel={() => {
-          changeLoginInVisible(false);
-          changeUser({
-            userName : "",
-            password : "",
-          })
-        }}>
-        <div className={"modal_box"}>
-          <div className="box">
-            <h6>UserName</h6>
-            <div className="switch_box">
-              <Input
-                value={user.userName}
-                placeholder="Please enter userName"
-                prefix={<UserOutlined />}
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(user);
-                  _newPageMessage.userName = _value;
-                  changeUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>PassWord</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={user.password}
-                placeholder="Please enter password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(user);
-                  _newPageMessage.password = _value;
-                  changeUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <h6 className={"forgetPassword"}>
-            Forget Password
-          </h6>
-        </div>
-      </Modal>
+        regesterRef={regesterRef}/>
+      <ResetPasswordComponent
+        resetPasswordRef={resetPasswordRef}/>
     </React.Fragment>
   )
 }

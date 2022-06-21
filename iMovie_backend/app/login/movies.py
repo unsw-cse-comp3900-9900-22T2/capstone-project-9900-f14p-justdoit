@@ -13,16 +13,18 @@ from app.models import *
 def get_movie_detial():
     data = request.get_json(force=True)
     mid = data["mid"]
-    print(mid)
+    # print(mid)
     # find in database
     movie = MoviesModel.query.filter(MoviesModel.mid == mid).first()
     # if there is not movie
     if not movie:
         return jsonify({'code': 400, 'msg': 'Sorry you can not view the movie details'})
     result = {}
+
     result["moviename"] = movie.moviename
     result["description"] = movie.description
-    # split string
+
+    # split string (去空格)
     genre_list = movie.genre.split(",")
 
     result["genre"] = genre_list
@@ -33,7 +35,7 @@ def get_movie_detial():
     result["avg_rate"] = movie.avg_rate
     result["release_date"] = movie.release_date
 
-    num_wish = wishWatchModel.query.filter(wishWatchModel.mid == mid,wishWatchModel.type == 0,wishWatchModel.active == 1).count()
+    num_wish = wishWatchModel.query.filter(wishWatchModel.mid == mid, wishWatchModel.type == 0,wishWatchModel.active == 1).count()
     result["wishlist_num"] = num_wish
 
     # num_watch = wishWatchModel.query.filter(wishWatchModel.mid == mid,wishWatchModel.type == 1,wishWatchModel.active == 1).count()

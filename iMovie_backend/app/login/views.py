@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, request, g
+# from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists
 
 from app.login.utils import *
@@ -23,6 +23,7 @@ def login():
     en_pass = EnPassWord(password)
     if en_pass != user.password:
         return jsonify({'code': 400, 'msg': 'Password error'})
+    # uid :
     token = GenToken(user)
 
     return jsonify({'code': 200, 'msg': 'Login successful', 'token': token})
@@ -35,9 +36,11 @@ def register():
     username = data["username"]
     password = data["password"]
     email = data["email"]
-    print(username, password, email)
+
+    # print(username, password, email)
     if not username or not password or not email:
         return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
+
     # username is too long
     if len(username) > 50:
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
@@ -66,6 +69,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'Successful registration'})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Registration failure', 'error_msg': str(e)})
 
@@ -74,6 +78,28 @@ def register():
 @login_require
 def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
+
+
+def get_user_detail():
+    #前端给的
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    #数据库找判断
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    # 判断
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User is not defined'})
+    # 给 backend
+    result = {}
+    result["username"] = user.username
+    result["email"] = user.email
+    result["description"] = user.description
+
+    return jsonify({'code': 200, "result": result})
+
+
+
+
 
 
 

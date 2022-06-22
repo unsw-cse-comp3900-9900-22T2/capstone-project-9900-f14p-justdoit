@@ -97,6 +97,83 @@ def get_user_detail():
 
     return jsonify({'code': 200, "result": result})
 
+def update_user_detail():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    username = data["username"]
+    email = data["email"]
+    description = data["description"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User is not defined'})
+    if user.username != username:
+        check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
+        if check_username:
+            return jsonify({'code': 400, 'msg': 'User name already exists'})
+    if user.email != email:
+        check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
+        if check_email:
+            return jsonify({'code': 400, 'msg': 'Email is already exists'})
+    try:
+        time_form = getTime()[0]
+        # update new profile
+        user.username = username
+        user.email = email
+        user.description = description
+        user.utime = time_form
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Successful update profile'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'update profile failure', 'error_msg': str(e)})
+
+
+def send_email():
+    email = request.json.get('email')
+    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'This email is not defined'})
+    verifycode = create_verifycode(4)
+    # send email
+
+    # save verifycode to sql
+    try:
+        user.verifycode = verifycode
+        user.utime = getTime()[0]
+        db.session.commit()
+        msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
+        return jsonify({'code': 200, 'msg': msg})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
+
+
+def change_password():
+    email = request.json.get('email')
+    verifycode = request.json.get('verifycode')
+    password = request.json.get('password')
+    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'This email is not defined'})
+    # check verifycode
+    if user.verifycode != verifycode:
+        return jsonify({'code': 400, 'msg': 'Verification code is wrong'})
+    try:
+        new_pass = EnPassWord(password)
+        user.password = new_pass
+        user.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Password modified successfully"})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
+
+
+
+
+
+
+
+
+
 
 
 

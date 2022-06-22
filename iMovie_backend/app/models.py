@@ -50,7 +50,7 @@ class MoviesModel(db.Model):
     avg_rate = db.Column(db.FLOAT, nullable=True)
     release_date = db.Column(db.DateTime)  # release_date
     Off_data = db.Column(db.DateTime)  # Off_data
-    # duration = db.Column(db.Integer)
+    duration = db.Column(db.Integer)
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 
@@ -82,6 +82,23 @@ class movieReviewModel(db.Model):
     uid = db.Column(db.String(256), nullable=False)  # users.uid
     mid = db.Column(db.String(256), nullable=False)  # movies.mid
     review = db.Column(db.TEXT)
+    # rate = db.Column(db.FLOAT)
+    active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+class RatingModel(db.Model):
+    __tablename__ = 'rating'
+
+    id = db.Column(db.Integer, primary_key=True)
+    raid = db.Column(db.String(256), unique=True, nullable=False)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid
+    mid = db.Column(db.String(256), nullable=False)  # movies.mid
     rate = db.Column(db.FLOAT)
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     ctime = db.Column(db.DateTime, nullable=False)  # create time
@@ -107,6 +124,8 @@ class userReviewModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+
 
 class movielikeModel(db.Model):
     __tablename__ = 'movielike'

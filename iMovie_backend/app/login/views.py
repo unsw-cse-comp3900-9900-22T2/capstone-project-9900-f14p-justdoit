@@ -140,3 +140,23 @@ def insert():
     db.session.add(Movies)
     db.session.commit()
     return jsonify({'code': 200})
+
+
+def modify_user_detail():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    username = data["username"]
+    email = data["email"]
+    description = data["description"]
+    #
+    #数据库找判断
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    # 判断
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User is not defined'})
+    # # 给 backend
+    user.username = username
+    user.email = email
+    user.description = description
+    db.session.commit()
+    return jsonify({'code': 200, "result": "changed successfully"})

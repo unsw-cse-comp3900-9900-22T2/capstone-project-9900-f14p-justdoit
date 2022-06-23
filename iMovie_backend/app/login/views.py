@@ -186,3 +186,38 @@ def insert():
     db.session.add(Movies)
     db.session.commit()
     return jsonify({'code': 200})
+
+
+def modify_user_detail():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    username = data["username"]
+    email = data["email"]
+    description = data["description"]
+    #
+    #数据库找判断
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    # 判断
+
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User is not defined'})
+    if user.username != username:
+        check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
+        if check_username:
+            return jsonify({'code' : 400, 'msg': 'User name already exists'})
+    if user.email != email:
+        check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
+        if check_email:
+            return jsonify({'code' : 400, 'msg': 'Email is already exists'})
+    # # 给 backend
+    try:
+        time_form = getTime()[0]
+        user.username = username
+        user.email = email
+        user.description = description
+        user.utime = time_form
+        db.session.commit()
+        return jsonify({'code': 200, "result": "Successfully update profile"})
+
+    except Exception as e:
+        return jsonify({'code':400, 'msg': 'update profile failure', 'error_msg':str(e)})

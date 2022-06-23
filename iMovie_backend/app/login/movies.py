@@ -46,6 +46,8 @@ def get_movie_detial():
 def get_wishlist():
     data = request.get_json(force=True)
     # print(data)
+    sort_by = data["sort_by"]
+    # print(sort_by.totext)
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
@@ -54,6 +56,8 @@ def get_wishlist():
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0, wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
+    # if sort_by == "ctime":
+    #     wishlist = wishlist.order_by(wishWatchModel.ctime)
     try:
         result = {}
         result["count"] = len(wishlist)
@@ -68,7 +72,7 @@ def get_wishlist():
             # print(movie.moviename)
             movie_info["moviename"] = movie.moviename
             # print(movie.genre)
-            movie_info["genre"] = movie.genre
+            movie_info["genre"] = movie.genre.split(" ")
             # print(movie.director)
             movie_info["director"] = movie.director
             # print(movie.avg_rate)
@@ -161,7 +165,7 @@ def insert_movie_for_test():
     utime = getTime()[0]
     try:
         Movie = MoviesModel(mid=mid, moviename=moviename, coverimage=coverimage, description=description, genre=genre,
-                             cast=cast, crew=crew, director=director, country=country,
+                             cast=cast, crew=crew, director=director, country=country, active=1,
                              language=language, avg_rate=avg_rate, release_date=release_date,ctime=ctime, utime=utime)
 
         db.session.add(Movie)

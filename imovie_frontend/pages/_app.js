@@ -3,16 +3,14 @@ import React, { useState, useEffect, useRef } from 'react'
 import 'antd/dist/antd.css';
 import { getCookie } from '../util/common'
 import {Container} from 'next/app'
-const theme = {
-  colors: {
-    primary: '#0070f3'
-  }
-}
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/lib/locale/en_US';
+
 const App = ({ Component, pageProps, cookie, router }) => {
   let _cookie = getCookie('USER_MESSAGE', cookie)
   try {
     if (!!_cookie) {
-      _cookie = _cookie
+      _cookie = JSON.parse(_cookie)
     } else {
       _cookie = null
     }
@@ -20,17 +18,19 @@ const App = ({ Component, pageProps, cookie, router }) => {
     _cookie = null
   }
   return (
-    <Container>
+        <Container>
 
-      <style>
-        {`
-          .ant-popover-inner-content{
-             padding: 0;
-          }
-          `}
-      </style>
-      <Component {...pageProps} USERMESSAGE={_cookie}/>
-    </Container>
+          <style>
+            {`
+              .ant-popover-inner-content{
+                 padding: 0;
+              }
+              `}
+          </style>
+          <ConfigProvider locale={enUS}>
+            <Component {...pageProps} USERMESSAGE={_cookie}/>
+          </ConfigProvider>
+        </Container>
   )
 }
 App.getInitialProps = async ({ Component, ctx }) => {

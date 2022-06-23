@@ -37,19 +37,19 @@ class MoviesModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     mid = db.Column(db.String(256), unique=True, nullable=False)
-    moviename = db.Column(db.String(256), unique=True, nullable=False)
-    coverimage = db.Column(db.String(256), unique=True, nullable=True)
+    moviename = db.Column(db.String(256), nullable=False)
+    coverimage = db.Column(db.String(256), nullable=True)
     description = db.Column(db.TEXT, nullable=False)
     genre = db.Column(db.String(120), nullable=True)  # genre     # action,crime,crime,crime
-    cast = db.Column(db.String(256), nullable=True)
+    cast = db.Column(db.TEXT, nullable=True)
     crew = db.Column(db.String(256), nullable=True)  # dict
     director = db.Column(db.String(256), nullable=True)  # dict
     country = db.Column(db.String(120), nullable=True)  # dict
     language = db.Column(db.String(120), nullable=True)  # dict
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     avg_rate = db.Column(db.FLOAT, nullable=True)
-    release_date = db.Column(db.DateTime)  # release_date
-    Off_data = db.Column(db.DateTime)  # Off_data
+    release_date = db.Column(db.Integer)  # release_date
+    # Off_data = db.Column(db.DateTime)  # Off_data
     duration = db.Column(db.Integer)
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time

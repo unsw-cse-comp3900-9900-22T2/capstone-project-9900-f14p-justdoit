@@ -12,7 +12,6 @@ from app.models import *
 from flask_mail import Mail
 import time
 def init_app(app: Flask):
-    mail = Mail(app)
     # mail = Mail()
     # mail.init_app(app)
     captcha = str(uuid.uuid1())[:6]     #生成随机6位验证码
@@ -23,18 +22,20 @@ def init_app(app: Flask):
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     app.config['MAIL_DEFAULT_SENDER'] = '1191367164@qq.com'
-    mail = Mail(app)
-    @app.route("/verifyCode")
-    def index():
+    #sent email
+    def sent():     #不知道怎么在view funct 中传入参数 app 和 captcha， 才放在这
+        mail = Mail(app)
         # mail ： https://temp-mail.org/en/
-        msg = Message('Only Movie 2', recipients=['nageget605@exoacre.com'], body='Verification code  ： %s' % captcha)
-        # try:
-        mail.send(msg)
-        # except:
-        #     return "server error"
-        # return jsonify({'code': 200, 'msg': 'sent email succesfully', 'token': token, "result": result})
-        return "successfully sent"
-    # @app.route("/checkVerifyCode", methods=['GET','POST'])
+        msg = Message('Only Movie 3', recipients=['nageget605@exoacre.com'], body='Verification code  ： %s' % captcha)
+        try:
+            mail.send(msg)
+        except:
+            return jsonify({'code': 200, 'msg': 'sent email False'})
+        return jsonify({'code': 200, 'msg': 'sent email succesfully'})
+
+
+    app.add_url_rule("/verifyCode", view_func=sent, methods=['GET','POST'])
+
     # def checkVerifyCode():
     #     data = request.get_json(force=True)
     #     val = data["code"]

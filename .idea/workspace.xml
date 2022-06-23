@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="" />
+    <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/imovie_frontend/components/UserMsg/WishList.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/imovie_frontend/components/UserMsg/WishList.less" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,7 +27,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/pages/movie",
+    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/static",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -32,11 +36,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/iMovie_frontend/static" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages/movie" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/components/Home" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
@@ -53,6 +57,35 @@
       <workItem from="1655820887712" duration="1889000" />
       <workItem from="1655823118286" duration="5674000" />
     </task>
+    <task id="LOCAL-00001" summary="get user">
+      <created>1655997456416</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1655997456416</updated>
+    </task>
+    <task id="LOCAL-00002" summary="movie detail">
+      <created>1655997483148</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1655997483148</updated>
+    </task>
+    <task id="LOCAL-00003" summary="movie detail">
+      <created>1655997497620</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1655997497620</updated>
+    </task>
+    <task id="LOCAL-00004" summary="movie detail">
+      <created>1655997508115</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1655997508115</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -68,5 +101,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="get user" />
+    <MESSAGE value="movie detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="movie detail" />
   </component>
 </project>

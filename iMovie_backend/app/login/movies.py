@@ -45,7 +45,7 @@ def get_movie_detial():
 
 def get_wishlist():
     data = request.get_json(force=True)
-    print(data)
+    # print(data)
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
@@ -59,18 +59,25 @@ def get_wishlist():
         result["count"] = len(wishlist)
         list = []
         for m in wishlist:
-            movie = MoviesModel.query.filter(MoviesModel.mid == m.id, MoviesModel.active == 1).first()
+            # print(m.mid)
+            movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
             # movie_info: mid, moviename, genre, director, avg_rate, release_date
             movie_info = {}
+            # print(movie.mid)
             movie_info["mid"] = movie.mid
+            # print(movie.moviename)
             movie_info["moviename"] = movie.moviename
+            # print(movie.genre)
             movie_info["genre"] = movie.genre
+            # print(movie.director)
             movie_info["director"] = movie.director
+            # print(movie.avg_rate)
             if movie.avg_rate:
                 movie_info["avg_rate"] = movie.avg_rate
             else:
                 movie_info["avg_rate"] = -1
-            movie_info["release_date"] = movie.release_date
+            # print(movie.release_date)
+            movie_info["year"] = movie.release_date.year
             list.append(movie_info)
         result["list"] = list
         return jsonify({'code': 200, 'result': result})
@@ -88,11 +95,11 @@ def add_to_wishlist():
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
-    if not movie:
-        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # if not movie:
+    #     return jsonify({'code': 400, 'msg': 'Movie does not exist'})
     # uid和mid是否已经存在过wish或者watched里面, 只看active是1的
-    user_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid, wishWatchModel.active == 1).first()
-    if user_movie:
+    movie_in_wl = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid, wishWatchModel.active == 1).first()
+    if movie_in_wl:
         return jsonify({'code': 200, 'msg': 'Movie is already in wishlist or watched list.'})
     try:
         wid = getUniqueid()
@@ -107,7 +114,7 @@ def add_to_wishlist():
 
 # def delete_from_wishlist():
 #     data = request.get_json(force=True)
-#     print(data)
+#     # print(data)
 #     uid = data["uid"]
 #     mid = data["mid"]
 #     # check uid and mid
@@ -118,14 +125,13 @@ def add_to_wishlist():
 #     # if not movie:
 #     #     return jsonify({'code': 400, 'msg': 'Movie does not exist'})
 #     # uid和mid是否已经存在过wish或者watched里面, 只看active是1的
-#     user_movie = wishWatchModel.query.filter(wishWatchModel.type == 0, wishWatchModel.uid == uid, wishWatchModel.mid == mid,
+#     movie_in_wl = wishWatchModel.query.filter(wishWatchModel.type == 0, wishWatchModel.uid == uid, wishWatchModel.mid == mid,
 #                                              wishWatchModel.active == 1).first()
-#     if not user_movie:
-#         return jsonify({'code': 400, 'msg': 'Movie is not in wish list.'})
+#     if not movie_in_wl:
+#         return jsonify({'code': 400, 'msg': 'Deletion failed, movie is not in wish list.'})
 #     try:
-#         timeform = getTime()[0]
-#         wishlist = wishWatchModel(active=0, utime=timeform)
-#         db.session.add(wishlist)
+#         movie_in_wl.active = 0
+#         movie_in_wl.utime = getTime()[0]
 #         db.session.commit()
 #         return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
 #     except Exception as e:

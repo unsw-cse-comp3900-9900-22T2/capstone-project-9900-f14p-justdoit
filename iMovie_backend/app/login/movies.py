@@ -26,6 +26,8 @@ def get_movie_detial():
     result["cast"] = movie.cast
     result["crew"] = movie.crew
     result["director"] = movie.director
+    result["duration"] = movie.duration
+    result["country"] = movie.country
     result["language"] = movie.language
     result["avg_rate"] = movie.avg_rate
     result["release_date"] = movie.release_date

@@ -41,6 +41,11 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          if(!email){
            message.warn("please enter email");
            return;
+         }else{
+           if(!(email.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+             message.warn("Please enter a mailbox in the correct format");
+             return
+           }
          }
          if(!description){
            message.warn("please enter description");

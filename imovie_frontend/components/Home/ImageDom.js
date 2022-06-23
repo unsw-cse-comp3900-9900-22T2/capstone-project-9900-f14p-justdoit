@@ -1,16 +1,25 @@
 
-import React, { } from 'react'
+import React, { useState} from 'react'
 import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
 import { Rate,Popover ,Tooltip} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
-const ImageDom = ({item,index,isLogin,changeOperation,
+import _ from "lodash";
+const ImageDom = ({item,index,isLogin,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight}) => {
-  const {director,cast,tags,rate,movieName,
-    isLike,isLook,isCollection,year,isDisLike,
-    look,like,collection,image} = item;
-  const _nameList = [...(director || []),...(cast || [])];
+  const [thisItem,changeThisItem] = useState(item);
+  const {director,cast,genre,avg_rate,moviename,
+    is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,
+    watchlist_num,num_like,wishlist_num,coverimage,mid} = thisItem;
+  const _nameList = [...[director || ""],...(cast || [])];
   function goMovieDetail(id) {
     window.location.href = "/movie/detail?movieId=" + id;
+  }
+  function changeOperation(type) {
+    const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
+    const _thisItem = _.cloneDeep(thisItem);
+    const is = _thisItem[_type];
+    _thisItem[_type] = !is;
+    changeThisItem(_thisItem);
   }
   function svgGet(type ,isGet){
     if(type === 0){
@@ -66,18 +75,21 @@ const ImageDom = ({item,index,isLogin,changeOperation,
           <div  className={"swiper-image-list-item-image-black"}>
             <h6
               onClick={()=>{
-                goMovieDetail(item.movieId);
+                goMovieDetail(mid);
               }}
-            >{movieName}</h6>
+            >{moviename}</h6>
             <div className={"rate_msg"}>
-              <Rate allowHalf disabled defaultValue={rate || 1} />
-              <span className={"rate_msg_get"}>({rate || 1})</span>
+              <Rate allowHalf disabled defaultValue={avg_rate || 0} />
+              <span className={"rate_msg_get"}>({avg_rate || 0})</span>
             </div>
-          {tags && tags.length > 0 &&<div className={"tags"}>
+          {genre && genre.length > 0 &&<div className={"tags"}>
             {
-              tags && tags.map((tagItem,tagIndex) => {
+              genre && genre.map((genreItem,tagIndex) => {
+                if(!genreItem){
+                  return null;
+                }
                 return <div className={"tags-item"} key={"tags-item-" + tagIndex}>
-                  {tagItem.value}
+                  {genreItem}
                 </div>
               })
             }
@@ -91,24 +103,24 @@ const ImageDom = ({item,index,isLogin,changeOperation,
             isLogin && <div className={"operation"}>
               <div
                 onClick={()=>{
-                  changeOperation(1,index)
+                  changeOperation(1)
                 }}
                 className={"operation-image"}>{
-                svgGet(1,isLook)
+                svgGet(1,is_user_watch)
               }</div>
               <div
                 onClick={()=>{
-                  changeOperation(0,index)
+                  changeOperation(0)
                 }}
                 className={"operation-image"}>{
-                svgGet(0,isLike)
+                svgGet(0,is_user_like)
               }</div>
               <div
                 onClick={()=>{
-                  changeOperation(2,index)
+                  changeOperation(2)
                 }}
                 className={"operation-image"}>{
-                svgGet(2,isCollection)
+                svgGet(2,is_user_wish)
               }</div>
               <Popover
                 zIndex={13}
@@ -117,14 +129,14 @@ const ImageDom = ({item,index,isLogin,changeOperation,
                 return <div className={"swiper-component-operation"}>
                   <div
                     onClick={()=>{
-                      ratingRefChangeVisible && ratingRefChangeVisible(movieName,year);
+                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date);
                     }}
                     className={"swiper-component-operation-item padding1"}>
                     Rating
                   </div>
                   <div
                     onClick={()=>{
-                      reviewsInfoRefVisible && reviewsInfoRefVisible(movieName,year);
+                      reviewsInfoRefVisible && reviewsInfoRefVisible(moviename,release_date);
                     }}
                     className={"swiper-component-operation-item"}>
                     Reviews and info
@@ -134,7 +146,7 @@ const ImageDom = ({item,index,isLogin,changeOperation,
                       changeOperation(3,index)
                     }}
                     className={"swiper-component-operation-item border-no padding2"}>
-                    {isDisLike ? "Cancel DisLike" : "DisLike"}
+                    {is_user_dislike ? "Cancel DisLike" : "DisLike"}
                   </div>
                 </div>
               }}>
@@ -154,10 +166,10 @@ const ImageDom = ({item,index,isLogin,changeOperation,
       >
         <div
           onClick={()=>{
-            goMovieDetail(item.movieId);
+            goMovieDetail(mid);
           }}
           style={{
-            backgroundImage : "url(" +image +")"
+            backgroundImage : "url(" +coverimage +")"
           }}
           className={"swiper-image-list-item-image"}/>
       </Tooltip>
@@ -172,23 +184,23 @@ const ImageDom = ({item,index,isLogin,changeOperation,
         }
       <div className={"image-message"}>
         <h6 onClick={()=>{
-          goMovieDetail(item.movieId);
-        }}>{movieName}</h6>
+          goMovieDetail(mid);
+        }}>{moviename}</h6>
         <div className={"image-message-show"}>
           <div className={"image-message-show-icon"}>
             <img src={"/static/lookTrue.png"}/>
             &nbsp;
-            <span style={{color :"#00e054" }}>{getMsg(look)}</span>
+            <span style={{color :"#00e054" }}>{getMsg(watchlist_num)}</span>
           </div>
           <div className={"image-message-show-icon"}>
             <img src={"/static/likeTrue.png"}/>
             &nbsp;
-            <span style={{color :"#40bcf4" }}>{getMsg(like)}</span>
+            <span style={{color :"#40bcf4" }}>{getMsg(num_like)}</span>
           </div>
           <div className={"image-message-show-icon"}>
             <img src={"/static/collentTrue.png"}/>
             &nbsp;
-            <span style={{color :"#ff900f" }}>{getMsg(collection)}</span>
+            <span style={{color :"#ff900f" }}>{getMsg(wishlist_num)}</span>
           </div>
         </div>
       </div>

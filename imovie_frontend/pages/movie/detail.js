@@ -8,46 +8,12 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-const Detail = ({USERMESSAGE}) => {
+import { getMovieDetail } from "../MockData";
+import UserMsg from "./userMsg";
+const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
-  const [movieDetail,changeMovieDetail]=useState({
-    movieId :123323,
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :23000,
-    like :24,
-    isLike : false,
-    isLook : false,
-    isCollection : false,
-    isDisLike : false,
-    collection : 256,
-    rate : 3.5,
-    year : "2022",
-    geners : [{
-      value : "Renre",
-      key : 1,
-    },{
-      value : "Renre1",
-      key : 2,
-    },{
-      value : "Renre2",
-      key : 3,
-    }],
-    movieName : "movie name",
-    director : ["jerry jackson"],
-    castList : ["Tom","Haidi"],
-    prodecers : "Steven Spielberg Frank Marshall Patrick Crowley Alexandra Ferguson Colin Trevorrow",
-    writers : "Colin Trevorrow Derek Connolly Emily Carmichael",
-    cast : "Chris Pratt Bryce Dallas Howard Lauro Dern Jeff Goldblum Sam Neill DeWanda Wise Mamoudou Athic " +
-      "Campbell Scott BD Wong Omar Sy Justice Smith Daniella Pineda Scott Haze Dichen Lochman Caleb I" +
-      "Poloha Freya Parker Alexander Owen Joel Elferink Elva Trill Lillia Langley" ,
-    detail : "After more than thirty years of service as one of the Navy's top aviators, and dodging the advancemen\n" +
-      "ground him, Pete \"Moverick\" Mitchell finds himself training a detachment of TOP GUN graduates for a\n" +
-      "the likes of which no living pilot has ever seen After more than thirty years of service as one of the Navy's top aviators, and dodging the advancemen\n" +
-      "ground him, Pete \"Moverick\" Mitchell finds himself training a detachment of TOP GUN graduates for a\n" +
-      "the likes of which no living pilot has ever seen",
-    length : "146"
-  });
+  const [movieDetail,changeMovieDetail]=useState(null);
   const [reviewsList,changeReviewsList] = useState([{
      userName : "amber",
      rate: 3.6,
@@ -120,6 +86,20 @@ const Detail = ({USERMESSAGE}) => {
     }
   }
   useEffect(()=>{
+    if(initQuery && initQuery.movieId){
+      getMovieDetail({
+        uid : USERMESSAGE && USERMESSAGE.uid || null,
+        mid : initQuery.movieId
+      }).then(res => {
+        if(res.code === 200){
+          const {result} = res;
+          changeMovieDetail(result || null);
+
+        }
+      })
+
+    }
+
   },[]);
   function setGeners(list) {
     if(!list){
@@ -127,7 +107,9 @@ const Detail = ({USERMESSAGE}) => {
     }
     const name = [];
     for(let i = 0 ; i < list.length ; i++){
-      name.push(list[i].value);
+      if(!!list[i]){
+        name.push(list[i]);
+      }
     }
     return name.join(" / ")
   }
@@ -160,7 +142,7 @@ const Detail = ({USERMESSAGE}) => {
     }
   }
   function changeOperation(type) {
-    const _type = type === 0 ? "isLike" : type === 1 ?  "isLook" : type === 2 ? "isCollection" : "isDisLike";
+    const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
     const _movieDetail = _.cloneDeep(movieDetail);
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
@@ -185,122 +167,143 @@ const Detail = ({USERMESSAGE}) => {
         return msg;
       }
   }
+  function setYear(year) {
+    const date = new Date();
+    const _year = year || date.getFullYear();
+    return _year
+  }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
       <div className={"movie-detail-box"}>
-          <p className={"movie-name"}>{movieDetail.movieName}({movieDetail.year})</p>
+        {!!movieDetail &&
+        <>
+          <p className={"movie-name"}>{movieDetail.moviename}({setYear(movieDetail.release_date)})</p>
           <div className={"movie-msg-box"}>
             <div className={"movie-msg-box-left"}>
               <div
                 style={{
-                  backgroundImage : "url(" +movieDetail.image +")"
+                  backgroundImage: "url(" + movieDetail.coverimage + ")"
                 }}
                 className={"movie-logo"}/>
               <div className={"movie-message-show"}>
                 <div className={"image-message-show-icon"}>
                   <img src={"/static/lookTrue.png"}/>
                   &nbsp;
-                  <span style={{color :"#00e054" }}>{getMsg(movieDetail.look)}</span>
+                  <span style={{ color: "#00e054" }}>{getMsg(movieDetail.watchlist_num)}</span>
                 </div>
                 <div className={"image-message-show-icon"}>
                   <img src={"/static/likeTrue.png"}/>
                   &nbsp;
-                  <span style={{color :"#40bcf4" }}>{getMsg(movieDetail.like)}</span>
+                  <span style={{ color: "#40bcf4" }}>{getMsg(movieDetail.num_like)}</span>
                 </div>
                 <div className={"image-message-show-icon"}>
                   <img src={"/static/collentTrue.png"}/>
                   &nbsp;
-                  <span style={{color :"#ff900f" }}>{getMsg(movieDetail.collection)}</span>
+                  <span style={{ color: "#ff900f" }}>{getMsg(movieDetail.wishlist_num)}</span>
                 </div>
               </div>
               <div className={"rating"}>
                 <h6 className={"rating-title"}>Ratings:</h6>
                 <div className={"rating-box"}>
-                  <h5 className={"rating-box-title"}>{movieDetail.rate}</h5>
-                  <Rate allowHalf disabled defaultValue={movieDetail.rate || 1} />
+                  <h5 className={"rating-box-title"}>{movieDetail.avg_rate || 0}</h5>
+                  <Rate allowHalf disabled defaultValue={movieDetail.avg_rate || 0}/>
                 </div>
               </div>
             </div>
             <div className={"movie-msg-box-right"}>
-                <div className={"movie-message-body movie-message-body-flex"}>
-                  <p>DIRECTOR: </p>
-                  <h6>{movieDetail.director}</h6>
-                </div>
+              {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
+                <p>DIRECTOR: </p>
+                <h6>{movieDetail.director}</h6>
+              </div>}
+              {!!movieDetail.prodecers &&
               <div className={"movie-message-body"}>
                 <p>PRODUCERS: </p>
                 <h6>{movieDetail.prodecers}</h6>
-              </div>
+              </div>}
+              {!!movieDetail.writers &&
               <div className={"movie-message-body"}>
                 <p>WRITERS: </p>
                 <h6>{movieDetail.writers}</h6>
               </div>
-              <div className={"movie-message-body"}>
+              }
+              {!!movieDetail.cast && <div className={"movie-message-body"}>
                 <p>CAST: </p>
-                <h6>{movieDetail.cast}</h6>
-              </div>
-              <div className={"movie-message-body"}>
+                <h6>{movieDetail.cast.join(",")}</h6>
+              </div>}
+              {!!movieDetail.description && <div className={"movie-message-body"}>
                 <p>DETAILS: </p>
-                <h6>{getDetailMsg(movieDetail.detail)}</h6>
-              </div>
+                <h6>{getDetailMsg(movieDetail.description)}</h6>
+              </div>}
+              {!!movieDetail.genre && !!setGeners(movieDetail.genre) &&
               <div className={"movie-message-body"}>
                 <p>GENRES: </p>
-                <h6>{setGeners(movieDetail.geners)}</h6>
-              </div>
+                <h6>{setGeners(movieDetail.genre)}</h6>
+              </div>}
+              {!!movieDetail.country &&
               <div className={"movie-message-body movie-message-body-flex"}>
+                <p>Country: </p>
+                <h6>{movieDetail.country}</h6>
+              </div>}
+              {!!movieDetail.language &&
+              <div className={"movie-message-body movie-message-body-flex"}>
+                <p>Language: </p>
+                <h6>{movieDetail.language}</h6>
+              </div>}
+              {!!movieDetail.duration && <div className={"movie-message-body movie-message-body-flex"}>
                 <p>LENGTH: </p>
-                <h6>{movieDetail.length}min</h6>
-              </div>
+                <h6>{movieDetail.duration}min</h6>
+              </div>}
             </div>
             {
               !!isLogin && <div className={"operation"}>
                 <div className={"operation-image"}>
                   <div
-                    onClick={()=>{
+                    onClick={() => {
                       changeOperation(1)
                     }}
-                    className={"image-box"}>{svgGet(1,movieDetail.isLook)}</div>
+                    className={"image-box"}>{svgGet(1, movieDetail.is_user_watch)}</div>
                   <div className={"a-href"}>
                     watch
                   </div>
                 </div>
                 <div className={"operation-image"}>
                   <div
-                    onClick={()=>{
+                    onClick={() => {
                       changeOperation(2)
                     }}
-                    className={"image-box"}> {svgGet(2,movieDetail.isCollection)}</div>
+                    className={"image-box"}> {svgGet(2, movieDetail.is_user_wish)}</div>
                   <div className={"a-href"}>
                     wishLists
                   </div>
                 </div>
                 <div className={"operation-image"}>
                   <div
-                    onClick={()=>{
+                    onClick={() => {
                       changeOperation(0)
                     }}
-                    className={"image-box"}>{svgGet(0,movieDetail.isLike)}</div>
+                    className={"image-box"}>{svgGet(0, movieDetail.is_user_like)}</div>
                   <div className={"a-href"}>
                     like
                   </div>
                 </div>
                 <div className={"operation-image"}>
                   <div
-                    onClick={()=>{
+                    onClick={() => {
                       changeOperation(3)
                     }}
-                    className={"image-box"}>{svgGet(3,movieDetail.isDisLike)}</div>
+                    className={"image-box"}>{svgGet(3, movieDetail.is_user_dislike)}</div>
                   <div className={"a-href"}>
                     disLike
                   </div>
                 </div>
                 <div className={"operation-image"}>
                   <div
-                    onClick={()=>{
+                    onClick={() => {
                       const date = new Date();
                       const _year = movieDetail.year || date.getFullYear();
                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true,movieDetail.movieName + "(" + _year+")");
+                      && ratingRef.current.changeVisible(true, movieDetail.movieName + "(" + _year + ")");
                     }}
                     className={"image-box"}>
                     <img src={"/static/star.png"}/>
@@ -312,6 +315,8 @@ const Detail = ({USERMESSAGE}) => {
               </div>
             }
           </div>
+        </>
+        }
           <div className={"reviews-list"}>
               <div className={"review-title"}>
                 <p>Related Reviews{!!isLogin && <span  onClick={()=>{
@@ -375,5 +380,13 @@ const Detail = ({USERMESSAGE}) => {
     </PageBase>
   )
 }
+Detail.getInitialProps = async (status) => {
 
+  const movieId = status && status.query && status.query.movieId;
+  return {
+    initQuery: {
+      movieId
+    }
+  }
+}
 export default Detail

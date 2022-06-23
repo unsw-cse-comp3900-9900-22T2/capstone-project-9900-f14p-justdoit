@@ -25,3 +25,9 @@ export function changePassword(param) {
 export function changePasswordInDetial(param) {
     return fetchData('http://localhost:5000/app/views/change_password_in_detial', param);
 }
+export function getMovies(param) {
+    return fetchData('http://localhost:5000/app/movies/get_movies', param);
+}
+export function getMovieDetail(param) {
+    return fetchData('http://localhost:5000/app/movies/get_movie_detial', param);
+}

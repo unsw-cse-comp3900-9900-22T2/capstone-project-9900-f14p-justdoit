@@ -7,6 +7,7 @@ import _ from "lodash";
 import { Base64 } from "js-base64";
 const { TextArea } = Input;
 const md5 = require('js-md5');
+import {modifyUserDetail,changePasswordInDetial} from "../../pages/MockData";
 const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
     const [msg ,changeMsg] = useState({
        ...userMsg,
@@ -45,23 +46,31 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            message.warn("please enter description");
            return;
          }
-         console.log("username,email,description",{
-           username,email,description,uid
+         modifyUserDetail({
+           uid,username,email,description
+         }).then(res => {
+            if(res.code === 200){
+               message.success("modify success");
+              changeInitMsg({
+                ...msg,
+                ...{
+                  password : "",
+                  newPassWord : "",
+                  checkNewPassWord : ""
+                }
+              })
+              setUserMsg({
+                username,email,description
+              })
+              window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
+                email,username
+              })));
+            }else{
+              message.error("modify failed");
+            }
+         }).catch(err =>{
+           message.error("modify failed");
          })
-         changeInitMsg({
-           ...msg,
-           ...{
-             password : "",
-             newPassWord : "",
-             checkNewPassWord : ""
-           }
-         })
-         setUserMsg({
-           username,email,description
-         })
-         window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
-           email,username
-         })));
        }else{
          const {password,newPassWord,checkNewPassWord} = msg;
          if(!password){
@@ -82,10 +91,18 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          }
          const _pass = Base64.encode(md5(password));
          const _new_pass = Base64.encode(md5(newPassWord));
-         console.log({
-           newPassword : _new_pass,
-           password : _pass,
+         changePasswordInDetial({
+           new_password : _new_pass,
+           old_password : _pass,
            uid
+         }).then(res => {
+           if(res.code === 200){
+             message.success("change password successful");
+           }else{
+             message.error(res.msg)
+           }
+         }).catch(err => {
+           message.error("change password error")
          })
        }
     }

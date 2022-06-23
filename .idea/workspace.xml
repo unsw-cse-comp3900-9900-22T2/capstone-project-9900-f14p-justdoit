@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/imovie_frontend/components/UserMsg/WishList.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imovie_frontend/components/UserMsg/WishList.less" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +28,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/static",
+    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/components/UserMsg",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -36,11 +37,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/iMovie_frontend/components/UserMsg" />
+      <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/static" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages/movie" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend/components/Home" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
@@ -85,7 +86,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655997508115</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="movie detail">
+      <created>1655997520146</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1655997520146</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

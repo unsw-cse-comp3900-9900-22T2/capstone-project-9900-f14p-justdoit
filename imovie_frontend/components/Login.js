@@ -47,6 +47,7 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
               message.success("register was successful");
               const msg = res.result;
               const {uid,token,email,username} = msg;
+              debugger
               setCookie("USER_MESSAGE",JSON.stringify({
                 uid,
                 token

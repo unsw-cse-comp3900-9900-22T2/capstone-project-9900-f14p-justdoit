@@ -18,7 +18,7 @@ SwiperCore.use([Pagination, Autoplay, EffectCoverflow, EffectCube,EffectFade, Na
 import _ from 'lodash'
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
-const SwiperImage = ({list,isLogin}) => {
+const SwiperImage = ({list,isLogin,uid}) => {
     const [imgList] = useState(list);
     const [visibility,changeVisibility] = useState(false)
     const ratingRef = useRef();
@@ -45,7 +45,9 @@ const SwiperImage = ({list,isLogin}) => {
             {
                 imgList && imgList.map((item,index) => {
                     const imgDom = item && item.map((item2,index2) => {
-                        return <ImageDomComponent item={item2}
+                        return <ImageDomComponent
+                                                  uid={uid}
+                                                  item={item2}
                                                   index={index2}
                                                   isLogin={isLogin}
                                                   ratingRefChangeVisible={(movieName,year)=>{

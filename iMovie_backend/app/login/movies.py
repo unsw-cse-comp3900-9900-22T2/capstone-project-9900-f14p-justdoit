@@ -17,6 +17,7 @@ def get_movie_detial():
     if not movie:
         return jsonify({'code': 400, 'msg': 'Sorry you can not view the movie details'})
     result = {}
+    result["mid"] = movie.mid
     result["moviename"] = movie.moviename
     result["description"] = movie.description
     result["coverimage"] = movie.coverimage

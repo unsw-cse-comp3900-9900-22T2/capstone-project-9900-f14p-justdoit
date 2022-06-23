@@ -2,14 +2,13 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import detailStyle from "./detail.less";
 import {getMsg} from "../../util/common";
-import { Avatar, Popover, Rate } from "antd";
+import { Avatar, Popover, Rate ,message} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { getMovieDetail } from "../MockData";
-import UserMsg from "./userMsg";
+import { addToWishlist, getMovieDetail } from "../MockData";
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -92,12 +91,36 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         mid : initQuery.movieId
       }).then(res => {
         if(res.code === 200){
-          const {result} = res;
+           const {result} = res;
           changeMovieDetail(result || null);
-
         }
+      }).catch(err => {
+        const result = {
+          "avg_rate": null,
+          "cast": null,
+          "coverimage": "https://a.ltrbxd.com/resized/sm/upload/hf/o9/fn/p4/adogswill-ms-0-230-0-345-crop.jpg?k=c61671eb55",
+          "crew": null,
+          "description": "The (mis)adventures of João Grilo and Chicó in Brazil's Northeastern region. The four-chapter miniseries original version of O Auto da Compadecida.",
+          "director": "Guel Arraes",
+          "genre": [
+            "comedy",
+            "drama"
+          ],
+          "is_user_dislike": 0,
+          "is_user_like": 0,
+          "is_user_watch": 0,
+          "is_user_wish": 0,
+          "language": "Portuguese",
+          "moviename": "A Dog's Will",
+          "num_like": 0,
+          "release_date": null,
+          "watchlist_num": 0,
+          "wishlist_num": 0,
+          "duration": 123,
+          "mid" : "adkjahdjkahdjkadsh"
+        }
+        changeMovieDetail(result)
       })
-
     }
 
   },[]);
@@ -146,7 +169,23 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     const _movieDetail = _.cloneDeep(movieDetail);
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
-    changeMovieDetail(_movieDetail);
+    if(type === 2){
+      if(!is){
+        addToWishlist({
+          mid : movieDetail.mid,
+          uid : USERMESSAGE && USERMESSAGE.uid
+        }).then(res => {
+          if(res.code === 200){
+            message.success("add success");
+            changeMovieDetail(_movieDetail);
+          }else{
+            message.error("add fail")
+          }
+        })
+      }
+    }else{
+      changeMovieDetail(_movieDetail);
+    }
   }
   function getDetailMsg(msg) {
       if(!msg){
@@ -374,7 +413,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               </div>
           </div>
       </div>
-      <ScrollImageComponent isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>
+      <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
+                             isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>
       <RatingComponent  ratingRef={ratingRef}/>
       <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
     </PageBase>

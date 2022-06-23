@@ -1,11 +1,12 @@
 
 import React, { useState} from 'react'
 import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
-import { Rate,Popover ,Tooltip} from 'antd';
+import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
+import {addToWishlist} from "../../pages/MockData";
 const ImageDom = ({item,index,isLogin,
-                    ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight}) => {
+                    ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const {director,cast,genre,avg_rate,moviename,
     is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,
@@ -19,7 +20,23 @@ const ImageDom = ({item,index,isLogin,
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];
     _thisItem[_type] = !is;
-    changeThisItem(_thisItem);
+    if(type === 2){
+      if(!is){
+        addToWishlist({
+          mid,
+          uid
+        }).then(res => {
+          if(res.code === 200){
+            message.success("add success");
+            changeThisItem(_thisItem);
+          }else{
+            message.error("add fail")
+          }
+        })
+      }
+    }else{
+      changeThisItem(_thisItem);
+    }
   }
   function svgGet(type ,isGet){
     if(type === 0){

@@ -70,19 +70,17 @@ const Page = ({ router, children,USERMESSAGE }) => {
         MSGList = [{
           key : 1,
           value : msg.username,
-          href : "/movie/userMsg"
         },{
           key : 2,
           value : msg.email,
           hasBorder : true,
-          href : "/movie/userMsg"
         }]
       }
       changeUserTabList([...MSGList,...[{
         key : 3,
         value : "profile",
         hasBorder : false,
-        href : "/movie/userMsg?profile=1"
+        href : "/movie/userMsg"
       },{
         key : 4,
         value : "history",

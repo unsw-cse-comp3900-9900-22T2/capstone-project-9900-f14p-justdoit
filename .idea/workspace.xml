@@ -4,7 +4,6 @@
     <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iMovie_frontend/pages/movie/detail.js" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_frontend/pages/movie/detail.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +26,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/components",
+    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/pages",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -36,11 +35,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend/components/UserMsg" />
+      <recent name="$PROJECT_DIR$/iMovie_frontend/pages" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages/movie" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/components/Home" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend/pages" />
+      <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
+      <recent name="$PROJECT_DIR$/iMovie_frontend/components/UserMsg" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />

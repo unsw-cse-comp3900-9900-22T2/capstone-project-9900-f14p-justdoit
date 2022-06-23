@@ -6,6 +6,7 @@ from app.login.utils import *
 from app.models import *
 
 import time
+
 # movie = Blueprint('users', __name__)
 # CORS(movie, resources=r'/*', supports_credentials=True)
 
@@ -15,6 +16,7 @@ def login():
     password = request.json.get('password')
     if not username or not password:
         return jsonify({'code': 400, 'msg': 'Please enter the account and password'})
+
     user = UserModel.query.filter(UserModel.username == username, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
@@ -31,6 +33,7 @@ def login():
     result["username"] = user.username
 
     return jsonify({'code': 200, 'msg': 'Login successful', 'result': result})
+
 
 
 
@@ -88,7 +91,7 @@ def get_user_detail():
     #前端给的
     data = request.get_json(force=True)
     uid = data["uid"]
-    #数据库找判断
+    # 数据库找判断
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     # 判断
     if not user:

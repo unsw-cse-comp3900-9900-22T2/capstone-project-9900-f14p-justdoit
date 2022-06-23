@@ -12,14 +12,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/swiper.less';
 import 'swiper/components/pagination/pagination.less';
-import "./SwiperImage.less"
+import SwiperImageStyle from "./SwiperImage.less"
 SwiperCore.use([Pagination, Autoplay, EffectCoverflow, EffectCube,EffectFade, Navigation]);
 import {EyeOutlined,LikeOutlined,HeartOutlined,EllipsisOutlined} from '@ant-design/icons'
-import { Rate,Popover } from 'antd';
+import { Rate,Popover ,Tooltip} from 'antd';
 import _ from 'lodash'
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
-const SwiperImage = ({list}) => {
+const SwiperImage = ({list,isLogin}) => {
     const [imgList,changeImgList] = useState(list);
     const [visibility,changeVisibility] = useState(false)
     const [mouseList,changeMouseList] = useState("");
@@ -37,6 +37,9 @@ const SwiperImage = ({list}) => {
       } else {
         return number
       }
+    }
+    function goMovieDetail(id) {
+      window.location.href = "/movie/detail?movieId=" + id;
     }
     function changeOperation(type,index,index2) {
       const _type = type === 0 ? "isLike" : type === 1 ?  "isLook" : type === 2 ? "isCollection" : "isDisLike";
@@ -73,6 +76,7 @@ const SwiperImage = ({list}) => {
   },[])
     return (
     <React.Fragment>
+      <style dangerouslySetInnerHTML={{ __html: SwiperImageStyle }} />
        <div style={{
          visibility : !visibility ? "hidden" : "initial"
        }}>
@@ -93,121 +97,137 @@ const SwiperImage = ({list}) => {
                       const _nameList = [...(director || []),...(cast || [])];
 
                         return <div className={"swiper-image-list-item"}
-                                    onMouseEnter={()=>{
-                                      changeMouseList(index + "_" + index2)
-                                    }}
-                                    onMouseLeave={()=>{
-                                      changeMouseList("");
-                                    }}
                                     key={"swiper_child_" + index2}>
-                                   {mouseList === (index + "_" + index2)&&
-                                   <div  className={"swiper-image-list-item-image-black"}>
-                                      <h6>{movieName}</h6>
-                                       <div className={"rate_msg"}>
-                                        <Rate disabled defaultValue={rate || 1} />
-                                         <span className={"rate_msg_get"}>({rate || 1})</span>
-                                       </div>
-                                     {tags && tags.length > 0 &&<div className={"tags"}>
-                                        {
-                                          tags && tags.map((tagItem,tagIndex) => {
-                                             return <div className={"tags-item"} key={"tags-item-" + tagIndex}>
-                                                 {tagItem.value}
+                                     <Tooltip
+                                       mouseEnterDelay={0.2}
+                                       placement={"rightTop"}
+                                       trigger="hover"
+                                       zIndex={12}
+                                       title={ <div  className={"swiper-image-list-item-image-black"}>
+                                           <h6
+                                             onClick={()=>{
+                                               goMovieDetail(item2.movieId);
+                                             }}
+                                           >{movieName}</h6>
+                                           <div className={"rate_msg"}>
+                                             <Rate disabled defaultValue={rate || 1} />
+                                             <span className={"rate_msg_get"}>({rate || 1})</span>
+                                           </div>
+                                           {tags && tags.length > 0 &&<div className={"tags"}>
+                                             {
+                                               tags && tags.map((tagItem,tagIndex) => {
+                                                 return <div className={"tags-item"} key={"tags-item-" + tagIndex}>
+                                                   {tagItem.value}
+                                                 </div>
+                                               })
+                                             }
+                                           </div>}
+                                           {
+                                             _nameList && _nameList.length > 0 && <div className={"cast"}>
+                                               {_nameList.join(",")}
                                              </div>
-                                          })
-                                        }
-                                      </div>}
-                                     {
-                                       _nameList && _nameList.length > 0 && <div className={"cast"}>
-                                         {_nameList.join(",")}
-                                       </div>
-                                     }
-                                     <div className={"operation"}>
-                                       <div
-                                         onClick={()=>{
-                                           changeOperation(1,index,index2)
-                                         }}
-                                         className={"operation-image"}>{
-                                         svgGet(1,isLook)
-                                       }</div>
-                                       <div
-                                         onClick={()=>{
-                                           changeOperation(0,index,index2)
-                                         }}
-                                         className={"operation-image"}>{
-                                         svgGet(0,isLike)
-                                       }</div>
-                                       <div
-                                         onClick={()=>{
-                                           changeOperation(2,index,index2)
-                                         }}
-                                         className={"operation-image"}>{
-                                         svgGet(2,isCollection)
-                                       }</div>
-                                       <Popover placement="rightTop" title={"More Operation"} content={()=>{
-                                         return <div className={"swiper-component-operation"}>
-                                                   <div
-                                                     onClick={()=>{
-                                                       const date = new Date();
-                                                       const _year = year || date.getFullYear();
-                                                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                                                       && ratingRef.current.changeVisible(true,movieName + "(" + _year+")");
-                                                       changeMouseList("");
-                                                     }}
-                                                     className={"swiper-component-operation-item padding1"}>
-                                                     Rating
-                                                   </div>
-                                                   <div
-                                                     onClick={()=>{
-                                                       const date = new Date();
-                                                       const _year = year || date.getFullYear();
-                                                       reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                                       && reviewsInfoRef.current.changeVisible(true,movieName + "(" + _year+")");
-                                                       changeMouseList("");
-                                                     }}
-                                                     className={"swiper-component-operation-item"}>
-                                                     Reviews and info
-                                                   </div>
-                                                   <div
-                                                     onClick={()=>{
-                                                       changeOperation(3,index,index2)
-                                                     }}
-                                                     className={"swiper-component-operation-item border-no padding2"}>
-                                                     {isDisLike ? "Cancel DisLike" : "DisLike"}
-                                                   </div>
+                                           }
+                                         {
+                                           isLogin && <div className={"operation"}>
+                                             <div
+                                               onClick={()=>{
+                                                 changeOperation(1,index,index2)
+                                               }}
+                                               className={"operation-image"}>{
+                                               svgGet(1,isLook)
+                                             }</div>
+                                             <div
+                                               onClick={()=>{
+                                                 changeOperation(0,index,index2)
+                                               }}
+                                               className={"operation-image"}>{
+                                               svgGet(0,isLike)
+                                             }</div>
+                                             <div
+                                               onClick={()=>{
+                                                 changeOperation(2,index,index2)
+                                               }}
+                                               className={"operation-image"}>{
+                                               svgGet(2,isCollection)
+                                             }</div>
+                                             <Popover
+                                               zIndex={13}
+                                               overlayClassName='popUpStatus'
+                                               placement="rightTop" title={"More Operation"} content={()=>{
+                                               return <div className={"swiper-component-operation"}>
+                                                 <div
+                                                   onClick={()=>{
+                                                     const date = new Date();
+                                                     const _year = year || date.getFullYear();
+                                                     ratingRef && ratingRef.current && ratingRef.current.changeVisible
+                                                     && ratingRef.current.changeVisible(true,movieName + "(" + _year+")");
+                                                     changeMouseList("");
+                                                   }}
+                                                   className={"swiper-component-operation-item padding1"}>
+                                                   Rating
+                                                 </div>
+                                                 <div
+                                                   onClick={()=>{
+                                                     const date = new Date();
+                                                     const _year = year || date.getFullYear();
+                                                     reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                                                     && reviewsInfoRef.current.changeVisible(true,movieName + "(" + _year+")");
+                                                     changeMouseList("");
+                                                   }}
+                                                   className={"swiper-component-operation-item"}>
+                                                   Reviews and info
+                                                 </div>
+                                                 <div
+                                                   onClick={()=>{
+                                                     changeOperation(3,index,index2)
+                                                   }}
+                                                   className={"swiper-component-operation-item border-no padding2"}>
+                                                   {isDisLike ? "Cancel DisLike" : "DisLike"}
+                                                 </div>
                                                </div>
-                                       }}>
-                                       <div
-                                         className={"operation-image"}>
-                                             <EllipsisOutlined  style={{
-                                               fontSize : "18px",
-                                               cursor : "pointer"
-                                             }}/>
-                                       </div>
-                                       </Popover>
-                                     </div>
-                                    </div>}
-                                    <div
-                                      style={{
-                                          backgroundImage : "url(" +image +")"
-                                      }}
-                                      className={"swiper-image-list-item-image"}/>
+                                             }}>
+                                               <div
+                                                 className={"operation-image"}>
+                                                 <EllipsisOutlined  style={{
+                                                   fontSize : "18px",
+                                                   cursor : "pointer"
+                                                 }}/>
+                                               </div>
+                                             </Popover>
+                                           </div>
+                                         }
+
+                                         </div>
+                                       }
+                                     >
+                                        <div
+                                          onClick={()=>{
+                                            goMovieDetail(item2.movieId);
+                                          }}
+                                          style={{
+                                              backgroundImage : "url(" +image +")"
+                                          }}
+                                          className={"swiper-image-list-item-image"}/>
+                                     </Tooltip>
                                      <div className={"image-message"}>
-                                         <h6>{movieName}</h6>
+                                         <h6 onClick={()=>{
+                                           goMovieDetail(item2.movieId);
+                                         }}>{movieName}</h6>
                                          <div className={"image-message-show"}>
                                               <div className={"image-message-show-icon"}>
-                                                  <EyeOutlined />
+                                                  <img src={"/static/lookTrue.png"}/>
                                                   &nbsp;
-                                                  {getMsg(look)}
+                                                <span style={{color :"#00e054" }}>{getMsg(look)}</span>
                                               </div>
                                              <div className={"image-message-show-icon"}>
-                                               <LikeOutlined />
+                                               <img src={"/static/likeTrue.png"}/>
                                                &nbsp;
-                                               {getMsg(like)}
+                                               <span style={{color :"#40bcf4" }}>{getMsg(like)}</span>
                                              </div>
                                              <div className={"image-message-show-icon"}>
-                                               <HeartOutlined />
+                                               <img src={"/static/collentTrue.png"}/>
                                                &nbsp;
-                                               {getMsg(collection)}
+                                               <span style={{color :"#ff900f" }}>{getMsg(collection)}</span>
                                              </div>
                                          </div>
                                      </div>

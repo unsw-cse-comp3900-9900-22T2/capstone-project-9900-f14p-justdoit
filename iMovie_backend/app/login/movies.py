@@ -26,7 +26,6 @@ def get_movie_detial():
 
     # split string (去空格)
     genre_list = movie.genre.split(",")
-
     result["genre"] = genre_list
     result["cast"] = movie.cast
     result["crew"] = movie.crew

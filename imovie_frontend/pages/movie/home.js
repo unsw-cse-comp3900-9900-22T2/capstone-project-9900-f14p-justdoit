@@ -4,9 +4,10 @@ import ScrollImageComponent from "../../components/Home/ScrollImage"
 import HomeSearchComponent from "../../components/Home/HomeSearch"
 import homeStyle from "./home.less";
 import {getQueryString} from "../../util/common";
-const TextIndex = () => {
+const Home = ({USERMESSAGE}) => {
   const [list1,changeList1] = useState([
      [{
+        movieId :123323,
         image : "https://swiperjs.com/demos/images/nature-1.jpg",
         look :23000,
         like :24,
@@ -128,18 +129,19 @@ const TextIndex = () => {
   useEffect(()=>{
     const _browseBy = getQueryString("browseBy") === "1";
     changeBrowseBy(_browseBy)
+    console.log("USERMESSAGE",USERMESSAGE)
   },[]);
   return (
-    <PageBase>
+    <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
       {
         browseBy && <HomeSearchComponent/>
       }
-      <ScrollImageComponent list={list1} title={"RECENT POPULAR FILMS"}/>
-      <ScrollImageComponent list={list1} title={"RECENT RELESE"}/>
-      <ScrollImageComponent list={list1} title={"GUESS LIKE"}/>
+      <ScrollImageComponent isLogin={!!USERMESSAGE} list={list1} title={"RECENT POPULAR FILMS"}/>
+      <ScrollImageComponent isLogin={!!USERMESSAGE} list={list1} title={"RECENT RELESE"}/>
+      {!!USERMESSAGE && <ScrollImageComponent isLogin={!!USERMESSAGE} list={list1} title={"GUESS LIKE"}/>}
     </PageBase>
   )
 }
 
-export default TextIndex
+export default Home

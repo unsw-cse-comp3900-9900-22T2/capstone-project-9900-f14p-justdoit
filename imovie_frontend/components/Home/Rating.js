@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
-import "./Rating.less"
 import {Modal,Rate} from "antd"
+import RatingStyle from "./Rating.less";
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 const Rating = ({ratingRef}) => {
    const [visible ,changeVisible] = useState(false);
@@ -14,6 +14,8 @@ const Rating = ({ratingRef}) => {
       },
     }));
     return (
+      <React.Fragment>
+        <style dangerouslySetInnerHTML={{ __html: RatingStyle }} />
       <Modal
         title="Rating"
         centered
@@ -43,6 +45,7 @@ const Rating = ({ratingRef}) => {
           </div>
         </div>
       </Modal>
+      </React.Fragment>
     )
 }
 

@@ -24,9 +24,13 @@ def login():
     if en_pass != user.password:
         return jsonify({'code': 400, 'msg': 'Password error'})
     # uid :
-    token = GenToken(user)
+    result = {}
+    result["token"] = GenToken(user)
+    result["uid"] = user.uid
+    result["email"] = user.email
+    result["username"] = user.username
 
-    return jsonify({'code': 200, 'msg': 'Login successful', 'token': token})
+    return jsonify({'code': 200, 'msg': 'Login successful', 'result': result})
 
 
 
@@ -96,36 +100,6 @@ def get_user_detail():
     result["description"] = user.description
 
     return jsonify({'code': 200, "result": result})
-
-def update_user_detail():
-    data = request.get_json(force=True)
-    uid = data["uid"]
-    username = data["username"]
-    email = data["email"]
-    description = data["description"]
-    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    if not user:
-        return jsonify({'code': 400, 'msg': 'User is not defined'})
-    if user.username != username:
-        check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
-        if check_username:
-            return jsonify({'code': 400, 'msg': 'User name already exists'})
-    if user.email != email:
-        check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
-        if check_email:
-            return jsonify({'code': 400, 'msg': 'Email is already exists'})
-    try:
-        time_form = getTime()[0]
-        # update new profile
-        user.username = username
-        user.email = email
-        user.description = description
-        user.utime = time_form
-        db.session.commit()
-        return jsonify({'code': 200, 'msg': 'Successful update profile'})
-
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'update profile failure', 'error_msg': str(e)})
 
 
 def send_email():

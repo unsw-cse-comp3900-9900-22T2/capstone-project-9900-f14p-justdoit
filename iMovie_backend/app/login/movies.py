@@ -79,7 +79,7 @@ def rating_movie():
 
 
         except Exception as e:
-            return jsonify({'code': 400, 'msg': 'Registration failure', 'error_msg': str(e)})
+            return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})
     # calculate avg rate
     # avg_rate = db.session.query(func.avg(RatingModel.rate)).filter(RatingModel.uid == uid, RatingModel.mid == mid, RatingModel.active == 1)
 
@@ -87,16 +87,20 @@ def rating_movie():
 
     all_rate = 0
     num = 0
+    avg_rate = 0
     cal__rate = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1).all()
     for item in cal__rate:
         all_rate = all_rate + item.rate
         num = num + 1
     if num != 0:
         avg_rate = float(all_rate/num)
-    movie.avg_rate = avg_rate
-    movie.utime = getTime()[0]
-    db.session.commit()
-    return jsonify({'code': 200, 'msg': 'Successful rating'})
+    try:
+        movie.avg_rate = avg_rate
+        movie.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Successful rating'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})
 
 
 

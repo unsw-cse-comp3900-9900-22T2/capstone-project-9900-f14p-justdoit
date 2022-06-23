@@ -10,3 +10,6 @@ export function userRegister(param) {
 export function userLogin(param) {
     return fetchData('http://localhost:5000/login', param);
 }
+export function getUserDetail(param) {
+    return fetchData('http://localhost:5000/app/views/get_user_detail', param);
+}

@@ -45,9 +45,15 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
           }).then(res => {
             if(res.code === 200){
               message.success("register was successful");
-              setCookie("USER_MESSAGE",res.token,30);
               const msg = res.result;
-              window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify(msg)));
+              const {uid,token,email,username} = msg;
+              setCookie("USER_MESSAGE",JSON.stringify({
+                uid,
+                token
+              }),30);
+              window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
+                email,username
+              })));
               window.location.reload();
               changeLoginInVisible(false);
               changeUser({
@@ -58,10 +64,22 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
               message.error(res.msg)
             }
           }).catch(err => {
-           const res = {"code":200,"msg":"Login successful","result":{"description":null,"email":"12344321@gmail.com","username":"amber6"},"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTU4NjIzMTYsImlhdCI6MTY1NTg1NTExNiwiZGF0YSI6eyJpZCI6NSwidXNlcm5hbWUiOiJhbWJlcjYifX0.miHzBQm2Y9lRFxYMqnGaABfY7F38naz7qKLxryJrKH4"}
-            setCookie("USER_MESSAGE",res.token,30);
+           const res = {"code":200,"msg":"Login successful","result":{
+             "description":null,
+               "email":"12344321@gmail.com",
+               "username":"amber6",
+               "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTU4NjIzMTYsImlhdCI6MTY1NTg1NTExNiwiZGF0YSI6eyJpZCI6NSwidXNlcm5hbWUiOiJhbWJlcjYifX0.miHzBQm2Y9lRFxYMqnGaABfY7F38naz7qKLxryJrKH4",
+               "uid" : "12333"
+             }}
             const msg = res.result;
-            window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify(msg)));
+            const {uid,token,email,username} = msg;
+            setCookie("USER_MESSAGE",JSON.stringify({
+              uid,
+              token
+            }),30);
+            window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
+              email,username
+            })));
             window.location.reload();
           })
         }}

@@ -124,6 +124,8 @@ def send_email():
         return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
 
 
+
+
 def change_password():
     email = request.json.get('email')
     verifycode = request.json.get('verifycode')
@@ -143,6 +145,7 @@ def change_password():
         return jsonify({'code': 200, 'msg': "Password modified successfully"})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
+
 
 
 def change_password_in_detial():
@@ -167,27 +170,6 @@ def change_password_in_detial():
         return jsonify({'code': 200, 'msg': "Password modified successfully"})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def insert():

@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/movies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iMovie_backend/app/login/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app/login/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,6 +12,18 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/components/Home/ImageDom.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/components/Regester.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/components/ResetPassword.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/components/UserMsg/EditMsg.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/MockData.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/_app.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/basePage.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/movie/detail.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/movie/detail.less" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/iMovie_frontend/pages/movie/userMsg.js" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />

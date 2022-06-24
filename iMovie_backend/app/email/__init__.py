@@ -1,6 +1,5 @@
 import uuid
 
-import memcache as memcache
 from flask import Flask
 from flask_mail import Mail, Message
 

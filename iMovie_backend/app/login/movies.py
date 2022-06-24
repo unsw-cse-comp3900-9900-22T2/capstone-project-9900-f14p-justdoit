@@ -263,9 +263,11 @@ def get_wishlist():
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
-def add_to_wishlist():
+def wishlist_add_or_delete():
     data = request.get_json(force=True)
     # print(data)
+    # add or delete
+    add_or_del = data["add_or_del"]
     uid = data["uid"]
     mid = data["mid"]
     # check uid and mid
@@ -277,17 +279,30 @@ def add_to_wishlist():
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
     # uid和mid是否已经存在过wish或者watched里面, 只看active是1的
     movie_in_wl = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid, wishWatchModel.active == 1).first()
-    if movie_in_wl:
-        return jsonify({'code': 200, 'msg': 'Movie is already in wishlist or watched list.'})
-    try:
-        wid = getUniqueid()
-        timeform = getTime()[0]
-        wishlist = wishWatchModel(wid=wid, type=0, uid=uid, mid=mid, ctime=timeform, utime=timeform)
-        db.session.add(wishlist)
-        db.session.commit()
-        return jsonify({'code': 200, 'msg': 'Addition succeed.'})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    if add_or_del == "add":
+        if movie_in_wl:
+            return jsonify({'code': 200, 'msg': 'Movie is already in wishlist or watched list.'})
+        try:
+            wid = getUniqueid()
+            timeform = getTime()[0]
+            wishlist = wishWatchModel(wid=wid, type=0, uid=uid, mid=mid, ctime=timeform, utime=timeform)
+            db.session.add(wishlist)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    elif add_or_del == "delete":
+        if not movie_in_wl:
+            return jsonify({'code': 400, 'msg': 'Deletion failed, movie is not in wish list.'})
+        try:
+            movie_in_wl.active = 0
+            movie_in_wl.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'Wrong signal.'})
 
 
 def delete_from_wishlist():

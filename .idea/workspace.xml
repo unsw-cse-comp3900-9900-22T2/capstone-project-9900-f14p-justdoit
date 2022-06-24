@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="" />
+=======
     <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/iMovie_backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/app.py" afterDir="false" />
     </list>
+>>>>>>> 5f5592afce6ac32b091f1fc0015f3e5dd9973415
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

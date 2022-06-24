@@ -1,20 +1,21 @@
 import uuid
 
-import memcache as memcache
 from flask import Flask
 from flask_mail import Mail, Message
 
 from sqlalchemy import exists
 
-from app.login.utils import *
+from iMovie_backend.app.login.utils import *
 
-from app.models import *
 from flask_mail import Mail
 import time
+
+from iMovie_backend.app.login.utils import *
+
+
 def init_app(app: Flask):
-    # mail = Mail()
-    # mail.init_app(app)
     captcha = str(uuid.uuid1())[:6]     #生成随机6位验证码
+    verifycode = create_verifycode(4)
     #放在config文件没config成功，先写在这
     #
     app.config['MAIL_SERVER'] = 'smtp.qq.com'

@@ -80,3 +80,7 @@ def getUniqueid():
     time_stamp = getTime()[1]
     uniqueId = str(randomString(10)) + str(time_stamp)
     return uniqueId
+# create verifycode
+def create_verifycode(num):
+    a = random.sample('0123456789', num)
+    return ''.join(a)

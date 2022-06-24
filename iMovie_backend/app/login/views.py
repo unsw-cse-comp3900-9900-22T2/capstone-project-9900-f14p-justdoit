@@ -26,15 +26,14 @@ def login():
     if en_pass != user.password:
         return jsonify({'code': 400, 'msg': 'Password error'})
     # uid :
-    token = GenToken(user)
     result = {}
+    result["token"] = GenToken(user)
     result["uid"] = user.uid
-    result["username"] = user.username
     result["email"] = user.email
-    result["description"] = user.description
+    result["username"] = user.username
 
+    return jsonify({'code': 200, 'msg': 'Login successful', 'result': result})
 
-    return jsonify({'code': 200, 'msg': 'Login successful', 'token': token, "result": result})
 
 
 
@@ -105,15 +104,71 @@ def get_user_detail():
     return jsonify({'code': 200, "result": result})
 
 
+def send_email():
+    email = request.json.get('email')
+    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'This email is not defined'})
+    verifycode = create_verifycode(4)
+    # send email
+
+    # save verifycode to sql
+    try:
+        user.verifycode = verifycode
+        user.utime = getTime()[0]
+        db.session.commit()
+        msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
+        return jsonify({'code': 200, 'msg': msg})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
 
 
 
 
+def change_password():
+    email = request.json.get('email')
+    verifycode = request.json.get('verifycode')
+    password = request.json.get('password')
+    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'This email is not defined'})
+    # check verifycode
+    verifycode = int(verifycode)
+    if user.verifycode != verifycode:
+        return jsonify({'code': 400, 'msg': 'Verification code is wrong'})
+    try:
+        new_pass = EnPassWord(password)
+        user.password = new_pass
+        user.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Password modified successfully"})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
 
 
 
+def change_password_in_detial():
+    uid = request.json.get('uid')
+    old_password = request.json.get('old_password')
+    new_password = request.json.get('new_password')
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
 
+    if not user:
+        return jsonify({'code': 400, 'msg': 'This email is not defined'})
+    oen_password = EnPassWord(old_password)
+    if user.password != oen_password:
+        return jsonify({'code': 400, 'msg': 'Old password is wrong'})
 
+    if old_password == new_password:
+        return jsonify({'code': 400, 'msg': 'New password is same to old password'})
+    try:
+        en_password = EnPassWord(new_password)
+        user.password = en_password
+        user.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Password modified successfully"})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
 
 
 def insert():

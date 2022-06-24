@@ -110,6 +110,7 @@ def send_email():
     if not user:
         return jsonify({'code': 400, 'msg': 'This email is not defined'})
     verifycode = create_verifycode(4)
+
     # send email
 
     # save verifycode to sql
@@ -126,9 +127,9 @@ def send_email():
 
 
 def change_password():
-    email = request.json.get('email')
     verifycode = request.json.get('verifycode')
     password = request.json.get('password')
+    email = request.json.get('email')
     user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'This email is not defined'})

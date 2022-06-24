@@ -1,5 +1,3 @@
-import uuid
-
 from flask import Flask
 from flask_mail import Mail, Message
 
@@ -11,11 +9,12 @@ from flask_mail import Mail
 import time
 
 from iMovie_backend.app.login.utils import *
+from app.models import *
 
 
 def init_app(app: Flask):
-    captcha = str(uuid.uuid1())[:6]     #生成随机6位验证码
-    verifycode = create_verifycode(4)
+
+    verifycode = create_verifycode(4) #生成随机4位验证码
     #放在config文件没config成功，先写在这
     #
     app.config['MAIL_SERVER'] = 'smtp.qq.com'
@@ -27,14 +26,20 @@ def init_app(app: Flask):
     app.config['MAIL_DEFAULT_SENDER'] = '1191367164@qq.com'
     #sent email
     def sent():     #不知道怎么在view funct 中传入参数 app 和 captcha， 才放在这
-        mail = Mail(app)
+        receiver = request.json.get('email')
+        sender = Mail(app)
         # mail ： https://temp-mail.org/en/
-        msg = Message('Only Movie 3', recipients=['nageget605@exoacre.com'], body='Verification code  ： %s' % captcha)
+        msg = Message('Only Movie', recipients=[receiver], body='Verification code  ： %s' % verifycode)
+        user = UserModel.query.filter(UserModel.email == receiver, UserModel.active == 1).first()
         try:
-            mail.send(msg)
-        except:
-            return jsonify({'code': 400, 'msg': 'sent email False'})
-        return jsonify({'code': 200, 'msg': 'sent email succesfully, the verification code is %s' % captcha})
+            user.verifycode = verifycode
+            user.utime = getTime()[0]
+            db.session.commit()
+            sender.send(msg)
+            return jsonify({'code': 200, 'msg': 'sent email succesfully, the verification code is %s' % verifycode})
+
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
 
     #reset password
     def reset():

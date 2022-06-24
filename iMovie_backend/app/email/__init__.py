@@ -30,17 +30,19 @@ def init_app(app: Flask):
         try:
             mail.send(msg)
         except:
-            return jsonify({'code': 200, 'msg': 'sent email False'})
-        return jsonify({'code': 200, 'msg': 'sent email succesfully'})
+            return jsonify({'code': 400, 'msg': 'sent email False'})
+        return jsonify({'code': 200, 'msg': 'sent email succesfully, the verification code is %s' % captcha})
 
-
+    #verifyCode
+    def checkVerifyCode():
+        data = request.get_json(force=True)
+        val = data["code"]
+        print(val)
+        if val != captcha:
+            return jsonify({'code': 400, 'msg': 'wrong verifyCode'})
+        return jsonify({'code': 200, 'msg': 'code Match'})
     app.add_url_rule("/verifyCode", view_func=sent, methods=['GET','POST'])
+    app.add_url_rule("/checkVerifyCode", view_func=checkVerifyCode, methods=['GET','POST'])
 
-    # def checkVerifyCode():
-    #     data = request.get_json(force=True)
-    #     val = data["code"]
-    #     print(val)
-    #     if val != captcha:
-    #         return jsonify({'code': 400, 'msg': 'wrong verifyCode'})
     #
     #     return jsonify({'code': 200, "result": 'verify successfully'})

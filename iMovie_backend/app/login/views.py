@@ -102,7 +102,6 @@ def get_user_detail():
     result["username"] = user.username
     result["email"] = user.email
     result["description"] = user.description
-
     return jsonify({'code': 200, "result": result})
 
 

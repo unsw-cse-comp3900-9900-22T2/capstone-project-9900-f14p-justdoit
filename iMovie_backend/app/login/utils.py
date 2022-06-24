@@ -70,8 +70,8 @@ def randomString(num):
     return ''.join(a)
 # get datetime and timestamp
 def getTime():
-    time_stamp = time.localtime(time.time())
-    time_form = time.strftime('%Y-%m-%d %H:%M:%S', time_stamp)
+    time_stamp = time.localtime(time.time()) # 132131232434
+    time_form = time.strftime('%Y-%m-%d %H:%M:%S', time_stamp)  # 2022-6-27 12:13:00
 
     time_stamp = int(time.mktime(time_stamp))
     return [time_form, time_stamp]
@@ -80,3 +80,7 @@ def getUniqueid():
     time_stamp = getTime()[1]
     uniqueId = str(randomString(10)) + str(time_stamp)
     return uniqueId
+# create verifycode
+def create_verifycode(num):
+    a = random.sample('0123456789', num)
+    return ''.join(a)

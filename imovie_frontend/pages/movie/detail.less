@@ -1,0 +1,218 @@
+
+.movie-detail-box{
+  width :80%;
+  margin : 20px auto;
+  .movie-name{
+    width : 100%;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .movie-msg-box{
+    display: flex;
+    width:100%;
+    position: relative;
+    .movie-msg-box-left{
+      width: 20%;
+      .movie-logo{
+        width : 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        display: flex;
+        &:after{
+          content: "";
+          padding-top: 150%;
+        }
+      }
+      .movie-message-show{
+        display: flex;
+        margin-top: 6px;
+        .image-message-show-icon{
+          margin-right: 10px;
+          img{
+            display: inline-block;
+            width: 16px;
+            margin-top: -3px;
+          }
+        }
+      }
+      .rating{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .rating-title{
+          font-size: 15px;
+          font-weight: bold;
+        }
+        .rating-box{
+          .rating-box-title{
+            font-size: 24px;
+            text-align : center;
+            margin-bottom:-10px;
+          }
+        }
+      }
+    }
+    .movie-msg-box-right{
+      width : 75%;
+      margin-left: 5%;
+      .movie-message-body{
+        width:100%;
+        margin-bottom: 10px;
+        .lookMore{
+          color: #fff;
+          cursor: pointer;
+          margin-left: 5px;
+          padding: 2px 5px;
+          background: #1d39c4;
+          border-radius: 2px;
+          display: inline-block;
+        }
+        &.movie-message-body-flex{
+          display: flex;
+          h6{
+            line-height: 22px;
+            margin-left : 5px;
+          }
+        }
+        p{
+          margin: 0;
+          font-size: 14px;
+          font-weight: bold;
+          color: #333;
+        }
+        h6{
+          font-size: 12px;
+          color:#666;
+          margin: 0;
+        }
+      }
+    }
+    .operation{
+      position: absolute;
+      right :0;
+      top:0;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      .operation-image{
+        margin-right: 10px;
+        .image-box{
+          img{
+            width : 20px;
+            cursor: pointer;
+            display: block;
+            margin:0 auto;
+          }
+        }
+        .a-href{
+           text-align: center;
+          font-size: 13px;
+          color:#1d39c4;
+          text-decoration: underline;
+          margin-top: 5px;
+          cursor: pointer;
+          &.a-href-no{
+            cursor: default;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+  .reviews-list{
+    margin-top: 40px;
+    .review-title{
+      display: flex;
+      justify-content:space-between;
+      border-bottom: 1px solid #d7d7d7;
+      height: 40px;
+      p{
+        font-size: 16px;
+        font-weight: bold;
+        margin:0;
+        span{
+          margin-left: 15px;
+          cursor: pointer;
+          color:#1d39c4;
+          text-decoration: underline;
+          font-size: 13px;
+          line-height: 22px;
+          font-weight: normal;
+        }
+      }
+      .review-more{
+        color:#333;
+      }
+    }
+    .review-box{
+      width:100%;
+      .review-box-item{
+        width:90%;
+        margin-left: 5%;
+        margin-top: 30px;
+        display: flex;
+        border-bottom: 1px solid #dfdfdf;
+        &.review-box-item-no-border{
+          border-bottom: none;
+        }
+        .user-logo{
+          height : 55px;
+        }
+        .review-body{
+           margin-left: 30px;
+          .user-name{
+            display: flex;
+            .userName{
+              font-size: 14px;
+              color:#666;
+              span{
+                font-weight: bold;
+                color:#333;
+                margin-left: 5px;
+              }
+            }
+            .rate{
+               margin-left: 10px;
+            }
+          }
+          .review-body-msg{
+            margin-top: 10px;
+            font-size: 13px;
+            color:#333;
+            &.review-body-msg-margin-bottom{
+              margin-bottom: 30px;
+            }
+          }
+        }
+        .operation{
+          display: flex;
+          margin-top: 10px;
+          margin-bottom: 30px;
+          .operation-like{
+            display: flex;
+            margin-right: 10px;
+            .image-box{
+              img{
+                width : 20px;
+                cursor: pointer;
+                display: block;
+                margin:0 auto;
+              }
+            }
+            .a-href{
+              margin-left: 10px;
+              color: #40bcf4;
+              width:70px;
+            }
+          }
+          .operation-like-number{
+            margin-left: 30px;
+            color:#00e054
+          }
+        }
+      }
+    }
+  }
+}

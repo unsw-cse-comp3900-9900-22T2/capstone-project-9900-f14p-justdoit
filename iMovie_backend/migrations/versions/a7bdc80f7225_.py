@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a037b7cfdfd0
+Revision ID: a7bdc80f7225
 Revises: 
-Create Date: 2022-06-20 13:12:17.778648
+Create Date: 2022-06-24 18:04:11.228716
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a037b7cfdfd0'
+revision = 'a7bdc80f7225'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -82,7 +82,6 @@ def upgrade():
     sa.Column('uid', sa.String(length=256), nullable=False),
     sa.Column('mid', sa.String(length=256), nullable=False),
     sa.Column('review', sa.TEXT(), nullable=True),
-    sa.Column('rate', sa.FLOAT(), nullable=True),
     sa.Column('active', sa.Integer(), nullable=False),
     sa.Column('ctime', sa.DateTime(), nullable=False),
     sa.Column('utime', sa.DateTime(), nullable=False),
@@ -96,21 +95,32 @@ def upgrade():
     sa.Column('coverimage', sa.String(length=256), nullable=True),
     sa.Column('description', sa.TEXT(), nullable=False),
     sa.Column('genre', sa.String(length=120), nullable=True),
-    sa.Column('cast', sa.String(length=256), nullable=True),
+    sa.Column('cast', sa.TEXT(), nullable=True),
     sa.Column('crew', sa.String(length=256), nullable=True),
     sa.Column('director', sa.String(length=256), nullable=True),
     sa.Column('country', sa.String(length=120), nullable=True),
     sa.Column('language', sa.String(length=120), nullable=True),
     sa.Column('active', sa.Integer(), nullable=False),
     sa.Column('avg_rate', sa.FLOAT(), nullable=True),
-    sa.Column('release_date', sa.DateTime(), nullable=True),
-    sa.Column('Off_data', sa.DateTime(), nullable=True),
+    sa.Column('release_date', sa.String(length=256), nullable=True),
+    sa.Column('year', sa.Integer(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
     sa.Column('ctime', sa.DateTime(), nullable=False),
     sa.Column('utime', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('coverimage'),
-    sa.UniqueConstraint('mid'),
-    sa.UniqueConstraint('moviename')
+    sa.UniqueConstraint('mid')
+    )
+    op.create_table('rating',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('raid', sa.String(length=256), nullable=False),
+    sa.Column('uid', sa.String(length=256), nullable=False),
+    sa.Column('mid', sa.String(length=256), nullable=False),
+    sa.Column('rate', sa.FLOAT(), nullable=True),
+    sa.Column('active', sa.Integer(), nullable=False),
+    sa.Column('ctime', sa.DateTime(), nullable=False),
+    sa.Column('utime', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('raid')
     )
     op.create_table('reviewlike',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -186,6 +196,7 @@ def downgrade():
     op.drop_table('users')
     op.drop_table('userreview')
     op.drop_table('reviewlike')
+    op.drop_table('rating')
     op.drop_table('movies')
     op.drop_table('moviereview')
     op.drop_table('movielist')

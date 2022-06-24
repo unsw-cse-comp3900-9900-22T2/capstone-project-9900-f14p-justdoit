@@ -9,8 +9,8 @@ def init_route(app: Flask):
     app.add_url_rule('/app/views/check_login', view_func=views.check_login)
     app.add_url_rule('/app/views/get_user_detail', view_func=views.get_user_detail, methods=['POST'])
     app.add_url_rule('/app/views/send_email', view_func=views.send_email, methods=['POST'])
+    app.add_url_rule('/app/views/forgot_password', view_func=views.forgot_password, methods=['POST'])
     app.add_url_rule('/app/views/change_password', view_func=views.change_password, methods=['POST'])
-    app.add_url_rule('/app/views/change_password_in_detial', view_func=views.change_password_in_detial, methods=['POST'])
     app.add_url_rule('/app/views/modify_user_detail', view_func=views.modify_user_detail, methods=['POST'])
 
     # for movies

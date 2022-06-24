@@ -126,7 +126,7 @@ def send_email():
 
 
 
-def change_password():
+def forgot_password():
     verifycode = request.json.get('verifycode')
     password = request.json.get('password')
     email = request.json.get('email')
@@ -134,9 +134,9 @@ def change_password():
     if not user:
         return jsonify({'code': 400, 'msg': 'This email is not defined'})
     # check verifycode
-    verifycode = int(verifycode)
-    if user.verifycode != verifycode:
-        return jsonify({'code': 400, 'msg': 'Verification code is wrong'})
+    if user.verifycode != int(verifycode):
+
+        return jsonify({'code': 400, 'msg': 'Verification code is wrong '})
     try:
         new_pass = EnPassWord(password)
         user.password = new_pass
@@ -148,7 +148,7 @@ def change_password():
 
 
 
-def change_password_in_detial():
+def change_password():
     uid = request.json.get('uid')
     old_password = request.json.get('old_password')
     new_password = request.json.get('new_password')
@@ -156,12 +156,12 @@ def change_password_in_detial():
 
     if not user:
         return jsonify({'code': 400, 'msg': 'This email is not defined'})
-    oen_password = EnPassWord(old_password)
-    if user.password != oen_password:
+    old_password = EnPassWord(old_password)
+    if user.password != old_password:
         return jsonify({'code': 400, 'msg': 'Old password is wrong'})
-
-    if old_password == new_password:
-        return jsonify({'code': 400, 'msg': 'New password is same to old password'})
+    #
+    # if old_password == new_password:
+    #     return jsonify({'code': 400, 'msg': 'New password is same to old password'})
     try:
         en_password = EnPassWord(new_password)
         user.password = en_password

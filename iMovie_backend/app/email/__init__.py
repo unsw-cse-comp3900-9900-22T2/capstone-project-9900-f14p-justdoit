@@ -40,30 +40,7 @@ def init_app(app: Flask):
 
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
-
-    #reset password
-    def reset():
-        data = request.get_json(force=True)
-        code = data["verification"]
-        if code != captcha:
-            return jsonify({'code': 400, 'msg': 'wrong verifyCode, can not change password'})
-        #update password
-        uid = data["uid"]
-        password = data['password']         #new password
-        c_password = data['c_password']     #confirm password
-
-        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-        # user not exist
-        if not user:
-            return jsonify({'code': 400, 'msg': 'User is not defined'})
-        if password != c_password:
-            return jsonify({'code': 400, 'msg': 'password does not match'})
-        user.password = password
-        db.session.commit()
-        return jsonify({'code': 200, 'msg': 'modify password successfully'})
-
     app.add_url_rule("/verifyCode", view_func=sent, methods=['GET','POST'])
-    app.add_url_rule("/reset", view_func=reset, methods=['GET','POST'])
 
     #
     #     return jsonify({'code': 200, "result": 'verify successfully'})

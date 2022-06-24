@@ -3,11 +3,12 @@ import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import "./login.less"
 import { message, Modal, Input, Button } from "antd";
 import { Base64 } from "js-base64";
-import {  userRegister } from "../pages/MockData";
+import {  sendEmail,changePassword } from "../pages/MockData";
 import { LockOutlined, MailOutlined, KeyOutlined } from "@ant-design/icons";
 import _ from 'lodash'
 import loginStyle from "./login.less";
-const md5 = require('js-md5')
+const md5 = require('js-md5');
+const { confirm } = Modal;
 const ResetPassword = ({resetPasswordRef}) => {
     const [registerVisible, changeRegisterVisible] = useState(false);
     const [newUser,changeNewUser] = useState({
@@ -21,6 +22,36 @@ const ResetPassword = ({resetPasswordRef}) => {
         changeRegisterVisible(vis);
       },
     }));
+    function sendButtonEmail() {
+      const {email} = newUser;
+      if(!email){
+        message.warn("Please enter email");
+        return
+      }else{
+        if(!(email.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+          message.warn("Please enter a mailbox in the correct format");
+          return
+        }
+      }
+      sendEmail({
+        email
+      }).then(res => {
+        if(res.code === 200){
+          Modal.info({
+            title: res.msg,
+            okText : "Yes",
+            cancelText : "No",
+            onOk() {
+              console.log('OK');
+            }
+          });
+        }else{
+          message.error("send email error")
+        }
+      }).catch(err => {
+         message.error("send email error")
+      })
+    }
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: loginStyle }} />
@@ -31,7 +62,7 @@ const ResetPassword = ({resetPasswordRef}) => {
         zIndex={500}
         cancelText="CANCEL"
         onOk={() => {
-          const {code,passwordSure,password,email,checkAge,checkRules} = newUser;
+          const {code,passwordSure,password,email} = newUser;
           if(!email){
             message.warn("Please enter email");
             return
@@ -54,13 +85,13 @@ const ResetPassword = ({resetPasswordRef}) => {
             return
           }
           const _pass = Base64.encode(md5(password));
-         /* userRegister({
-            password : _pass,
-            email ,
-            verifyCode : code
+          changePassword({
+            email,
+            verifycode : code,
+            password:_pass
           }).then(res => {
-            if(res.status === 0){
-              message.success("register was successful");
+            if(res.code === 200){
+              message.success("change password successful");
               changeRegisterVisible(false);
               changeNewUser({
                 code : "",
@@ -71,7 +102,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             }else{
               message.error(res.msg)
             }
-          })*/
+          })
         }}
         onCancel={() => {
           changeRegisterVisible(false);
@@ -100,6 +131,9 @@ const ResetPassword = ({resetPasswordRef}) => {
               <Button
                 style={{
                   marginLeft : "5px"
+                }}
+                onClick={()=>{
+                  sendButtonEmail()
                 }}
                 type="primary">Send Email</Button>
             </div>

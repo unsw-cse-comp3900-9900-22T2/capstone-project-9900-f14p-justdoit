@@ -63,52 +63,64 @@ const Page = ({ router, children,USERMESSAGE }) => {
       try{
         msg = JSON.parse(msg);
       }catch (e) {
-
+        msg = null
       }
-      changeUserTabList([{
-        key : 1,
-        value : msg.username
-      },{
-        key : 2,
-        value : msg.email,
-        hasBorder : true
-      },{
+      let MSGList = [];
+      if(!!msg){
+        MSGList = [{
+          key : 1,
+          value : msg.username,
+        },{
+          key : 2,
+          value : msg.email,
+          hasBorder : true,
+        }]
+      }
+      changeUserTabList([...MSGList,...[{
         key : 3,
         value : "profile",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg"
       },{
         key : 4,
         value : "history",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=4"
       },{
         key : 5,
         value : "wishList",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=1"
       },{
         key : 6,
         value : "watched",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=2"
       },{
         key : 7,
         value : "movie lists",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=3"
       },{
         key : 8,
         value : "reviews",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=5"
       },{
         key : 9,
         value : "likes",
-        hasBorder : false
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=6"
       },{
         key : 10,
         value : "disLikes",
-        hasBorder : true
+        hasBorder : true,
+        href : "/movie/userMsg?activeKey=7"
       },{
         key : 11,
         value : "sight out",
         hasBorder : false
-      }])
+      }]])
     }
 
   },[]);
@@ -124,7 +136,10 @@ const Page = ({ router, children,USERMESSAGE }) => {
     }
   }
   function userTabClick(item) {
-    const {key} = item;
+    const {key,href} = item;
+    if(!!href){
+      window.location.href = href;
+    }
     if(key === 11){
       delCookie('USER_MESSAGE');
       window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
@@ -220,6 +235,46 @@ const Page = ({ router, children,USERMESSAGE }) => {
                         overlayClassName='user-logo-status'
                         placement="bottom"
                         title={null}
+                        onVisibleChange={(visible)=>{
+                          if(visible){
+                            const USER_MESSAGE_FOR_USER = window.localStorage.getItem("USER_MESSAGE_FOR_USER");
+                            let msg = Base64.decode(USER_MESSAGE_FOR_USER);
+                            try{
+                              msg = JSON.parse(msg);
+                            }catch (e) {
+                              msg = null
+                            }
+                            let MSGList = [];
+                            if(!!msg){
+                              MSGList = [{
+                                key : 1,
+                                value : msg.username,
+                                href : "/movie/userMsg"
+                              },{
+                                key : 2,
+                                value : msg.email,
+                                hasBorder : true,
+                                href : "/movie/userMsg"
+                              }];
+                              let _userTabList = _.cloneDeep(userTabList);
+                              const filter = _userTabList && _userTabList.filter((item)=>{
+                                return item.key === 1 || item.key === 2
+                              }) || []
+                              if(!filter || filter.length === 0){
+                                _userTabList = [...MSGList,..._userTabList];
+                              }else{
+                                for(let i = 0 ; i < _userTabList.length ; i++){
+                                   if(_userTabList[i].key === 1){
+                                    _userTabList[i].value = msg.username
+                                  }else if(_userTabList[i].key === 2){
+                                     _userTabList[i].value = msg.email
+                                   }
+                                }
+                              }
+                              changeUserTabList(_userTabList);
+                            }
+                          }
+                        }}
                         content={() => {
                           return (
                             <div className={"user-msg-popover-box"}>
@@ -243,7 +298,11 @@ const Page = ({ router, children,USERMESSAGE }) => {
                           )
                         }}
                         trigger="hover">
-                        <Avatar size={40}  icon={<UserOutlined />} />
+                        <Avatar size={40}
+                               /* onClick={()=>{
+                                  window.location.href = "/movie/userMsg"
+                                }}*/
+                                icon={<UserOutlined />} />
                       </Popover>
                     </div>
                   }

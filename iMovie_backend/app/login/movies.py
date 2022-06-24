@@ -315,10 +315,6 @@ def delete_from_wishlist():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
 
-#
-#
-# def clear_wishlist():
-
 
 
 

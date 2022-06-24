@@ -146,30 +146,3 @@ def delete_from_wishlist():
 # def clear_wishlist():
 
 
-def insert_movie_for_test():
-    data = request.get_json(force=True)
-    print(data)
-    mid = getUniqueid()
-    moviename = data["moviename"]
-    coverimage = "www.baidu.com"
-    description = "good movies"
-    genre = data["genre"]
-    cast = "asdasda"
-    crew = "asdasasd"
-    director = data["director"]
-    country = 'asdasd'
-    language = 'asdasdasd'
-    avg_rate = data["avg_rate"]
-    release_date = data["release_date"]
-    ctime = getTime()[0]
-    utime = getTime()[0]
-    try:
-        Movie = MoviesModel(mid=mid, moviename=moviename, coverimage=coverimage, description=description, genre=genre,
-                             cast=cast, crew=crew, director=director, country=country, active=1,
-                             language=language, avg_rate=avg_rate, release_date=release_date,ctime=ctime, utime=utime)
-
-        db.session.add(Movie)
-        db.session.commit()
-        return jsonify({'code': 200, 'msg': "Insert succeed"})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'Registration failure', 'error_msg': str(e)})

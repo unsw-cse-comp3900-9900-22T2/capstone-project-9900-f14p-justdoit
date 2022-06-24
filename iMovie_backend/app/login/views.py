@@ -172,30 +172,6 @@ def change_password_in_detial():
         return jsonify({'code': 400, 'msg': 'Password modified successfully failure', 'error_msg': str(e)})
 
 
-def insert():
-    mid = request.json.get('mid')
-    # mid = "qawdadasd123718432312"
-    moviename = "ambermovie"
-    coverimage = "www.baidu.com"
-    description = "good movies"
-    genre = "A,B,C"
-    cast = "asdasda"
-    crew = "asdasasd"
-    director = "asdas"
-    country = 'asdasd'
-    language = 'asdasdasd'
-    avg_rate = 3.5
-    ctime = time.localtime(time.time())
-    utime = time.localtime(time.time())
-
-    Movies = MoviesModel(mid=mid, moviename=moviename, coverimage=coverimage, description=description, genre=genre,
-                         cast=cast, crew=crew, director=director, country=country,
-                         language=language, avg_rate=avg_rate, ctime=ctime, utime=utime)
-
-    db.session.add(Movies)
-    db.session.commit()
-    return jsonify({'code': 200})
-
 
 def modify_user_detail():
     data = request.get_json(force=True)

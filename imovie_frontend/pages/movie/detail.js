@@ -7,7 +7,7 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { addToWishlist, getMovieDetail } from "../MockData";
+import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -171,20 +171,28 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
     if(type === 2){
-      if(!is){
-        addToWishlist({
+        wishlistAddOrDelete({
           mid : movieDetail.mid,
-          uid : USERMESSAGE && USERMESSAGE.uid
+          uid : USERMESSAGE && USERMESSAGE.uid,
+            add_or_del : !is ? "add" : "delete",
         }).then(res => {
           if(res.code === 200){
-            message.success("add success");
-            _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
+            if(!is){
+              message.success("add success");
+              _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
+            }else{
+              message.success("delete success");
+              _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+            }
             changeMovieDetail(_movieDetail);
           }else{
-            message.error("add fail")
+            if(!is) {
+              message.error("add fail")
+            }else{
+              message.error("delete fail")
+            }
           }
         })
-      }
     }else{
       changeMovieDetail(_movieDetail);
     }
@@ -348,7 +356,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                         movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                     }}
                     className={"image-box"}>
-                    {!!(movieDetail.is_user_rate) ? <img src={"/static/starChoose.png"}/>:<img src={"/static/star.png"}/>}
+                    {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
+                        movieDetail.is_user_rate < 0
+                    ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>}
                   </div>
                   <div className={"a-href a-href-no"}>
                     rating

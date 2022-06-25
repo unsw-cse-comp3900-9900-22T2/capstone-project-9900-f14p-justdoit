@@ -1,40 +1,55 @@
 
-import React, { useState} from 'react'
+import React, { useImperativeHandle, useState } from "react";
 import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
 import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
-import {addToWishlist} from "../../pages/MockData";
-const ImageDom = ({item,index,isLogin,
+import {wishlistAddOrDelete} from "../../pages/MockData";
+const ImageDom = ({imageDomRef,item,index,isLogin,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const {director,cast,genre,avg_rate,moviename,
     is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,
-    watchlist_num,num_like,wishlist_num,coverimage,mid} = thisItem;
+    watchlist_num,num_like,wishlist_num,coverimage,mid,is_user_rate} = thisItem;
   const _nameList = [...[director || ""],...(cast || [])];
   function goMovieDetail(id) {
     window.location.href = "/movie/detail?movieId=" + id;
   }
+  useImperativeHandle(imageDomRef, () => ({
+    changeItem: (changeitem) => {
+      changeThisItem(changeitem);
+    },
+  }));
   function changeOperation(type) {
     const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];
     _thisItem[_type] = !is;
     if(type === 2){
-      if(!is){
-        addToWishlist({
+        wishlistAddOrDelete({
           mid,
-          uid
+          uid,
+          add_or_del : !is ? "add" : "delete"
         }).then(res => {
           if(res.code === 200){
-            message.success("add success");
-            _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
+            if(!is){
+              message.success("add success");
+              _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
+            }else{
+              message.success("delete success");
+              _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
+            }
+
             changeThisItem(_thisItem);
           }else{
-            message.error("add fail")
+            if(!is) {
+              message.error("add fail")
+            }else{
+              message.error("delete fail")
+            }
           }
         })
-      }
+
     }else{
       changeThisItem(_thisItem);
     }
@@ -148,7 +163,7 @@ const ImageDom = ({item,index,isLogin,
                 return <div className={"swiper-component-operation"}>
                   <div
                     onClick={()=>{
-                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date,mid);
+                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date,mid,is_user_rate);
                     }}
                     className={"swiper-component-operation-item padding1"}>
                     Rating

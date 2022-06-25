@@ -22,7 +22,7 @@ def res_movie_detial(uid, user, movie):
     result["language"] = movie.language
     result["avg_rate"] = movie.avg_rate
     result["release_date"] = movie.release_date
-
+    result["year"] = movie.year
     num_wish = wishWatchModel.query.filter(wishWatchModel.mid == mid, wishWatchModel.type == 0,
                                            wishWatchModel.active == 1).count()
     result["wishlist_num"] = num_wish

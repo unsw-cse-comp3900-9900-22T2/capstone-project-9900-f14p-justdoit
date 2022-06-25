@@ -18,7 +18,7 @@ const Rating = ({ratingRef,changeRating}) => {
         changeVisible(vis);
         changeMid(mid);
         changeUid(uid);
-        changeRate(rate)
+        changeRate(rate < 0 ? 0 : rate)
       },
     }));
     return (

@@ -4,7 +4,7 @@ from app.login.utils import *
 from app.models import *
 
 
-def res_movie_detial(uid, user, movie):
+def res_movie_detail(uid, user, movie):
     result = {}
     mid = movie.mid
     result["mid"] = mid
@@ -86,7 +86,7 @@ def res_movie_detial(uid, user, movie):
 
 
 
-def get_movie_detial():
+def get_movie_detail():
     data = request.get_json(force=True)
     mid = data["mid"]
     uid = data["uid"]
@@ -99,7 +99,7 @@ def get_movie_detial():
     # if there is not movie
     if not movie:
         return jsonify({'code': 400, 'msg': 'Sorry you can not view the movie details'})
-    result = res_movie_detial(uid, user, movie)
+    result = res_movie_detail(uid, user, movie)
 
     return jsonify({'code': 200, 'result': result})
 
@@ -118,7 +118,7 @@ def get_movies():
     for i in movie:
         if num >= 16:
             break;
-        mdict = res_movie_detial(uid, user, i)
+        mdict = res_movie_detail(uid, user, i)
         num = num + 1
         mlist.append(mdict)
     result["count"] = num

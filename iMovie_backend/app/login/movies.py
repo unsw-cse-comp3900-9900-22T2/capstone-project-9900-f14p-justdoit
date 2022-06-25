@@ -190,7 +190,7 @@ def rating_movie():
 
 def get_wishlist():
     data = request.get_json(force=True)
-    print(data)
+    # print(data)
     sort_by = data["sort_by"]
     uid = data["uid"]
     # check uid
@@ -200,6 +200,11 @@ def get_wishlist():
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0, wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
+    # print(wishlist)
+    # if sort_by == 0:
+    #     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
+    #                                            wishWatchModel.active == 1).order_by().all()
+    #     print(wishlist)
     try:
         result = {}
         result["count"] = len(wishlist)
@@ -216,7 +221,10 @@ def get_wishlist():
                 movie_info["avg_rate"] = movie.avg_rate
             else:
                 movie_info["avg_rate"] = -1
-            movie_info["release_date"] = movie.release_date.year
+            if movie.release_date:
+                movie_info["release_date"] = movie.release_date.year
+            else:
+                movie_info["release_date"] = None
             list.append(movie_info)
         result["list"] = list
         return jsonify({'code': 200, 'result': result})
@@ -267,9 +275,27 @@ def wishlist_add_or_delete():
     else:
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
-#
-#
-# def clear_wishlist():
+
+def clear_wishlist():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
+                                           wishWatchModel.active == 1).all()
+    if not wishlist:
+        return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
+    try:
+        for wish_m in wishlist:
+            wish_m.active = 0
+            wish_m.utime = getTime()[0]
+            db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Wishlist clear succeed'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
 

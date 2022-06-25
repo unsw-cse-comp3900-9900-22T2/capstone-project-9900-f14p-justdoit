@@ -191,6 +191,8 @@ def rating_movie():
 def get_wishlist():
     data = request.get_json(force=True)
     # print(data)
+    page_index = data["page_index"]
+    page_size = data["page_size"]
     sort_by = data["sort_by"]
     uid = data["uid"]
     # check uid
@@ -200,33 +202,36 @@ def get_wishlist():
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0, wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
-    # print(wishlist)
-    # if sort_by == 0:
-    #     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
-    #                                            wishWatchModel.active == 1).order_by().all()
-    #     print(wishlist)
+    print(wishlist)
     try:
         result = {}
         result["count"] = len(wishlist)
         list = []
         for m in wishlist:
             movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
-            # movie_info: mid, moviename, genre, director, avg_rate, release_date
-            movie_info = {}
-            movie_info["mid"] = movie.mid
-            movie_info["moviename"] = movie.moviename
-            movie_info["genre"] = movie.genre.split(" ")
-            movie_info["director"] = movie.director
-            if movie.avg_rate:
-                movie_info["avg_rate"] = movie.avg_rate
-            else:
-                movie_info["avg_rate"] = -1
-            if movie.release_date:
-                movie_info["release_date"] = movie.release_date.year
-            else:
-                movie_info["release_date"] = None
+            movie_info = res_movie_detail(uid, user, movie)
             list.append(movie_info)
-        result["list"] = list
+        print("")
+        if sort_by == 0:
+            # when add
+            res_list = sorted(list, reverse=True)
+        elif sort_by == 1:
+            # highest rate
+            res_list = sorted(list, key=lambda m: m['avg_rate'], reverse=True)
+        elif sort_by == 2:
+            # highest rate
+            res_list = sorted(list, key=lambda m: m['avg_rate'])
+        elif sort_by == 3:
+            res_list = sorted(list, key=lambda m: m['year'])
+        else:
+            res_list = list
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["list"] = res_list[start:end]
+        else:
+            result["list"] = res_list[start:]
+
         return jsonify({'code': 200, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})

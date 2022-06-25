@@ -219,14 +219,22 @@
     line-height: 30px;
     border-bottom:1px solid #bfbfbf;
     cursor: pointer;
+    color:#333;
+    &:hover {
+      /*background: #efe9e9;*/
+      color:#1d39c4;
+    }
     &.no-border{
       border:none;
     }
+    &.no-href{
+      cursor: initial;
+      &:hover{
+        color:#333;
+      }
+    }
   }
-  li:hover {
-    /*background: #efe9e9;*/
-    color:#1d39c4;
-  }
+
 }
 .user-logo-status{
   .ant-popover-arrow{

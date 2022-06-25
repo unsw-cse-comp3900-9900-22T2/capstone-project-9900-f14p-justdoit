@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect,useRef } from 'react'
+import React, { useState, useEffect,useRef ,createRef} from 'react'
 import SwiperCore, {
     Pagination,
     Scrollbar,
@@ -18,8 +18,9 @@ SwiperCore.use([Pagination, Autoplay, EffectCoverflow, EffectCube,EffectFade, Na
 import _ from 'lodash'
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
+import { getMovieDetail } from "../../pages/MockData";
 const SwiperImage = ({list,isLogin,uid}) => {
-    const [imgList] = useState(list);
+    const [imgList,changeImgList] = useState(list);
     const [visibility,changeVisibility] = useState(false)
     const ratingRef = useRef();
     const reviewsInfoRef = useRef();
@@ -28,7 +29,8 @@ const SwiperImage = ({list,isLogin,uid}) => {
       changeVisibility(true)
     },0)
   },[])
-    return (
+  const refList = [];
+  return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: SwiperImageStyle }} />
        <div style={{
@@ -44,23 +46,30 @@ const SwiperImage = ({list,isLogin,uid}) => {
         >
             {
                 imgList && imgList.map((item,index) => {
+                    let beforeListLength = 0;
+                    for(let i = 0 ; i < index ; i++){
+                      beforeListLength += imgList[i].length
+                    }
                     const imgDom = item && item.map((item2,index2) => {
+                        const newRef = useRef();
+                        refList.push(newRef);
                         return <ImageDomComponent
+                                                  imageDomRef={newRef}
                                                   uid={uid}
                                                   item={item2}
                                                   index={index2}
                                                   isLogin={isLogin}
-                                                  ratingRefChangeVisible={(movieName,year)=>{
+                                                  ratingRefChangeVisible={(movieName,year,mid,rate)=>{
                                                     const date = new Date();
                                                     const _year = year || date.getFullYear();
                                                     ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                                                    && ratingRef.current.changeVisible(true,movieName + "(" + _year+")");
+                                                    && ratingRef.current.changeVisible(true,movieName + "(" + _year+")",mid,uid,rate);
                                                   }}
-                                                  reviewsInfoRefVisible={(movieName,year)=>{
+                                                  reviewsInfoRefVisible={(movieName,year,mid)=>{
                                                     const date = new Date();
                                                     const _year = year || date.getFullYear();
                                                     reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                                    && reviewsInfoRef.current.changeVisible(true,movieName + "(" + _year+")");
+                                                    && reviewsInfoRef.current.changeVisible(true,movieName + "(" + _year+")",mid,uid);
                                                   }}/>
                     })
                     return <SwiperSlide key={"swiper_" + index}>
@@ -72,7 +81,34 @@ const SwiperImage = ({list,isLogin,uid}) => {
             }
         </Swiper>
        </div>
-       <RatingComponent ratingRef={ratingRef}/>
+       <RatingComponent
+         changeRating={(mid,rate,avg_rate)=>{
+           let _i = null,_x = null,isCheck = false ;
+           for(let i = 0 ; i <imgList.length ; i++){
+              for(let x = 0 ; x < imgList[i].length ; x++){
+                if(mid === imgList[i][x].mid){
+                  _i = i ;
+                  _x = x;
+                  isCheck = true;
+                  break;
+                }
+              }
+           }
+           if(isCheck){
+             const _imgList = _.cloneDeep(imgList);
+             _imgList[_i][_x].avg_rate = avg_rate;
+             _imgList[_i][_x].is_user_rate = rate;
+             changeImgList(_imgList);
+             let beforeListLength = 0;
+             for(let i = 0 ; i < _i ; i++){
+               beforeListLength += imgList[i].length
+             }
+             const _refList = refList[beforeListLength + _x];
+             _refList && _refList.current
+             && _refList.current.changeItem(_imgList[_i][_x]);
+           }
+         }}
+         ratingRef={ratingRef}/>
        <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
      </React.Fragment>
     )

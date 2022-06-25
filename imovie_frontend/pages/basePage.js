@@ -70,10 +70,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
         MSGList = [{
           key : 1,
           value : msg.username,
+          onHref : true
         },{
           key : 2,
           value : msg.email,
           hasBorder : true,
+          onHref : true
         }]
       }
       changeUserTabList([...MSGList,...[{
@@ -249,12 +251,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
                               MSGList = [{
                                 key : 1,
                                 value : msg.username,
-                                href : "/movie/userMsg"
+                                onHref : true
                               },{
                                 key : 2,
                                 value : msg.email,
                                 hasBorder : true,
-                                href : "/movie/userMsg"
+                                onHref : true
                               }];
                               let _userTabList = _.cloneDeep(userTabList);
                               const filter = _userTabList && _userTabList.filter((item)=>{
@@ -289,7 +291,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                     onClick={()=>{
                                       userTabClick(item)
                                     }}
-                                    className={ `${!item.hasBorder && "no-border" || ""}`}>
+                                    className={ `${item.onHref && "no-href" || ""} ${!item.hasBorder && "no-border" || ""}`}>
                                     {item.value}
                                   </li>
                                 })}

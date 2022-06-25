@@ -1,6 +1,4 @@
-/**
- * Created by lei_sun on 2019/7/9.
- */
+
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const webpack = require('webpack')
 const fs = require('fs')

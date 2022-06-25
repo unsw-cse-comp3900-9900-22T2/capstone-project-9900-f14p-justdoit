@@ -5,7 +5,7 @@ create database imovie
 ```
 ### install package
 ```shell
-pip install -r requirement.txt
+pip3 install -r requirement.txt
 ```
 
 ### create tables

@@ -1,6 +1,3 @@
-/**
- * Created by Chen on 2020/4/10
- */
 const next = require('next');
 const express = require('express');
 const path = require('path');

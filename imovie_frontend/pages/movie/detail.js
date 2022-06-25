@@ -1,7 +1,6 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import detailStyle from "./detail.less";
-import {getMsg} from "../../util/common";
 import { Avatar, Popover, Rate ,message} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
@@ -13,6 +12,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
   const [movieDetail,changeMovieDetail]=useState(null);
+  const [rateChange,changeRateChange] = useState(true)
   const [reviewsList,changeReviewsList] = useState([{
      userName : "amber",
      rate: 3.6,
@@ -110,6 +110,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           "is_user_like": 0,
           "is_user_watch": 0,
           "is_user_wish": 0,
+          "is_user_rate" : 2,
           "language": "Portuguese",
           "moviename": "A Dog's Will",
           "num_like": 0,
@@ -177,6 +178,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }).then(res => {
           if(res.code === 200){
             message.success("add success");
+            _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
             changeMovieDetail(_movieDetail);
           }else{
             message.error("add fail")
@@ -246,7 +248,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 <h6 className={"rating-title"}>Ratings:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{movieDetail.avg_rate || 0}</h5>
-                  <Rate allowHalf disabled defaultValue={movieDetail.avg_rate || 0}/>
+                  {rateChange && <Rate allowHalf disabled defaultValue={movieDetail.avg_rate || 0}/>}
                 </div>
               </div>
             </div>
@@ -342,10 +344,11 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                       const date = new Date();
                       const _year = movieDetail.year || date.getFullYear();
                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true, movieDetail.movieName + "(" + _year + ")");
+                      && ratingRef.current.changeVisible(true, movieDetail.moviename + "(" + _year + ")",
+                        movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                     }}
                     className={"image-box"}>
-                    <img src={"/static/star.png"}/>
+                    {!!(movieDetail.is_user_rate) ? <img src={"/static/starChoose.png"}/>:<img src={"/static/star.png"}/>}
                   </div>
                   <div className={"a-href a-href-no"}>
                     rating
@@ -362,7 +365,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                               const date = new Date();
                                               const _year = movieDetail.year || date.getFullYear();
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + "(" + _year+")");
+                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + "(" + _year+")",
+                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
                                             }}
                 >add review</span>}</p>
                 <div className={"review-more"}>
@@ -415,7 +419,20 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       </div>
       <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
                              isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>
-      <RatingComponent  ratingRef={ratingRef}/>
+      <RatingComponent
+        changeRating={(mid,rate,avg_rate)=>{
+          if(mid === movieDetail.mid){
+            const _movieDatail = _.cloneDeep(movieDetail);
+            _movieDatail.avg_rate = avg_rate;
+            _movieDatail.is_user_rate = rate;
+            changeMovieDetail(_movieDatail);
+            changeRateChange(false);
+            setTimeout(()=>{
+              changeRateChange(true);
+            },0)
+          }
+        }}
+        ratingRef={ratingRef}/>
       <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
     </PageBase>
   )

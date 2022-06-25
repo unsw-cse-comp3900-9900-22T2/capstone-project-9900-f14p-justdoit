@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node main.js",
     "build": "next build",
-    "start": "next start",
+    "start": "node app.js",
     "bootstrap": "npm i --registry=https://registry.npmjs.org"
   },
   "dependencies": {

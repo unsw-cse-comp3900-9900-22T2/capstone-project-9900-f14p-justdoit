@@ -34,3 +34,6 @@ export function getMovieDetail(param) {
 export function addToWishlist(param) {
     return fetchData('http://localhost:5000/app/movies/add_to_wishlist', param);
 }
+export function ratingMovie(param) {
+    return fetchData('http://localhost:5000/app/movies/rating_movie', param);
+}

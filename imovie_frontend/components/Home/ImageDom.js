@@ -28,6 +28,7 @@ const ImageDom = ({item,index,isLogin,
         }).then(res => {
           if(res.code === 200){
             message.success("add success");
+            _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
             changeThisItem(_thisItem);
           }else{
             message.error("add fail")
@@ -81,6 +82,7 @@ const ImageDom = ({item,index,isLogin,
            style={marginRight}
                 key={"swiper_child_" + index}>
       <Tooltip
+        destroyTooltipOnHide={true}
         mouseEnterDelay={0.2}
         placement={left ? "rightTop" : "leftTop"}
         trigger="hover"
@@ -146,14 +148,14 @@ const ImageDom = ({item,index,isLogin,
                 return <div className={"swiper-component-operation"}>
                   <div
                     onClick={()=>{
-                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date);
+                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date,mid);
                     }}
                     className={"swiper-component-operation-item padding1"}>
                     Rating
                   </div>
                   <div
                     onClick={()=>{
-                      reviewsInfoRefVisible && reviewsInfoRefVisible(moviename,release_date);
+                      reviewsInfoRefVisible && reviewsInfoRefVisible(moviename,release_date,mid);
                     }}
                     className={"swiper-component-operation-item"}>
                     Reviews and info

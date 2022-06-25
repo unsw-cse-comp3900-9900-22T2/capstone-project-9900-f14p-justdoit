@@ -19,4 +19,3 @@ Werkzeug==2.1.2
 zipp==3.8.0
 pymysql
 flask-cors==3.0.10
-

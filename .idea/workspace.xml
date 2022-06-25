@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/iMovie_backend/.~movies_data.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/iMovie_backend/requirement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/iMovie_backend/requirement.txt" afterDir="false" />
-    </list>
+    <list default="true" id="187df789-c6cf-486a-9d82-47f93230c475" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,25 +30,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_frontend/pages&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/Lucky/Dropbox/My Mac (libopengdeMacBook-Pro.local)/Desktop/Amber-unsw-It/Amber-COMP9900/22T2-project/9900-F14P-justdoit/iMovie_backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/iMovie_backend" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/pages/movie" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/components/Home" />
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />
-      <recent name="$PROJECT_DIR$/iMovie_frontend/components/UserMsg" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/iMovie_frontend/components" />

@@ -256,12 +256,12 @@ def get_wishlist():
                 # highest rate
                 res_list = sorted(list, key=lambda m: m['avg_rate'])
             elif sort_by == 3:
-                res_list = sorted(list, key=lambda m: m['year'])
+                res_list = sorted(list, key=lambda m: m['year'], reverse=True)
             else:
                 return jsonify({'code': 400, 'msg': 'Invalid command.'})
         else:
             # print("默认")
-            res_list = sorted(list, reverse=True)
+            res_list = sorted(list, key=lambda m:m['wish_ctime'], reverse=True)
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

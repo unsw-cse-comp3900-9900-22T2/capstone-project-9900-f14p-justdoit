@@ -9,7 +9,7 @@ def init_app(app: Flask):
 
     verifycode = create_verifycode(4) #生成随机4位验证码
     #放在config文件没config成功，先写在这
-    #
+    #0
     app.config['MAIL_SERVER'] = 'smtp.qq.com'
     app.config['MAIL_PORT'] = 465
     app.config['MAIL_USERNAME'] = '1191367164@qq.com'
@@ -22,7 +22,9 @@ def init_app(app: Flask):
         receiver = request.json.get('email')
         sender = Mail(app)
         # mail ： https://temp-mail.org/en/
-        msg = Message('Only Movie', recipients=[receiver], body='Verification code  ： %s' % verifycode)
+        msg = Message('Only Movie', recipients=[receiver], body='Dear user,\n\n'
+                'To reset the password, Please use this verification code to reset your password.\n'
+                'The Verification code  ： %s' % verifycode)
         user = UserModel.query.filter(UserModel.email == receiver, UserModel.active == 1).first()
         try:
             user.verifycode = verifycode

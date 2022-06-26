@@ -304,6 +304,9 @@ def clear_wishlist():
 
 
 # browse by
+# includes:
+#           2. movies sorted from most popular to least basic on average rating
+#           3. 排序根据首字母
 def browse_by():
     data = request.get_json(force=True)
     uid = data["uid"]

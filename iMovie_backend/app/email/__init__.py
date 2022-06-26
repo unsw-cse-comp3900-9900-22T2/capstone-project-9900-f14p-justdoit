@@ -3,12 +3,12 @@ from flask_mail import Mail, Message
 
 from sqlalchemy import exists
 
-from iMovie_backend.app.login.utils import *
+from app.login.utils import *
 
 from flask_mail import Mail
 import time
 
-from iMovie_backend.app.login.utils import *
+# from iMovie_backend.app.login.utils import *
 from app.models import *
 
 
@@ -33,6 +33,7 @@ def init_app(app: Flask):
         user = UserModel.query.filter(UserModel.email == receiver, UserModel.active == 1).first()
         try:
             user.verifycode = verifycode
+            print(verifycode)
             user.utime = getTime()[0]
             db.session.commit()
             sender.send(msg)

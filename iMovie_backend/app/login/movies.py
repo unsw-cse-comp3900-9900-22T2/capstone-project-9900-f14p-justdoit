@@ -310,23 +310,41 @@ def clear_wishlist():
 def browse_by():
     data = request.get_json(force=True)
     uid = data["uid"]
-    # rating = data["rating"]
-    # popular = data["popular"]
-    # year = data["year"]
-    # genre = data["genre"]
-    # country = data["country"]
-    # language = data["language"]
-    # page_index = data["page_index"]
-    # page_size = data["page_size"]
     user = None
+    count = 0;
+    page_index = data["page_index"]
+    page_size = data["page_size"]
+    sort_by = data["sort_by"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     movies = MoviesModel.query.filter(MoviesModel.active == 1).all()
     try:
         result = {}
-        for m in movies:            # movies: [movies0, movies[1]....]
-                if m.avg_rate != None:
-                    result[m.moviename] = m.moviename
+        movie_list = []
+        for movie in movies:            # movies: [movies0, movies[1]....]
+                if movie.avg_rate != None:
+                    movie_info = res_movie_detail(uid, user, movie)
+                    movie_list.append(movie_info)
+                    count += 1
+        result["count"] = count
+        if sort_by == 0:
+            res_list = sorted(movie_list, reverse=True)
+        elif sort_by == 1:
+            # from high to low depends on avg_rate
+            res_list = sorted(movie_list, key=lambda m: m['avg_rate'], reverse=True)
+            # from low to high depends on avg_rate
+        elif sort_by == 2:
+            res_list = sorted(movie_list, key=lambda m: m['avg_rate'])
+        elif sort_by == 3:
+            res_list = sorted(movie_list, key=lambda m: m['year'])
+        else:
+            res_list = movie_list
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["list"] = res_list[start:end]
+        else:
+            result["list"] = res_list[start:]
         return jsonify({'code': 200, 'result': result})
 
     except Exception as e:

@@ -244,19 +244,23 @@ def get_wishlist():
             movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
             movie_info = res_movie_detail(uid, user, movie)
             list.append(movie_info)
-        print("")
-        if sort_by == 0:
-            # when add
-            res_list = list
-        elif sort_by == 1:
-            # highest rate
-            res_list = sorted(list, key=lambda m: m['avg_rate'], reverse=True)
-        elif sort_by == 2:
-            # highest rate
-            res_list = sorted(list, key=lambda m: m['avg_rate'])
-        elif sort_by == 3:
-            res_list = sorted(list, key=lambda m: m['year'])
+        # print(sort_by)
+        if sort_by is not None:
+            if sort_by == 0:
+                # when add
+                res_list = list
+            elif sort_by == 1:
+                # highest rate
+                res_list = sorted(list, key=lambda m: m['avg_rate'], reverse=True)
+            elif sort_by == 2:
+                # highest rate
+                res_list = sorted(list, key=lambda m: m['avg_rate'])
+            elif sort_by == 3:
+                res_list = sorted(list, key=lambda m: m['year'])
+            else:
+                return jsonify({'code': 400, 'msg': 'Invalid command.'})
         else:
+            # print("默认")
             res_list = sorted(list, reverse=True)
         start = page_index * page_size
         end = start + page_size
@@ -283,12 +287,12 @@ def wishlist_add_or_delete():
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
-    # uid和mid是否已经存在过wish或者watched里面, 只看active是1的
+    # uid和mid是否已经存在过wish里面, 只看active是1的
     if add_or_del == "add":
         wish_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
-                                                 wishWatchModel.active == 1).first()
+                                                 wishWatchModel.type == 0, wishWatchModel.active == 1).first()
         if wish_movie:
-            return jsonify({'code': 200, 'msg': 'Movie is already in wish list or watched list.'})
+            return jsonify({'code': 200, 'msg': 'Movie is already in wish list.'})
         try:
             wid = getUniqueid()
             timeform = getTime()[0]

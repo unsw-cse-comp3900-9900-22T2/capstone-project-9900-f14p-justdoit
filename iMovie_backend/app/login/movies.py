@@ -20,9 +20,15 @@ def res_movie_detail(uid, user, movie):
     result["duration"] = movie.duration
     result["country"] = movie.country
     result["language"] = movie.language
-    result["avg_rate"] = movie.avg_rate
+    if movie.avg_rate:
+        result["avg_rate"] = movie.avg_rate
+    else:
+        result["avg_rate"] = -1
     result["release_date"] = movie.release_date
-    result["year"] = movie.year
+    if movie.year:
+        result["year"] = movie.year
+    else:
+        result["year"] = 0
     num_wish = wishWatchModel.query.filter(wishWatchModel.mid == mid, wishWatchModel.type == 0,
                                            wishWatchModel.active == 1).count()
     result["wishlist_num"] = num_wish
@@ -40,7 +46,7 @@ def res_movie_detail(uid, user, movie):
         user_wish = wishWatchModel.query.filter(wishWatchModel.mid == mid, wishWatchModel.uid == uid,
                                                 wishWatchModel.type == 0,
                                                 wishWatchModel.active == 1).first()
-        print(user_wish)
+        # print(user_wish)
         if user_wish:
             is_user_wish = 1
             result["wish_ctime"] = user_wish.ctime

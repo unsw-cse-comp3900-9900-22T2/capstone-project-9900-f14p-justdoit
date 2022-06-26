@@ -29,7 +29,7 @@ export function getMovies(param) {
     return fetchData('http://localhost:5000/app/movies/get_movies', param);
 }
 export function getMovieDetail(param) {
-    return fetchData('http://localhost:5000/app/movies/get_movie_detial', param);
+    return fetchData('http://localhost:5000/app/movies/get_movie_detail', param);
 }
 export function wishlistAddOrDelete(param) {
     return fetchData('http://localhost:5000/app/movies/wishlist_add_or_delete', param);

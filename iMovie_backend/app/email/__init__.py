@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_mail import Message
+from app.login.utils import *
 from flask_mail import Mail
-from iMovie_backend.app.login.utils import *
 from app.models import *
 
 
@@ -22,12 +22,17 @@ def init_app(app: Flask):
         receiver = request.json.get('email')
         sender = Mail(app)
         # mail ： https://temp-mail.org/en/
-        msg = Message('Only Movie', recipients=[receiver], body='Dear user,\n\n'
-                'To reset the password, Please use this verification code to reset your password.\n'
-                'The Verification code  ： %s' % verifycode)
         user = UserModel.query.filter(UserModel.email == receiver, UserModel.active == 1).first()
+        msg = Message('Only Movie', recipients=[receiver])
+        msg.body = 'Dear ' +  user.username + ",\n"\
+                "Please use this verification code to reset your password. So we want to make sure it’s really you.\n"\
+                "The Verification code  ："+str(verifycode) + "\n"\
+                "Thanks for helping ups keep your account secure.\n"\
+                "The OnlyMovie Team.\n"
+
         try:
             user.verifycode = verifycode
+            print(verifycode)
             user.utime = getTime()[0]
             db.session.commit()
             sender.send(msg)

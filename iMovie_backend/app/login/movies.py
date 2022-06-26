@@ -214,7 +214,7 @@ def get_wishlist():
         print("")
         if sort_by == 0:
             # when add
-            res_list = sorted(list, reverse=True)
+            res_list = list
         elif sort_by == 1:
             # highest rate
             res_list = sorted(list, key=lambda m: m['avg_rate'], reverse=True)
@@ -224,7 +224,7 @@ def get_wishlist():
         elif sort_by == 3:
             res_list = sorted(list, key=lambda m: m['year'])
         else:
-            res_list = list
+            res_list = sorted(list, reverse=True)
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

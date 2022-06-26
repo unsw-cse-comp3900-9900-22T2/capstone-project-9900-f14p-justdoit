@@ -1,13 +1,6 @@
 from flask import Flask
 from flask_mail import Mail, Message
-
-from sqlalchemy import exists
-
-from iMovie_backend.app.login.utils import *
-
 from flask_mail import Mail
-import time
-
 from iMovie_backend.app.login.utils import *
 from app.models import *
 

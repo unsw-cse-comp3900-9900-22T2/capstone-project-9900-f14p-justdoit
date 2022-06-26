@@ -303,5 +303,6 @@ def clear_wishlist():
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
-
-
+# browse by
+def browse_by():
+    data = request.get_json(force=True)

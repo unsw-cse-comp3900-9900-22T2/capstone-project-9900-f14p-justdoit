@@ -306,3 +306,25 @@ def clear_wishlist():
 # browse by
 def browse_by():
     data = request.get_json(force=True)
+    uid = data["uid"]
+    # rating = data["rating"]
+    # popular = data["popular"]
+    # year = data["year"]
+    # genre = data["genre"]
+    # country = data["country"]
+    # language = data["language"]
+    # page_index = data["page_index"]
+    # page_size = data["page_size"]
+    user = None
+    if uid:
+        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    movies = MoviesModel.query.filter(MoviesModel.active == 1).all()
+    try:
+        result = {}
+        for m in movies:            # movies: [movies0, movies[1]....]
+                if m.avg_rate != None:
+                    result[m.moviename] = m.moviename
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Browseby failed.'})

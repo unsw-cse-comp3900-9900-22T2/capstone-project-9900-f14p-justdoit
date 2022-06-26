@@ -187,7 +187,7 @@ def rating_movie():
 
 
 
-
+# 0: add time, 1: highest  rating,2: lowest rating , 3:released data，null: not sort
 def get_wishlist():
     data = request.get_json(force=True)
     # print(data)

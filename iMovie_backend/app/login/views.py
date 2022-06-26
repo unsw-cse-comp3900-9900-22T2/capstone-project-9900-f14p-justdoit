@@ -105,12 +105,12 @@ def get_user_detail():
     return jsonify({'code': 200, "result": result})
 
 
-def send_email():
-    email = request.json.get('email')
-    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
-    if not user:
-        return jsonify({'code': 400, 'msg': 'This email is not defined'})
-    verifycode = create_verifycode(4)
+# def send_email():
+#     email = request.json.get('email')
+#     user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+#     if not user:
+#         return jsonify({'code': 400, 'msg': 'This email is not defined'})
+#     verifycode = create_verifycode(4)
     # send email
 
     # save verifycode to sql

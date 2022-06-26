@@ -14,18 +14,18 @@ import { Base64 } from "js-base64";
 const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
   const [tabList] = useState([{
-     value : 1,
-     name : "HOME",
-     href : "/movie/home",
-    login : true,
-  },{
     value : 2,
     name : "LOGIN",
     login : false,
   },{
     value : 3,
-    name : "REGESTER",
+    name : "REGISTER",
     login : false,
+  },{
+    value : 1,
+    name : "HOME",
+    href : "/movie/home",
+    login : true,
   },{
     value : 4,
     name : "MOVIE LISTS",
@@ -322,8 +322,8 @@ const Page = ({ router, children,USERMESSAGE }) => {
         }}
         loginRef={loginRef}/>
       <RegesterComponent
-        changeLoginInVisible={()=>{
-          loginRef && loginRef.current && loginRef.current.changeVisible(true);
+        changeLoginInVisible={(isVis,userName)=>{
+          loginRef && loginRef.current && loginRef.current.changeVisible(true,userName);
         }}
         regesterRef={regesterRef}/>
       <ResetPasswordComponent

@@ -29,11 +29,17 @@ export function getMovies(param) {
     return fetchData('http://localhost:5000/app/movies/get_movies', param);
 }
 export function getMovieDetail(param) {
-    return fetchData('http://localhost:5000/app/movies/get_movie_detail', param);
+    return fetchData('http://localhost:5000/app/movies/get_movie_detial', param);
 }
 export function wishlistAddOrDelete(param) {
     return fetchData('http://localhost:5000/app/movies/wishlist_add_or_delete', param);
 }
 export function ratingMovie(param) {
     return fetchData('http://localhost:5000/app/movies/rating_movie', param);
+}
+export function getWishlist(param) {
+    return fetchData('http://localhost:5000/app/movies/get_wishlist', param);
+}
+export function clearWishlist(param) {
+    return fetchData('http://localhost:5000/app/movies/clear_wishlist', param);
 }

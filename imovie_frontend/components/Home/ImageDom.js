@@ -1,15 +1,20 @@
 
-import React, { useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useRef, useState } from "react";
 import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
 import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
 import {wishlistAddOrDelete} from "../../pages/MockData";
-const ImageDom = ({imageDomRef,item,index,isLogin,
+import RatingComponent from "./Rating"
+import ReviewsInfoComponent from "./ReviewsInfo"
+const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
+  const ratingRef = useRef();
+  const reviewsInfoRef = useRef();
+  const [rateChange,changeRateChange]= useState(true);
   const {director,cast,genre,avg_rate,moviename,
-    is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,
+    is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,year,
     watchlist_num,num_like,wishlist_num,coverimage,mid,is_user_rate} = thisItem;
   const _nameList = [...[director || ""],...(cast || [])];
   function goMovieDetail(id) {
@@ -102,9 +107,6 @@ const ImageDom = ({imageDomRef,item,index,isLogin,
         placement={left ? "rightTop" : "leftTop"}
         trigger="hover"
         zIndex={12}
-        {...showClear &&{
-          visible : false
-        }}
         title={
           <div  className={"swiper-image-list-item-image-black"}>
             <h6
@@ -113,7 +115,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,
               }}
             >{moviename}</h6>
             <div className={"rate_msg"}>
-              <Rate allowHalf disabled defaultValue={avg_rate || 0} />
+              {rateChange && <Rate allowHalf disabled defaultValue={avg_rate || 0} />}
               <span className={"rate_msg_get"}>({avg_rate || 0})</span>
             </div>
           {genre && genre.length > 0 &&<div className={"tags"}>
@@ -163,14 +165,18 @@ const ImageDom = ({imageDomRef,item,index,isLogin,
                 return <div className={"swiper-component-operation"}>
                   <div
                     onClick={()=>{
-                      ratingRefChangeVisible && ratingRefChangeVisible(moviename,release_date,mid,is_user_rate);
+                      ratingRef && ratingRef.current && ratingRef.current.changeVisible
+                      && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),
+                        mid,uid,is_user_rate);
                     }}
                     className={"swiper-component-operation-item padding1"}>
                     Rating
                   </div>
                   <div
                     onClick={()=>{
-                      reviewsInfoRefVisible && reviewsInfoRefVisible(moviename,release_date,mid);
+                      reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                      && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
+                        mid,uid);
                     }}
                     className={"swiper-component-operation-item"}>
                     Reviews and info
@@ -239,6 +245,24 @@ const ImageDom = ({imageDomRef,item,index,isLogin,
         </div>
       </div>
     </div>
+      <RatingComponent
+        changeRating={(mid,rate,avg_rate)=>{
+          if(mid === thisItem.mid){
+            const _thisItem = _.cloneDeep(thisItem);
+            _thisItem.avg_rate = avg_rate;
+            _thisItem.is_user_rate = rate;
+            changeThisItem(_thisItem);
+            changeRateChange(false);
+            setTimeout(()=>{
+              changeRateChange(true);
+            },0)
+            if(from === "wishList"){
+              wishListDo && wishListDo();
+            }
+          }
+        }}
+        ratingRef={ratingRef}/>
+      <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
     </React.Fragment>
     )
 }

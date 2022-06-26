@@ -114,14 +114,14 @@ def get_user_detail():
     # send email
 
     # save verifycode to sql
-    try:
-        user.verifycode = verifycode
-        user.utime = getTime()[0]
-        db.session.commit()
-        msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
-        return jsonify({'code': 200, 'msg': msg})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
+    # try:
+    #     user.verifycode = verifycode
+    #     user.utime = getTime()[0]
+    #     db.session.commit()
+    #     msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
+    #     return jsonify({'code': 200, 'msg': msg})
+    # except Exception as e:
+    #     return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
 
 
 

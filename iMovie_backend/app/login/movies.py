@@ -21,7 +21,7 @@ def res_movie_detail(uid, user, movie):
     result["country"] = movie.country
     result["language"] = movie.language
     if movie.avg_rate:
-        result["avg_rate"] = movie.avg_rate
+        result["avg_rate"] = round(movie.avg_rate, 2)
     else:
         result["avg_rate"] = -1
     result["release_date"] = movie.release_date
@@ -96,8 +96,12 @@ def res_movie_detail(uid, user, movie):
         check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
                                               RatingModel.active == 1).first()
         if check_rate:
-            is_user_rate = check_rate.rate
-            result["rating_ctime"] = check_rate.ctime
+            if check_rate.rate > 0:
+                is_user_rate = check_rate.rate
+                result["rating_ctime"] = check_rate.ctime
+            else:
+                is_user_rate = -1
+                result["rating_ctime"] = None
         else:
             is_user_rate = -1
             result["rating_ctime"] = None
@@ -171,9 +175,14 @@ def rating_movie():
         return jsonify({'code': 400, 'msg': 'Wrong rating'})
     check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid, RatingModel.active == 1).first()
     if check_rate:
-        check_rate.rate = rate
-        check_rate.utime = getTime()[0]
-        db.session.commit()
+        if rate == 0:
+            check_rate.active = 0
+            check_rate.utime = getTime()[0]
+            db.session.commit()
+        else:
+            check_rate.rate = rate
+            check_rate.utime = getTime()[0]
+            db.session.commit()
     else:
         #add
         try:

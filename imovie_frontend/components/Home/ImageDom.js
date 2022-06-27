@@ -95,6 +95,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
   }
   const _index = index % 4;
   const left = _index === 0 || _index === 1;
+  function setAvgRate(rate){
+    return rate < 0 ? 0 : rate;
+  }
   return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: ImageDomStyle }} />
@@ -115,8 +118,8 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               }}
             >{moviename}</h6>
             <div className={"rate_msg"}>
-              {rateChange && <Rate allowHalf disabled defaultValue={avg_rate || 0} />}
-              <span className={"rate_msg_get"}>({avg_rate || 0})</span>
+              {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(avg_rate || 0)} />}
+              <span className={"rate_msg_get"}>({setAvgRate(avg_rate || 0)})</span>
             </div>
           {genre && genre.length > 0 &&<div className={"tags"}>
             {

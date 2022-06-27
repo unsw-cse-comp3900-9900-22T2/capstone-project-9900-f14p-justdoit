@@ -41,10 +41,15 @@ for row in worksheet.rows:
         sqlstr.append(cell.value)
     mid = getUniqueid()
     data_time = getTime()[0]
-    valuestr = [str(mid),int(sqlstr[0]), str(sqlstr[1]),str(sqlstr[3]), str(sqlstr[4]), int(sqlstr[5])
-                , str(sqlstr[6]), str(sqlstr[7]), str(sqlstr[8]),str(sqlstr[10]),1,data_time,data_time]
+    if sqlstr[8]:
+        sqlstr_8 = sqlstr[8].lower()
+    else:
+        sqlstr_8 = None
 
-    cur.execute("insert into movies(mid,id,moviename,director,description,duration,country,language,genre,coverimage,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
+    valuestr = [str(mid), int(sqlstr[0]), str(sqlstr[1]),int(sqlstr[2]), str(sqlstr[3]), str(sqlstr[4]), int(sqlstr[5])
+                , str(sqlstr[6]), str(sqlstr[7]), str(sqlstr_8),str(sqlstr[9]),str(sqlstr[10]),1,data_time,data_time]
+
+    cur.execute("insert into movies(mid,id,moviename,year,director,description,duration,country,language,genre,cast,coverimage,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
 
 
 cur.close()

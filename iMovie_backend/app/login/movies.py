@@ -12,10 +12,13 @@ def res_movie_detail(uid, user, movie):
     result["description"] = movie.description
     result["coverimage"] = movie.coverimage
     # split string (去空格)
-    genre_list = movie.genre.split(" ")
+    genre = movie.genre
+    genre.lower()
+    genre_list = genre.split(" ")
     result["genre"] = genre_list
-    result["cast"] = movie.cast
-    result["crew"] = movie.crew
+    cast_list = movie.cast.split(";")
+    result["cast"] = cast_list
+    # result["crew"] = movie.crew
     result["director"] = movie.director
     result["duration"] = movie.duration
     result["country"] = movie.country
@@ -250,15 +253,16 @@ def get_wishlist():
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0, wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
-    print(wishlist)
+    # print(wishlist)
     try:
         result = {}
         result["count"] = len(wishlist)
         list = []
         for m in wishlist:
             movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
-            movie_info = res_movie_detail(uid, user, movie)
-            list.append(movie_info)
+            if movie:
+                movie_info = res_movie_detail(uid, user, movie)
+                list.append(movie_info)
         # print(sort_by)
         if sort_by is not None:
             if sort_by == 0:

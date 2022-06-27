@@ -16,7 +16,17 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
   const {director,cast,genre,avg_rate,moviename,
     is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,year,
     watchlist_num,num_like,wishlist_num,coverimage,mid,is_user_rate} = thisItem;
-  const _nameList = [...[director || ""],...(cast || [])];
+  const _nameList = [...[director || ""]];
+  const _cast = [];
+  if(cast && cast.length > 0){
+    for(let castI = 0 ; castI < 3 ; castI ++){
+        if(!cast[castI]){
+          break;
+        }
+      _cast.push(cast[castI]);
+    }
+  }
+
   function goMovieDetail(id) {
     window.location.href = "/movie/detail?movieId=" + id;
   }
@@ -116,7 +126,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               onClick={()=>{
                 goMovieDetail(mid);
               }}
-            >{moviename}</h6>
+            >{moviename}{year && ("(" + year + ")")}</h6>
             <div className={"rate_msg"}>
               {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(avg_rate || 0)} />}
               <span className={"rate_msg_get"}>({setAvgRate(avg_rate || 0)})</span>
@@ -138,6 +148,11 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               {_nameList.join(",")}
             </div>
           }
+            {
+                _cast && _cast.length > 0 && <div className={"cast"}>
+                  {_cast.join(",")}
+                </div>
+            }
           {
             isLogin && <div className={"operation"}>
               <div
@@ -228,7 +243,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
       <div className={"image-message"}>
         <h6 onClick={()=>{
           goMovieDetail(mid);
-        }}>{moviename}</h6>
+        }}>{moviename}{year && ("(" + year + ")")}</h6>
         <div className={"image-message-show"}>
           <div className={"image-message-show-icon"}>
             <img src={"/static/lookTrue.png"}/>

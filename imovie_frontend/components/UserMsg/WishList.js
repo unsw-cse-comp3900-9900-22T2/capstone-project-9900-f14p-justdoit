@@ -200,7 +200,8 @@ const WishListComponent = ({uid}) => {
                const _page = _.cloneDeep(page);
                _page.number = pageIndex;
                _page.size = pageSize;
-               changePage(_page)
+               changePage(_page);
+               fetchData(_page);
              }}
                />
                </div>

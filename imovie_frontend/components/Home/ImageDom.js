@@ -64,19 +64,19 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
       if(isGet){
         return <img src={"/static/likeTrue.png"}/>
       }else{
-        return <img src={"/static/likeFalse.png"}/>
+        return <img src={"/static/likeFalse2.png"}/>
       }
     }else if(type === 1){
       if(isGet){
         return <img src={"/static/lookTrue.png"}/>
       }else{
-        return <img src={"/static/lookFalse.png"}/>
+        return <img src={"/static/lookFalse2.png"}/>
       }
     }else if(type === 2){
       if(isGet){
         return <img src={"/static/collentTrue.png"}/>
       }else{
-        return <img src={"/static/collentFalse.png"}/>
+        return <img src={"/static/collentFalse2.png"}/>
       }
     }
   }

@@ -87,37 +87,37 @@ const Page = ({ router, children,USERMESSAGE }) => {
         key : 4,
         value : "history",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=4"
+        href : "/movie/userMsg?activeKey=4&nouser=1"
       },{
         key : 5,
         value : "wishList",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=1"
+        href : "/movie/userMsg?activeKey=1&nouser=1"
       },{
         key : 6,
         value : "watched",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=2"
+        href : "/movie/userMsg?activeKey=2&nouser=1"
       },{
         key : 7,
         value : "movie lists",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=3"
+        href : "/movie/userMsg?activeKey=3&nouser=1"
       },{
         key : 8,
         value : "reviews",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=5"
+        href : "/movie/userMsg?activeKey=5&nouser=1"
       },{
         key : 9,
         value : "likes",
         hasBorder : false,
-        href : "/movie/userMsg?activeKey=6"
+        href : "/movie/userMsg?activeKey=6&nouser=1"
       },{
         key : 10,
         value : "disLikes",
         hasBorder : true,
-        href : "/movie/userMsg?activeKey=7"
+        href : "/movie/userMsg?activeKey=7&nouser=1"
       },{
         key : 11,
         value : "sight out",

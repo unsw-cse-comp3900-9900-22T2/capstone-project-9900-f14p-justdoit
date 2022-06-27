@@ -358,41 +358,35 @@ def browse_by():
     rating = data["rating"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    movies = MoviesModel.query.filter(MoviesModel.active == 1).all()
     try:
+        res_list = []
         result = {}
-        movie_list = []
-        rated_list = []
-        no_rate_list = []
-        for movie in movies:            # movies: [movies0, movies[1]....]
-            movie_info = res_movie_detail(uid, user, movie)
-            if movie_info["avg_rate"] == -1:
-                no_rate_list.append(movie_info)
-            else:
-                rated_list.append(movie_info)
-            count += 1
-        result["count"] = count
-        keyword = 'avg_rate'
+        if rating is None:
+            movies = MoviesModel.query.filter(MoviesModel.active == 1).order_by("moviename").all()
+            for movie in movies:            # movies: [movies0, movies[1]....]
+                movie_info = res_movie_detail(uid, user, movie)
+                res_list.append(movie_info)
+                count += 1
+            result["count"] = count
+        else:
+            unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate == None).order_by("moviename").all()
+            if rating == 0:
+                # from high to low depends on avg_rate
+                rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None).order_by(MoviesModel.avg_rate.desc(), "moviename").all()
+                # from low to high depends on avg_rate
+            if rating == 1:
+                rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None).order_by("avg_rate", "moviename").all()
+            for movie in rated_movies:            # movies: [movies0, movies[1]....]
+                movie_info = res_movie_detail(uid, user, movie)
+                res_list.append(movie_info)
+                count += 1
+            for movie in unrated_movies:            # movies: [movies0, movies[1]....]
+                movie_info = res_movie_detail(uid, user, movie)
+                res_list.append(movie_info)
+                count += 1
+            result["count"] = count
 
-        # deal with avg_rate > -1 movies
-        if rating == 0:
-            # from high to low depends on avg_rate
-            rated_list = sorted(rated_list, key=lambda m: m[keyword], reverse=True)
-            # from low to high depends on avg_rate
-        if rating == 1:
-            rated_list = sorted(rated_list, key=lambda m: m[keyword])
-            #default:  order by alphabetical
-        rated_list = orderBy_alphabetical(rated_list, keyword)
-
-        # deal with avg_rate = -1 movies
-        no_rate_list = sorted(no_rate_list, key=lambda m: m['moviename'])
-
-        # combine them
-        res_list = rated_list + no_rate_list
-        if rating == None:
-            res_list = sorted(res_list, key=lambda m: m['moviename'])
-        print_avg_rate(res_list)
-
+        # print_avg_rate(res_list)
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

@@ -36,7 +36,7 @@ def init_app(app: Flask):
             user.utime = getTime()[0]
             db.session.commit()
             sender.send(msg)
-            return jsonify({'code': 200, 'msg': 'sent email succesfully, the verification code is %s' % verifycode})
+            return jsonify({'code': 200, 'msg': 'sent email succesfully'})
 
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})

@@ -217,9 +217,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       }
   }
   function setYear(year) {
-    const date = new Date();
-    const _year = year || date.getFullYear();
-    return _year
+    if(!year){
+      return null
+    }
+    return "(" + year + ")"
+  }
+  function setAvgRate(rate){
+    return rate < 0 ? 0 : rate;
   }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
@@ -227,7 +231,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       <div className={"movie-detail-box"}>
         {!!movieDetail &&
         <>
-          <p className={"movie-name"}>{movieDetail.moviename}({setYear(movieDetail.release_date)})</p>
+          <p className={"movie-name"}>{movieDetail.moviename}{setYear(movieDetail.year)}</p>
           <div className={"movie-msg-box"}>
             <div className={"movie-msg-box-left"}>
               <div
@@ -255,8 +259,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               <div className={"rating"}>
                 <h6 className={"rating-title"}>Ratings:</h6>
                 <div className={"rating-box"}>
-                  <h5 className={"rating-box-title"}>{movieDetail.avg_rate || 0}</h5>
-                  {rateChange && <Rate allowHalf disabled defaultValue={movieDetail.avg_rate || 0}/>}
+                  <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
+                  {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
             </div>
@@ -313,7 +317,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     }}
                     className={"image-box"}>{svgGet(1, movieDetail.is_user_watch)}</div>
                   <div className={"a-href"}>
-                    watch
+                    Watch
                   </div>
                 </div>
                 <div className={"operation-image"}>
@@ -323,7 +327,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     }}
                     className={"image-box"}> {svgGet(2, movieDetail.is_user_wish)}</div>
                   <div className={"a-href"}>
-                    wishLists
+                    Wishlist
                   </div>
                 </div>
                 <div className={"operation-image"}>
@@ -333,7 +337,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     }}
                     className={"image-box"}>{svgGet(0, movieDetail.is_user_like)}</div>
                   <div className={"a-href"}>
-                    like
+                    Like
                   </div>
                 </div>
                 <div className={"operation-image"}>
@@ -343,24 +347,25 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     }}
                     className={"image-box"}>{svgGet(3, movieDetail.is_user_dislike)}</div>
                   <div className={"a-href"}>
-                    disLike
+                    Dislike
                   </div>
                 </div>
-                <div className={"operation-image"}>
-                  <div
+                <div
                     onClick={() => {
                       const _year = movieDetail.year;
                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true, movieDetail.moviename + _year && ("(" + _year + ")") || "",
-                        movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
+                      && ratingRef.current.changeVisible(true, movieDetail.moviename + (_year && ("(" + _year + ")") || ""),
+                          movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                     }}
+                    className={"operation-image"}>
+                  <div
                     className={"image-box"}>
                     {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
-                        movieDetail.is_user_rate < 0
+                        movieDetail.is_user_rate <= 0
                     ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>}
                   </div>
-                  <div className={"a-href a-href-no"}>
-                    rating
+                  <div className={"a-href"}>
+                    Rating
                   </div>
                 </div>
               </div>

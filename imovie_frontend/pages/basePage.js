@@ -34,7 +34,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
   },{
     value : 5,
     name : "BROWSE BY",
-    href : "/movie/home?browseBy=1",
+    href : "/movie/browseBy",
     login : true,
   }]);
   const [userTabList,changeUserTabList] = useState([])

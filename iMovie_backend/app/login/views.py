@@ -105,23 +105,23 @@ def get_user_detail():
     return jsonify({'code': 200, "result": result})
 
 
-def send_email():
-    email = request.json.get('email')
-    user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
-    if not user:
-        return jsonify({'code': 400, 'msg': 'This email is not defined'})
-    verifycode = create_verifycode(4)
+# def send_email():
+#     email = request.json.get('email')
+#     user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
+#     if not user:
+#         return jsonify({'code': 400, 'msg': 'This email is not defined'})
+#     verifycode = create_verifycode(4)
     # send email
 
     # save verifycode to sql
-    try:
-        user.verifycode = verifycode
-        user.utime = getTime()[0]
-        db.session.commit()
-        msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
-        return jsonify({'code': 200, 'msg': msg})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
+    # try:
+    #     user.verifycode = verifycode
+    #     user.utime = getTime()[0]
+    #     db.session.commit()
+    #     msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
+    #     return jsonify({'code': 200, 'msg': msg})
+    # except Exception as e:
+    #     return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
 
 
 

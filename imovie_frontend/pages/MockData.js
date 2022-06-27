@@ -43,3 +43,6 @@ export function getWishlist(param) {
 export function clearWishlist(param) {
     return fetchData('http://localhost:5000/app/movies/clear_wishlist', param);
 }
+export function browseBy(param) {
+    return fetchData('http://localhost:5000/app/movies/browse_by', param);
+}

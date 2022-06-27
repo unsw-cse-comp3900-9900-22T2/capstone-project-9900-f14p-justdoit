@@ -379,13 +379,14 @@ def browse_by():
         # deal with avg_rate > -1 movies
         if rating == None:
             rated_list = sorted(rated_list, key=lambda m: m['moviename'])
-        if rating == 0:
-            # from high to low depends on avg_rate
-            rated_list = sorted(rated_list, key=lambda m: m[keyword], reverse=True)
-            # from low to high depends on avg_rate
-        if rating == 1:
-            rated_list = sorted(rated_list, key=lambda m: m[keyword])
-            #default:  order by alphabetical
+        else:
+            if rating == 0:
+                # from high to low depends on avg_rate
+                rated_list = sorted(rated_list, key=lambda m: m[keyword], reverse=True)
+                # from low to high depends on avg_rate
+            if rating == 1:
+                rated_list = sorted(rated_list, key=lambda m: m[keyword])
+                #default:  order by alphabetical
         rated_list = orderBy_alphabetical(rated_list, keyword)
 
         # deal with avg_rate = -1 movies

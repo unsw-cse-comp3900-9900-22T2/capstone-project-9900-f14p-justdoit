@@ -327,31 +327,20 @@ def browse_by():
                     movie_list.append(movie_info)
                     count += 1
         result["count"] = count
-
+        keyword = 'avg_rate'
         if rating == 0:
             # from high to low depends on avg_rate
-            res_avg_rate_list = sorted(movie_list, key=lambda m: m['avg_rate'], reverse=True)
+            res_avg_rate_list = sorted(movie_list, key=lambda m: m[keyword], reverse=True)
             # from low to high depends on avg_rate
         elif rating == 1:
-            res_avg_rate_list = sorted(movie_list, key=lambda m: m['avg_rate'])
+            res_avg_rate_list = sorted(movie_list, key=lambda m: m[keyword])
+            #default:  order by alphabetical
         else:
-            res_avg_rate_list = movie_list
+            res_avg_rate_list = sorted(movie_list, key=lambda m: m['moviename'])
 
-        #order by alphabetical order
-        temp_rate = -1
-        res_list = list()                  #use to divides diff avg_rate movies
-        temp = list()
-        for m in res_avg_rate_list:
-            if m['avg_rate'] != temp_rate:
-                temp = sorted(temp, key=lambda m: m['moviename'])
-                res_list.extend(temp)
-                temp = list()
-                temp_rate = m['avg_rate']
-            temp.append(m)
+        res_list = orderBy_alphabetical(res_avg_rate_list, keyword)
+        print_avg_rate(res_list)
 
-        # print result test
-        for i in res_list:
-            print("%s:%s " %(i['moviename'],i['avg_rate']))
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

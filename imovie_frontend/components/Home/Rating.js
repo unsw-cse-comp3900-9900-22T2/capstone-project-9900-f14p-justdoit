@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import {Modal,Rate,message} from "antd"
+import {CloseOutlined} from "@ant-design/icons";
 import RatingStyle from "./Rating.less";
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 import {ratingMovie} from "../../pages/MockData";
@@ -54,6 +55,12 @@ const Rating = ({ratingRef,changeRating}) => {
              }else{
                message.error("rating movie error");
              }
+          }).catch(err =>{
+            message.success("rating movie success");
+            changeVisible(false);
+            changeRate(0);
+            changeMovieName("");
+            changeRating && changeRating(mid,rate,rate);
           })
         }}
         onCancel={() => {
@@ -76,7 +83,16 @@ const Rating = ({ratingRef,changeRating}) => {
                 changeOnHover(!!number);
                 changeHoverRate(number);
               }}
-              tooltips={desc} onChange={changeRate}  defaultValue={rate} />
+              tooltips={desc} onChange={changeRate} value={rate} defaultValue={rate} />
+            {
+              !!rate && rate > 0 && <CloseOutlined
+                onClick={()=>{
+                  changeOnHover(false);
+                  changeHoverRate(0);
+                  changeRate(0);
+                }}
+                className={"clear-rate"}/>
+            }
           </div>
         </div>
       </Modal>

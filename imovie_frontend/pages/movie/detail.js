@@ -350,17 +350,18 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     Dislike
                   </div>
                 </div>
-                <div className={"operation-image"}>
-                  <div
+                <div
                     onClick={() => {
                       const _year = movieDetail.year;
                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true, movieDetail.moviename + _year && ("(" + _year + ")") || "",
-                        movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
+                      && ratingRef.current.changeVisible(true, movieDetail.moviename + (_year && ("(" + _year + ")") || ""),
+                          movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                     }}
+                    className={"operation-image"}>
+                  <div
                     className={"image-box"}>
                     {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
-                        movieDetail.is_user_rate < 0
+                        movieDetail.is_user_rate <= 0
                     ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>}
                   </div>
                   <div className={"a-href"}>

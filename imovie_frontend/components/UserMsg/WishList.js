@@ -160,7 +160,7 @@ const WishListComponent = ({uid}) => {
               </div>
            <div>
              <div className={"imgBox"}>
-               {imgList && imgList.map((item,index)=>{
+               {page.total > 0 && imgList && imgList.map((item,index)=>{
                   return <ImageDomComponent
                                              from ={"wishList"}
                                              wishListDo={()=>{
@@ -187,6 +187,15 @@ const WishListComponent = ({uid}) => {
                                             uid={uid}
                                            />
                })}
+               {
+                 page.total === 0 &&
+                   <div className={"empty"}>
+                       <img src={"/static/empty.png"}/>
+                       <h5>
+                         No films yet
+                       </h5>
+                   </div>
+               }
              </div>
              {
                page.total > 0 && <div className={"list-detail-pagination"}>

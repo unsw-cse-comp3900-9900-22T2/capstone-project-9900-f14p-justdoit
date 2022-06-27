@@ -1,11 +1,14 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import ScrollImageComponent from "../../components/Home/ScrollImage"
+import HomeSearchComponent from "../../components/BrowseBy/HomeSearch"
 import homeStyle from "./home.less";
 import {getMovies} from "../MockData";
-const Home = ({USERMESSAGE}) => {
-  const [list,changeList] = useState([])
+const BrowseBy = ({USERMESSAGE}) => {
+  const [list,changeList] = useState([]);
+  const [isSearch,changeIsSearch] = useState(false);
   useEffect(()=>{
+    console.log("USERMESSAGE",USERMESSAGE)
     getMovies({
       uid : USERMESSAGE && USERMESSAGE.uid || null
     }).then(res => {
@@ -406,14 +409,15 @@ const Home = ({USERMESSAGE}) => {
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
-      <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
-                            isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>
-      <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
-                             isLogin={!!USERMESSAGE} list={list} title={"RECENT RELESE"}/>
-      {!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
-                                              isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}
+      <HomeSearchComponent
+        uid={USERMESSAGE && USERMESSAGE.uid || null}
+        changeIsSearch={(isSear)=>{
+        changeIsSearch(isSear)
+      }}/>
+      {!isSearch && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
+                            isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>}
     </PageBase>
   )
 }
 
-export default Home
+export default BrowseBy

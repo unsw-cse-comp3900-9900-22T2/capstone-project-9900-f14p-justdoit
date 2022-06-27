@@ -67,6 +67,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
           }else{
             message.error("get user message error")
           }
+      }).catch(err =>{
+        changeShowDom(true);
       })
     }else{
       delCookie('USER_MESSAGE');

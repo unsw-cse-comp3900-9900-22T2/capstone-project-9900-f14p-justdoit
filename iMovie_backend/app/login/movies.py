@@ -384,16 +384,13 @@ def browse_by():
         keyword = 'avg_rate'
 
         # deal with avg_rate > -1 movies
-        if rating == None:
-            rated_list = sorted(rated_list, key=lambda m: m['moviename'])
-        else:
-            if rating == 0:
-                # from high to low depends on avg_rate
-                rated_list = sorted(rated_list, key=lambda m: m[keyword], reverse=True)
-                # from low to high depends on avg_rate
-            if rating == 1:
-                rated_list = sorted(rated_list, key=lambda m: m[keyword])
-                #default:  order by alphabetical
+        if rating == 0:
+            # from high to low depends on avg_rate
+            rated_list = sorted(rated_list, key=lambda m: m[keyword], reverse=True)
+            # from low to high depends on avg_rate
+        if rating == 1:
+            rated_list = sorted(rated_list, key=lambda m: m[keyword])
+            #default:  order by alphabetical
         rated_list = orderBy_alphabetical(rated_list, keyword)
 
         # deal with avg_rate = -1 movies
@@ -401,6 +398,8 @@ def browse_by():
 
         # combine them
         res_list = rated_list + no_rate_list
+        if rating == None:
+            res_list = sorted(res_list, key=lambda m: m['moviename'])
         print_avg_rate(res_list)
 
         start = page_index * page_size

@@ -15,8 +15,12 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
       password : "",
     });
     useImperativeHandle(loginRef, () => ({
-      changeVisible: (vis) => {
+      changeVisible: (vis,userName) => {
         changeLoginInVisible(vis);
+        if(userName){
+            user.userName = userName;
+            changeUser(user);
+        }
       },
     }));
     return (
@@ -47,7 +51,6 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
               message.success("register was successful");
               const msg = res.result;
               const {uid,token,email,username} = msg;
-              debugger
               setCookie("USER_MESSAGE",JSON.stringify({
                 uid,
                 token

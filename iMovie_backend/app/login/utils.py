@@ -84,3 +84,24 @@ def getUniqueid():
 def create_verifycode(num):
     a = random.sample('0123456789', num)
     return ''.join(a)
+
+#print movies basic on xx keyword
+def print_avg_rate(res_list):
+    for i in res_list:
+        print("%s:%s " % (i['moviename'], i['avg_rate']))
+
+# order movies alphabetical after order by xxx categories
+# ex: after order by avg_rate, we need to order them by alphabetical
+def orderBy_alphabetical(movie_list, keyword):
+    # order by alphabetical order
+    cmp_val = None
+    res_list = list()  # use to divides diff avg_rate movies
+    temp = list()
+    for m in movie_list:
+        if m[keyword] != cmp_val:
+            temp = sorted(temp, key=lambda m: m["moviename"])
+            res_list.extend(temp)
+            temp = list()
+            cmp_val = m[keyword]
+        temp.append(m)
+    return res_list

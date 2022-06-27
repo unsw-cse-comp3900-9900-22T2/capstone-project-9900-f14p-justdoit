@@ -311,10 +311,10 @@ def browse_by():
     data = request.get_json(force=True)
     uid = data["uid"]
     user = None
-    count = 0;
+    count = 0
     page_index = data["page_index"]
     page_size = data["page_size"]
-    sort_by = data["sort_by"]
+    rating = data["rating"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     movies = MoviesModel.query.filter(MoviesModel.active == 1).all()
@@ -327,18 +327,31 @@ def browse_by():
                     movie_list.append(movie_info)
                     count += 1
         result["count"] = count
-        if sort_by == 0:
-            res_list = sorted(movie_list, reverse=True)
-        elif sort_by == 1:
+
+        if rating == 0:
             # from high to low depends on avg_rate
-            res_list = sorted(movie_list, key=lambda m: m['avg_rate'], reverse=True)
+            res_avg_rate_list = sorted(movie_list, key=lambda m: m['avg_rate'], reverse=True)
             # from low to high depends on avg_rate
-        elif sort_by == 2:
-            res_list = sorted(movie_list, key=lambda m: m['avg_rate'])
-        elif sort_by == 3:
-            res_list = sorted(movie_list, key=lambda m: m['year'])
+        elif rating == 1:
+            res_avg_rate_list = sorted(movie_list, key=lambda m: m['avg_rate'])
         else:
-            res_list = movie_list
+            res_avg_rate_list = movie_list
+
+        #order by alphabetical order
+        temp_rate = -1
+        res_list = list()                  #use to divides diff avg_rate movies
+        temp = list()
+        for m in res_avg_rate_list:
+            if m['avg_rate'] != temp_rate:
+                temp = sorted(temp, key=lambda m: m['moviename'])
+                res_list.extend(temp)
+                temp = list()
+                temp_rate = m['avg_rate']
+            temp.append(m)
+
+        # print result test
+        for i in res_list:
+            print("%s:%s " %(i['moviename'],i['avg_rate']))
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

@@ -33,7 +33,3 @@ config.py:  config
 ```shell
 flask db update
 ```
-
-
-results  = { movies1, movies2, movies3..... movies9 }
-movies =  {mid, moviename, description, coverimage, genre, cast, avg_rate, year....}

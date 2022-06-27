@@ -349,10 +349,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 <div className={"operation-image"}>
                   <div
                     onClick={() => {
-                      const date = new Date();
-                      const _year = movieDetail.year || date.getFullYear();
+                      const _year = movieDetail.year;
                       ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true, movieDetail.moviename + "(" + _year + ")",
+                      && ratingRef.current.changeVisible(true, movieDetail.moviename + _year && ("(" + _year + ")") || "",
                         movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                     }}
                     className={"image-box"}>
@@ -372,10 +371,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           <div className={"reviews-list"}>
               <div className={"review-title"}>
                 <p>Related Reviews{!!isLogin && <span  onClick={()=>{
-                                              const date = new Date();
-                                              const _year = movieDetail.year || date.getFullYear();
+                                              const _year = movieDetail.year;
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + "(" + _year+")",
+                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",
                                                 movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
                                             }}
                 >add review</span>}</p>

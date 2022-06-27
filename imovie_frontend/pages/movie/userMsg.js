@@ -91,7 +91,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         !showDom ? null :
           (
             !edit ?  <div className={"user-message-box"}>
-              <div className="user-message-title">
+              {!initQuery.nouser && <div className="user-message-title">
                 <div className="user-logo">
                   <Avatar size={60}
                           icon={<UserOutlined />} />
@@ -114,7 +114,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                     EDIT PROFILE
                   </div>
                 </div>
-              </div>
+              </div>}
               <div className={"tab-pane-box"}>
                 <Tabs
                   activeKey={activeKey}
@@ -165,11 +165,13 @@ UserMsg.getInitialProps = async (status) => {
   const profile = status && status.query && status.query.profile;
   const activeKey = status && status.query && status.query.activeKey <= 7 &&
     status.query.activeKey || "1";
+  const nouser = status && status.query && status.query.nouser || null
   console.log("activeKey",activeKey)
   return {
     initQuery: {
       profile,
       activeKey,
+      nouser,
     }
   }
 }

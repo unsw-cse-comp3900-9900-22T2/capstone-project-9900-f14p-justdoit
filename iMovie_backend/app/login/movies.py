@@ -322,7 +322,7 @@ def browse_by():
         result = {}
         movie_list = []
         for movie in movies:            # movies: [movies0, movies[1]....]
-                if movie.avg_rate != None:
+                if movie.avg_rate > -1:
                     movie_info = res_movie_detail(uid, user, movie)
                     movie_list.append(movie_info)
                     count += 1
@@ -340,6 +340,7 @@ def browse_by():
 
         res_list = orderBy_alphabetical(res_avg_rate_list, keyword)
         print_avg_rate(res_list)
+
 
         start = page_index * page_size
         end = start + page_size

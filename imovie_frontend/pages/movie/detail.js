@@ -1,13 +1,14 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import detailStyle from "./detail.less";
-import { Avatar, Popover, Rate ,message} from "antd";
+import { Avatar, Popover, Rate ,message,Tooltip} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
+import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -225,6 +226,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   function setAvgRate(rate){
     return rate < 0 ? 0 : rate;
   }
+  function setToolTitle(type,number){
+    return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
+  }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
@@ -240,27 +244,33 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 }}
                 className={"movie-logo"}/>
               <div className={"movie-message-show"}>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/lookTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#00e054" }}>{getMsg(movieDetail.watchlist_num)}</span>
-                </div>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/likeTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#40bcf4" }}>{getMsg(movieDetail.num_like)}</span>
-                </div>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/collentTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#ff900f" }}>{getMsg(movieDetail.wishlist_num)}</span>
-                </div>
+                <Tooltip title={setToolTitle("Watched",movieDetail.watchlist_num)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/lookTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#00e054" }}>{getMsg(movieDetail.watchlist_num)}</span>
+                  </div>
+                </Tooltip>
+                <Tooltip title={setToolTitle("Liked",movieDetail.num_like)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/likeTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#40bcf4" }}>{getMsg(movieDetail.num_like)}</span>
+                  </div>
+                </Tooltip>
+                <Tooltip title={setToolTitle("Wished",movieDetail.wishlist_num)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/collentTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#ff900f" }}>{getMsg(movieDetail.wishlist_num)}</span>
+                  </div>
+                </Tooltip>
               </div>
               <div className={"rating"}>
                 <h6 className={"rating-title"}>Ratings:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
-                  {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
+                  {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
             </div>
@@ -397,9 +407,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           {/*              <div className={"user-name"}>*/}
           {/*                <span className={"userName"}>Review By:<span>{item.userName}</span></span>*/}
           {/*                  <div className={"rate"}>*/}
-          {/*                     <Rate  style={{*/}
+          {/*                     <RateComponent  style={{*/}
           {/*                        fontSize : "14px"*/}
-          {/*                     }} allowHalf disabled defaultValue={item.rate || 1} />*/}
+          {/*                     }} defaultValue={item.rate || 1} />*/}
           {/*                      &nbsp;({item.rate || 1})*/}
           {/*                  </div>*/}
           {/*              </div>*/}
@@ -438,6 +448,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             const _movieDatail = _.cloneDeep(movieDetail);
             _movieDatail.avg_rate = avg_rate;
             _movieDatail.is_user_rate = rate;
+            const _is_user_watch = _movieDatail.is_user_watch;
+            if(!_is_user_watch){
+              _movieDatail.is_user_watch = true;
+              _movieDatail.watchlist_num = (_movieDatail.watchlist_num || 0)+ 1;
+            }
+
             changeMovieDetail(_movieDatail);
             changeRateChange(false);
             setTimeout(()=>{

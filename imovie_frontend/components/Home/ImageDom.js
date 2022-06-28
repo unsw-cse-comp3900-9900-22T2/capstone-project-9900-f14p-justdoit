@@ -7,6 +7,7 @@ import _ from "lodash";
 import {wishlistAddOrDelete} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
+import RateComponent from "../Rate/RateComponent"
 const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
@@ -108,6 +109,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
   function setAvgRate(rate){
     return rate < 0 ? 0 : rate;
   }
+  function setToolTitle(type,number){
+    return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
+  }
   return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: ImageDomStyle }} />
@@ -128,7 +132,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               }}
             >{moviename}{year && ("(" + year + ")")}</h6>
             <div className={"rate_msg"}>
-              {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(avg_rate || 0)} />}
+              {rateChange && <RateComponent defaultValue={setAvgRate(avg_rate || 0)} />}
               <span className={"rate_msg_get"}>({setAvgRate(avg_rate || 0)})</span>
             </div>
           {genre && genre.length > 0 &&<div className={"tags"}>
@@ -245,21 +249,27 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
           goMovieDetail(mid);
         }}>{moviename}{year && ("(" + year + ")")}</h6>
         <div className={"image-message-show"}>
-          <div className={"image-message-show-icon"}>
-            <img src={"/static/lookTrue.png"}/>
-            &nbsp;
-            <span style={{color :"#00e054" }}>{getMsg(watchlist_num)}</span>
-          </div>
-          <div className={"image-message-show-icon"}>
-            <img src={"/static/likeTrue.png"}/>
-            &nbsp;
-            <span style={{color :"#40bcf4" }}>{getMsg(num_like)}</span>
-          </div>
-          <div className={"image-message-show-icon"}>
-            <img src={"/static/collentTrue.png"}/>
-            &nbsp;
-            <span style={{color :"#ff900f" }}>{getMsg(wishlist_num)}</span>
-          </div>
+          <Tooltip title={setToolTitle("Watched",watchlist_num)}>
+            <div className={"image-message-show-icon"}>
+              <img src={"/static/lookTrue.png"}/>
+              &nbsp;
+              <span style={{color :"#00e054" }}>{getMsg(watchlist_num)}</span>
+            </div>
+          </Tooltip>
+          <Tooltip title={setToolTitle("Liked",num_like)}>
+            <div className={"image-message-show-icon"}>
+              <img src={"/static/likeTrue.png"}/>
+              &nbsp;
+              <span style={{color :"#40bcf4" }}>{getMsg(num_like)}</span>
+            </div>
+          </Tooltip>
+          <Tooltip title={setToolTitle("Wished",wishlist_num)}>
+            <div className={"image-message-show-icon"}>
+              <img src={"/static/collentTrue.png"}/>
+              &nbsp;
+              <span style={{color :"#ff900f" }}>{getMsg(wishlist_num)}</span>
+            </div>
+          </Tooltip>
         </div>
       </div>
     </div>
@@ -269,6 +279,11 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             const _thisItem = _.cloneDeep(thisItem);
             _thisItem.avg_rate = avg_rate;
             _thisItem.is_user_rate = rate;
+            const _is_user_watch = _thisItem.is_user_watch;
+            if(!_is_user_watch){
+              _thisItem.is_user_watch = true;
+              _thisItem.watchlist_num = (_thisItem.watchlist_num || 0)+ 1;
+            }
             changeThisItem(_thisItem);
             changeRateChange(false);
             setTimeout(()=>{

@@ -448,6 +448,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             const _movieDatail = _.cloneDeep(movieDetail);
             _movieDatail.avg_rate = avg_rate;
             _movieDatail.is_user_rate = rate;
+            const _is_user_watch = _movieDatail.is_user_watch;
+            if(!_is_user_watch){
+              _movieDatail.is_user_watch = true;
+              _movieDatail.watchlist_num = (_movieDatail.watchlist_num || 0)+ 1;
+            }
+
             changeMovieDetail(_movieDatail);
             changeRateChange(false);
             setTimeout(()=>{

@@ -279,6 +279,11 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             const _thisItem = _.cloneDeep(thisItem);
             _thisItem.avg_rate = avg_rate;
             _thisItem.is_user_rate = rate;
+            const _is_user_watch = _thisItem.is_user_watch;
+            if(!_is_user_watch){
+              _thisItem.is_user_watch = true;
+              _thisItem.watchlist_num = (_thisItem.watchlist_num || 0)+ 1;
+            }
             changeThisItem(_thisItem);
             changeRateChange(false);
             setTimeout(()=>{

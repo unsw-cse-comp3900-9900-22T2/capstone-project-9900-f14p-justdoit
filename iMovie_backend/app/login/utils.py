@@ -108,8 +108,14 @@ def orderBy_alphabetical(movie_list, keyword):
 
 #"1921, 2022,2003" => [1921, 2022, 2003] str to list
 def year_strToList(year):
-    if year == None or len(year) ==0 :
+    if year == None or len(year) == 0 :
         return list()
+
+    if year == "-1":
+        year_lst = list()
+        year_lst.append(-1)
+        return year_lst
+
     year_lst = list()
     tmp = ""
     for i in year:

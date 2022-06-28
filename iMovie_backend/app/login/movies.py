@@ -385,7 +385,10 @@ def browse_by():
                 count += 1
             result["count"] = count
         elif rating is None:
-            movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList)).order_by("moviename").all()
+            if yearList[0] == -1:
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year <= 1997).order_by("moviename").all()
+            else:
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList)).order_by("moviename").all()
             for movie in movies:            # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
                 res_list.append(movie_info)
@@ -395,21 +398,29 @@ def browse_by():
             if len(yearList) == 0:
                 unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate == None).order_by("moviename").all()
             else:
-                unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate == None, MoviesModel.year.in_(yearList)).order_by("moviename").all()
+                if yearList[0] == -1:           # before 1997
+                    unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate == None, MoviesModel.year <= 1997).order_by("moviename").all()
+                else:
+                    unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate == None, MoviesModel.year.in_(yearList)).order_by("moviename").all()
             if rating == 0:
                 # from high to low depends on avg_rate
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None).order_by(MoviesModel.avg_rate.desc(), "moviename").all()
-
                 else:
-                    rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year.in_(yearList)).order_by(MoviesModel.avg_rate.desc(), "moviename").all()
+                    if yearList[0] == -1:  # before 1997
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year <= 1997).order_by(MoviesModel.avg_rate.desc(), "moviename").all()
+                    else:
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year.in_(yearList)).order_by(MoviesModel.avg_rate.desc(), "moviename").all()
                 # from low to high depends on avg_rate
             if rating == 1:
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year.in_(yearList)).order_by("avg_rate", "moviename").all()
 
                 else:
-                    rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year.in_(yearList)).order_by("avg_rate", "moviename").all()
+                    if yearList[0] == -1:  # before 1997
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year <= 1997).order_by("avg_rate", "moviename").all()
+                    else:
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate != None, MoviesModel.year.in_(yearList)).order_by("avg_rate", "moviename").all()
             for movie in rated_movies:            # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
                 res_list.append(movie_info)
@@ -419,7 +430,6 @@ def browse_by():
                 res_list.append(movie_info)
                 count += 1
             result["count"] = count
-
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:

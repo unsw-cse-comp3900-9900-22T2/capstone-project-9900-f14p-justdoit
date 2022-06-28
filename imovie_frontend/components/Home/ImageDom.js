@@ -149,12 +149,12 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
           </div>}
           {
             _nameList && _nameList.length > 0 && <div className={"cast"}>
-              {_nameList.join(",")}
+                DIRECTOR: {_nameList.join(",")}
             </div>
           }
             {
                 _cast && _cast.length > 0 && <div className={"cast"}>
-                  {_cast.join(",")}
+                    CAST: {_cast.join(",")}
                 </div>
             }
           {

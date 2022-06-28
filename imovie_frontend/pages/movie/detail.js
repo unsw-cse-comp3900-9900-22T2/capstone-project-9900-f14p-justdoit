@@ -305,12 +305,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               </div>}
               {!!movieDetail.country &&
               <div className={"movie-message-body movie-message-body-flex"}>
-                <p>Country: </p>
+                <p>COUNTRY: </p>
                 <h6>{movieDetail.country}</h6>
               </div>}
               {!!movieDetail.language &&
               <div className={"movie-message-body movie-message-body-flex"}>
-                <p>Language: </p>
+                <p>LANGUAGE: </p>
                 <h6>{movieDetail.language}</h6>
               </div>}
               {!!movieDetail.duration && <div className={"movie-message-body movie-message-body-flex"}>

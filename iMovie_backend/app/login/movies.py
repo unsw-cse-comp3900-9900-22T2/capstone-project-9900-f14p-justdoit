@@ -16,7 +16,11 @@ def res_movie_detail(uid, user, movie):
     genre = movie.genre
     genre.lower()
     genre_list = genre.split(" ")
-    result["genre"] = genre_list
+    genre_cap = []
+    for i in genre_list:
+        genre_cap.append(i.capitalize())
+        print(i.capitalize())
+    result["genre"] = genre_cap
     cast_list = movie.cast.split(";")
     result["cast"] = cast_list
     # result["crew"] = movie.crew

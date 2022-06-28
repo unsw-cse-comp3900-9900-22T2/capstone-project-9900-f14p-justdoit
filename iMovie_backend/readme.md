@@ -32,4 +32,9 @@ config.py:  config
 ###if you want to change tables in database
 ```shell
 flask db update
-```
+``` 
+
+### insert movie data
+```shell
+python3 insert_movies.py
+``` 

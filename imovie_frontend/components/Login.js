@@ -34,7 +34,7 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
         onOk={() => {
           const {userName,password} = user;
           if(!userName|| !(userName &&userName.trim())){
-            message.warn("Please enter userName");
+            message.warn("Please enter username");
             return
           }
           if(!password|| !(password &&password.trim())){
@@ -99,7 +99,7 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             <div className="switch_box">
               <Input
                 value={user.userName}
-                placeholder="Please enter userName"
+                placeholder="Please enter username"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
                   const _value = e.target.value;

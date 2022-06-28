@@ -34,7 +34,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
         onOk={() => {
           const {userName,passwordSure,password,email,checkAge,checkRules} = newUser;
           if(!userName || !(userName &&userName.trim())){
-            message.warn("Please enter userName");
+            message.warn("Please enter username");
             return
           }
           if(!email || !(email &&email.trim())){
@@ -102,7 +102,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             <div className="switch_box">
               <Input
                 value={newUser.userName}
-                placeholder="Please enter userName"
+                placeholder="Please enter username"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
                   const _value = e.target.value;

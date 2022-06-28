@@ -7,6 +7,7 @@ import _ from "lodash";
 import {wishlistAddOrDelete} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
+import RateComponent from "../Rate/RateComponent"
 const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
@@ -131,7 +132,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               }}
             >{moviename}{year && ("(" + year + ")")}</h6>
             <div className={"rate_msg"}>
-              {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(avg_rate || 0)} />}
+              {rateChange && <RateComponent defaultValue={setAvgRate(avg_rate || 0)} />}
               <span className={"rate_msg_get"}>({setAvgRate(avg_rate || 0)})</span>
             </div>
           {genre && genre.length > 0 &&<div className={"tags"}>

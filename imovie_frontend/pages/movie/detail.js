@@ -8,6 +8,7 @@ import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
+import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -269,7 +270,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 <h6 className={"rating-title"}>Ratings:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
-                  {rateChange && <Rate allowHalf disabled defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
+                  {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
             </div>
@@ -406,9 +407,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           {/*              <div className={"user-name"}>*/}
           {/*                <span className={"userName"}>Review By:<span>{item.userName}</span></span>*/}
           {/*                  <div className={"rate"}>*/}
-          {/*                     <Rate  style={{*/}
+          {/*                     <RateComponent  style={{*/}
           {/*                        fontSize : "14px"*/}
-          {/*                     }} allowHalf disabled defaultValue={item.rate || 1} />*/}
+          {/*                     }} defaultValue={item.rate || 1} />*/}
           {/*                      &nbsp;({item.rate || 1})*/}
           {/*                  </div>*/}
           {/*              </div>*/}

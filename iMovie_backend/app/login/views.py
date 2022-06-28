@@ -43,7 +43,8 @@ def register():
     username = data["username"]
     password = data["password"]
     email = data["email"]
-
+    username = username.strip()
+    email = email.strip()
     # print(username, password, email)
     if not username or not password or not email:
         return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
@@ -51,6 +52,7 @@ def register():
     # username is too long
     if len(username) > 50:
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
+
     # valid email
     if not validateEmail(email):
         return jsonify({'code': 400, 'msg': 'Please enter a right email'})

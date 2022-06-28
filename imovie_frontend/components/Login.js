@@ -17,10 +17,9 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
     useImperativeHandle(loginRef, () => ({
       changeVisible: (vis,userName) => {
         changeLoginInVisible(vis);
-        if(userName){
-            user.userName = userName;
-            changeUser(user);
-        }
+        const _user = _.cloneDeep(user);
+        _user.userName = userName;
+        changeUser(_user);
       },
     }));
     return (
@@ -34,17 +33,17 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
         zIndex={300}
         onOk={() => {
           const {userName,password} = user;
-          if(!userName){
+          if(!userName|| !(userName &&userName.trim())){
             message.warn("Please enter userName");
             return
           }
-          if(!password){
+          if(!password|| !(password &&password.trim())){
             message.warn("Please enter password");
             return
           }
-          const _pass = Base64.encode(md5(password))
+          const _pass = Base64.encode(md5(password.trim()))
           userLogin({
-            username:userName,
+            username:userName.trim(),
             password : _pass
           }).then(res => {
             if(res.code === 200){

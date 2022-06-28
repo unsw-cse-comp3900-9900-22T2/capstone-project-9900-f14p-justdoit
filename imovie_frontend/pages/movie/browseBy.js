@@ -4,9 +4,10 @@ import ScrollImageComponent from "../../components/Home/ScrollImage"
 import HomeSearchComponent from "../../components/BrowseBy/HomeSearch"
 import homeStyle from "./home.less";
 import {getMovies} from "../MockData";
-const BrowseBy = ({USERMESSAGE}) => {
+import UserMsg from "./userMsg";
+const BrowseBy = ({USERMESSAGE,queryForBrowseBy}) => {
   const [list,changeList] = useState([]);
-  const [isSearch,changeIsSearch] = useState(false);
+  const [isSearch,changeIsSearch] = useState(!!queryForBrowseBy);
   useEffect(()=>{
     console.log("USERMESSAGE",USERMESSAGE)
     getMovies({
@@ -410,6 +411,7 @@ const BrowseBy = ({USERMESSAGE}) => {
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
       <HomeSearchComponent
+          queryForBrowseBy={queryForBrowseBy}
         uid={USERMESSAGE && USERMESSAGE.uid || null}
         changeIsSearch={(isSear)=>{
         changeIsSearch(isSear)
@@ -419,5 +421,16 @@ const BrowseBy = ({USERMESSAGE}) => {
     </PageBase>
   )
 }
+BrowseBy.getInitialProps = async (status) => {
 
+  let queryForBrowseBy = status && status.query && status.query.queryForBrowseBy;
+  try {
+    queryForBrowseBy = JSON.parse(queryForBrowseBy);
+  }catch (err){
+    queryForBrowseBy = null;
+  }
+  return {
+    queryForBrowseBy
+  }
+}
 export default BrowseBy

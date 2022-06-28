@@ -5,8 +5,9 @@ import { Button, Pagination ,message} from "antd";
 import _ from "lodash"
 import ImageDomComponent from "../Home/ImageDom";
 import {browseBy} from "../../pages/MockData";
-const HomeSearch = ({changeIsSearch,uid}) => {
-  const [isSearch,changeSearchIsSearch] = useState(false);
+import {tableGet, tableSet,tableGetValue} from "../../util/common";
+const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
+  const [isSearch,changeSearchIsSearch] = useState(!!queryForBrowseBy);
     const [selectOption,changeSelectOption] = useState({
       area : null,
       genre : null,
@@ -156,6 +157,19 @@ const HomeSearch = ({changeIsSearch,uid}) => {
   const [imgList,changeImgList] = useState([]);
     useEffect(()=>{
       setYear();
+      let _query = queryForBrowseBy;
+      const _page = {
+        size : _query ? tableGetValue(_query.size) || 16: 16,
+        number : _query ? tableGetValue(_query.number) || 1: 1,
+        total : 0,
+      }
+      const _selectOption = {
+          area : _query ? tableGetValue(_query.area)  || null: null,
+          genre : _query ? tableGetValue(_query.genre) || null : null,
+          year : _query ? tableGetValue(_query.year) || null : null,
+          sort : _query ? tableGetValue(_query.sort) || null : null,
+          rate : _query ? tableGetValue(_query.rate) || null : null,
+      }
       setTimeout(()=>{
         const _heightOut = _.cloneDeep(heightOut);
         for(let i in selectOption){
@@ -172,7 +186,17 @@ const HomeSearch = ({changeIsSearch,uid}) => {
           }
         }
         changeHeightOut(_heightOut);
-        changeShowDom(true);
+        if(!!_query){
+          changeSearchIsSearch(true);
+          setTimeout(()=>{
+            searchList(_page,_selectOption,()=>{
+              changeShowDom(true);
+            });
+          },0)
+
+        }else{
+          changeShowDom(true);
+        }
       },0)
 
     },[])
@@ -275,12 +299,13 @@ const HomeSearch = ({changeIsSearch,uid}) => {
          </div>
        </div>
     }
-    function searchList(pageObj) {
+    function searchList(pageObj,selectOptionObj,callBack) {
       if(loading){
          message.warning("Searching, please wait");
          return;
       }
-      const { area , genre, year, sort ,rate} = selectOption;
+      let _selectOptionObj = selectOptionObj || selectOption
+      const { area , genre, year, sort ,rate} = _selectOptionObj;
       const _pageObj = pageObj || page;
       changeLoading(true);
       browseBy({
@@ -295,9 +320,14 @@ const HomeSearch = ({changeIsSearch,uid}) => {
           if(result){
             _pageObj.total = result.count;
             changePage(_pageObj);
+            changeSelectOption(_selectOptionObj);
             changeImgList([]);
             setTimeout(()=>{
               changeImgList(result.list);
+              tableSet("queryForBrowseBy",{
+                ..._selectOptionObj,
+                ..._pageObj
+              });
             },0)
           }else{
             _pageObj.total = 0;
@@ -308,6 +338,9 @@ const HomeSearch = ({changeIsSearch,uid}) => {
         changeIsSearch && changeIsSearch(true);
         changeSearchIsSearch(true);
         changeLoading(false);
+        setTimeout(()=>{
+          callBack && callBack();
+        },0)
       }).catch(err => {
         const res = {
           "code": 200,
@@ -430,7 +463,7 @@ const HomeSearch = ({changeIsSearch,uid}) => {
           <div className={"clearBoth"}/>
         </div>
           {
-            isSearch && <>
+            isSearch && showDom && <>
               {page.total > 0 &&< div className={"total-title"}>
                      There are {page.total} {page.total > 1 ? "films" : "film"}
                 </div>

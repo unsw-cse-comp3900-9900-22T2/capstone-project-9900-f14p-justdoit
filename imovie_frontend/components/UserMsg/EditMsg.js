@@ -34,25 +34,28 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
             return;
           }
           const {username,email,description} = msg;
-          if(!username){
+          if(!username || !(username &&username.trim())){
             message.warn("please enter username");
             return;
           }
-         if(!email){
+         if(!email || !(email &&email.trim())){
            message.warn("please enter email");
            return;
          }else{
-           if(!(email.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+           if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
              message.warn("Please enter a mailbox in the correct format");
              return
            }
          }
-         if(!description){
+        /* if(!description || !(description &&description.trim())){
            message.warn("please enter description");
            return;
-         }
+         }*/
          modifyUserDetail({
-           uid,username,email,description
+           uid,
+           username : username.trim(),
+           email : email.trim(),
+           description :description.trim()
          }).then(res => {
             if(res.code === 200){
                message.success("modify success");
@@ -65,10 +68,13 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                 }
               })
               setUserMsg({
-                username,email,description
+                username : username.trim(),
+                email : email.trim(),
+                description : description.trim()
               })
               window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
-                email,username
+                email : email.trim(),
+                username : username.trim()
               })));
             }else{
               message.error("modify failed");
@@ -78,15 +84,15 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          })
        }else{
          const {password,newPassWord,checkNewPassWord} = msg;
-         if(!password){
+         if(!password || !(password &&password.trim())){
            message.warn("please enter password");
            return;
          }
-         if(!newPassWord){
+         if(!newPassWord|| !(newPassWord &&newPassWord.trim())){
            message.warn("please enter newPassWord");
            return;
          }
-         if(!checkNewPassWord){
+         if(!checkNewPassWord || !(checkNewPassWord &&checkNewPassWord.trim())){
            message.warn("please check newPassWord");
            return;
          }
@@ -94,8 +100,8 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            message.warn("Entered new password differ!");
            return;
          }
-         const _pass = Base64.encode(md5(password));
-         const _new_pass = Base64.encode(md5(newPassWord));
+         const _pass = Base64.encode(md5(password.trim()));
+         const _new_pass = Base64.encode(md5(newPassWord.trim()));
          changePasswordInDetial({
            new_password : _new_pass,
            old_password : _pass,

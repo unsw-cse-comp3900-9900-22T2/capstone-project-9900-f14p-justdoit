@@ -24,11 +24,11 @@ const ResetPassword = ({resetPasswordRef}) => {
     }));
     function sendButtonEmail() {
       const {email} = newUser;
-      if(!email){
+      if(!email|| !(email &&email.trim())){
         message.warn("Please enter email");
         return
       }else{
-        if(!(email.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+        if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
           message.warn("Please enter a mailbox in the correct format");
           return
         }
@@ -63,20 +63,20 @@ const ResetPassword = ({resetPasswordRef}) => {
         cancelText="CANCEL"
         onOk={() => {
           const {code,passwordSure,password,email} = newUser;
-          if(!email){
+          if(!email|| !(email &&email.trim())){
             message.warn("Please enter email");
             return
           }else{
-            if(!(email.match(/^\w+@\w+\.\w+$/i))){
+            if(!((email &&email.trim()).match(/^\w+@\w+\.\w+$/i))){
               message.warn("Please enter a mailbox in the correct format");
               return
             }
           }
-          if(!code){
+          if(!code|| !(code &&code.trim())){
             message.warn("Please enter Verify Code");
             return
           }
-          if(!password){
+          if(!password || !(password &&password.trim())){
             message.warn("Please enter password");
             return
           }
@@ -84,10 +84,10 @@ const ResetPassword = ({resetPasswordRef}) => {
             message.warn("Entered passwords differ!");
             return
           }
-          const _pass = Base64.encode(md5(password));
+          const _pass = Base64.encode(md5(password.trim()));
           changePassword({
-            email,
-            verifycode : code,
+            email : email.trim(),
+            verifycode : code.trim(),
             password:_pass
           }).then(res => {
             if(res.code === 200){

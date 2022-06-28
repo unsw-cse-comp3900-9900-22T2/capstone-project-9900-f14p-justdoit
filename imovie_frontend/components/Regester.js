@@ -33,20 +33,20 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
         cancelText="CANCEL"
         onOk={() => {
           const {userName,passwordSure,password,email,checkAge,checkRules} = newUser;
-          if(!userName){
+          if(!userName || !(userName &&userName.trim())){
             message.warn("Please enter userName");
             return
           }
-          if(!email){
+          if(!email || !(email &&email.trim())){
             message.warn("Please enter email");
             return
           }else{
-            if(!(email.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+            if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
               message.warn("Please enter a mailbox in the correct format");
               return
             }
           }
-          if(!password){
+          if(!password || !(password &&password.trim())){
             message.warn("Please enter password");
             return
           }
@@ -62,16 +62,16 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             message.warn("Please enter some rule!");
             return
           }
-          const _pass = Base64.encode(md5(password))
+          const _pass = Base64.encode(md5(password.trim()))
           userRegister({
-            username : userName,
+            username : userName.trim(),
             password : _pass,
-            email
+            email : email.trim()
           }).then(res => {
             if(res.code === 200){
               message.success("register was successful");
               changeRegisterVisible(false);
-              changeLoginInVisible && changeLoginInVisible(true,userName);
+              changeLoginInVisible && changeLoginInVisible(true,userName.trim());
               changeNewUser({
                 userName : "",
                 password : "",

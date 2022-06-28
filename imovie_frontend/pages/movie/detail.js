@@ -1,7 +1,7 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import detailStyle from "./detail.less";
-import { Avatar, Popover, Rate ,message} from "antd";
+import { Avatar, Popover, Rate ,message,Tooltip} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
@@ -225,6 +225,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   function setAvgRate(rate){
     return rate < 0 ? 0 : rate;
   }
+  function setToolTitle(type,number){
+    return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
+  }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
@@ -240,21 +243,27 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 }}
                 className={"movie-logo"}/>
               <div className={"movie-message-show"}>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/lookTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#00e054" }}>{getMsg(movieDetail.watchlist_num)}</span>
-                </div>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/likeTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#40bcf4" }}>{getMsg(movieDetail.num_like)}</span>
-                </div>
-                <div className={"image-message-show-icon"}>
-                  <img src={"/static/collentTrue.png"}/>
-                  &nbsp;
-                  <span style={{ color: "#ff900f" }}>{getMsg(movieDetail.wishlist_num)}</span>
-                </div>
+                <Tooltip title={setToolTitle("Watched",movieDetail.watchlist_num)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/lookTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#00e054" }}>{getMsg(movieDetail.watchlist_num)}</span>
+                  </div>
+                </Tooltip>
+                <Tooltip title={setToolTitle("Liked",movieDetail.num_like)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/likeTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#40bcf4" }}>{getMsg(movieDetail.num_like)}</span>
+                  </div>
+                </Tooltip>
+                <Tooltip title={setToolTitle("Wished",movieDetail.wishlist_num)}>
+                  <div className={"image-message-show-icon"}>
+                    <img src={"/static/collentTrue.png"}/>
+                    &nbsp;
+                    <span style={{ color: "#ff900f" }}>{getMsg(movieDetail.wishlist_num)}</span>
+                  </div>
+                </Tooltip>
               </div>
               <div className={"rating"}>
                 <h6 className={"rating-title"}>Ratings:</h6>

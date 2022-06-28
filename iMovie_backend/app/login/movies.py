@@ -4,6 +4,7 @@ from app.login.utils import *
 from app.models import *
 
 
+
 def res_movie_detail(uid, user, movie):
     result = {}
     mid = movie.mid

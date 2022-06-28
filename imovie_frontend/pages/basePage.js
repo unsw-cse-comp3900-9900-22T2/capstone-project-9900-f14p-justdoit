@@ -166,7 +166,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
                 <div className={"logo"}/>
                 <div className={"tab-select"}>
                   <div className={"tab-select-line"}/>
-                 <div className={"tab-select-list"}>
+                 <div className={"tab-select-list"} style={{ justifyContent : "flex-end"}}>
                    {
                      tabList && tabList.map((item,index) => {
                        if(!!USERMESSAGE){
@@ -197,45 +197,45 @@ const Page = ({ router, children,USERMESSAGE }) => {
                    }
                  </div>
                   <div className={"tab-search"}>
-                    <div className={"tag-search-logo"}>
-                      <SearchOutlined/>
-                    </div>
-                    <DocunceSelectComponent  value={searchValue || undefined}
-                                             allowClear
-                                             placeholder="Search Movie"
-                                             size={'middle'}
-                                             fetchOptions={null}
-                                             onChange={(newValue) => {
-                                               changeSearchValue(newValue);
-                                             }}
-                                             style={{
-                                               width: '90%',
-                                             }}
-                                             defaultActiveFirstOption={false}
-                                             showArrow={false}
-                                             filterOption={false}
-                                             bordered={false}
-                                             nodeDom={(options)=>{
-                                               return options &&
-                                                 options.map((item) => {
-                                                   return (
-                                                     <Option key={'labelData_' + item.poiId + "_poiId"} value={item.poiId}>
-                                                       <div
-                                                         style={{
-                                                           width: "100%",
-                                                           wordWrap: 'break-word',
-                                                           wordBreak: 'break-all',
-                                                           whiteSpace: 'normal',
-                                                         }}
-                                                         dangerouslySetInnerHTML={{
-                                                           __html: item.hierarchy
-                                                         }}
-                                                       />
-                                                     </Option>
-                                                   );
-                                                 })
-                                             }}
-                                             showSearch />
+                    {/*<div className={"tag-search-logo"}>*/}
+                    {/*  <SearchOutlined/>*/}
+                    {/*</div>*/}
+                    {/*<DocunceSelectComponent  value={searchValue || undefined}*/}
+                    {/*                         allowClear*/}
+                    {/*                         placeholder="Search Movie"*/}
+                    {/*                         size={'middle'}*/}
+                    {/*                         fetchOptions={null}*/}
+                    {/*                         onChange={(newValue) => {*/}
+                    {/*                           changeSearchValue(newValue);*/}
+                    {/*                         }}*/}
+                    {/*                         style={{*/}
+                    {/*                           width: '90%',*/}
+                    {/*                         }}*/}
+                    {/*                         defaultActiveFirstOption={false}*/}
+                    {/*                         showArrow={false}*/}
+                    {/*                         filterOption={false}*/}
+                    {/*                         bordered={false}*/}
+                    {/*                         nodeDom={(options)=>{*/}
+                    {/*                           return options &&*/}
+                    {/*                             options.map((item) => {*/}
+                    {/*                               return (*/}
+                    {/*                                 <Option key={'labelData_' + item.poiId + "_poiId"} value={item.poiId}>*/}
+                    {/*                                   <div*/}
+                    {/*                                     style={{*/}
+                    {/*                                       width: "100%",*/}
+                    {/*                                       wordWrap: 'break-word',*/}
+                    {/*                                       wordBreak: 'break-all',*/}
+                    {/*                                       whiteSpace: 'normal',*/}
+                    {/*                                     }}*/}
+                    {/*                                     dangerouslySetInnerHTML={{*/}
+                    {/*                                       __html: item.hierarchy*/}
+                    {/*                                     }}*/}
+                    {/*                                   />*/}
+                    {/*                                 </Option>*/}
+                    {/*                               );*/}
+                    {/*                             })*/}
+                    {/*                         }}*/}
+                    {/*                         showSearch />*/}
                   </div>
                   {
                     !!USERMESSAGE && <div className="user-logo">

@@ -4,7 +4,7 @@ const path = require('path');
 const serverRouters = require('./server/routers');
 const bodyParser = require('body-parser')
 const dev = process.env.NODE_ENV !== 'production';
-
+const cors = require("cors");
 const app = next({ dev });
 const cookieParser = require('cookie-parser');
 const handle = app.getRequestHandler();
@@ -13,7 +13,7 @@ const baseJs = require( 'js-base64')
 const routerConfig = require('./router.config');
 const server = express();
 app.prepare().then(()=>{
-
+    server.use(cors());
     server.use(bodyParser.json());
     server.use(express.json());
     server.use(express.urlencoded({

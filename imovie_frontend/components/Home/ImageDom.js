@@ -52,9 +52,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
             }else{
               message.success("delete success");
+              wishListDo && wishListDo();
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
             }
-
             changeThisItem(_thisItem);
           }else{
             if(!is) {

@@ -25,31 +25,33 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
      key : 1,
      value : "wishlist",
     icon : <HeartOutlined />
-  },{
-    key : 2,
-    value : "watched",
-    icon : <EyeOutlined />
-  },{
-    key : 3,
-    value : "movielist",
-    icon : <PlaySquareOutlined />
-  },{
-    key : 4,
-    value : "history",
-    icon : <HistoryOutlined />
-  },{
-    key : 5,
-    value : "reviews",
-    icon :<HighlightOutlined />
-  },{
-    key : 6,
-    value : "like",
-    icon : <LikeOutlined />
-  },{
-    key : 7,
-    value : "dislike",
-    icon : <DislikeOutlined />
-  }])
+  },
+  //   {
+  //   key : 2,
+  //   value : "watched",
+  //   icon : <EyeOutlined />
+  // },{
+  //   key : 3,
+  //   value : "movielist",
+  //   icon : <PlaySquareOutlined />
+  // },{
+  //   key : 4,
+  //   value : "history",
+  //   icon : <HistoryOutlined />
+  // },{
+  //   key : 5,
+  //   value : "reviews",
+  //   icon :<HighlightOutlined />
+  // },{
+  //   key : 6,
+  //   value : "like",
+  //   icon : <LikeOutlined />
+  // },{
+  //   key : 7,
+  //   value : "dislike",
+  //   icon : <DislikeOutlined />
+  // }
+  ])
   useEffect(()=>{
     if(!!USERMESSAGE){
        changeUid(USERMESSAGE.uid);

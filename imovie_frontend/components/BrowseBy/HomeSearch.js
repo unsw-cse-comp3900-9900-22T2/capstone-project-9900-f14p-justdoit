@@ -387,11 +387,11 @@ const HomeSearch = ({changeIsSearch,uid}) => {
             visibility : !showDom ? "hidden" : "initial"
           }}
           className={`home-search-component ${ isSearch && "home-search-component-is-search" || ""}`}>
-          {returnListDom("AREA","area",areaList)}
-          {returnListDom("GENRE","genre",genreList)}
+          {/*{returnListDom("AREA","area",areaList)}*/}
+          {/*{returnListDom("GENRE","genre",genreList)}*/}
           {returnListDom("YEARS","year",yearList)}
           {returnListDom("RATING","rate",rateList)}
-          {returnListDom("SORT","sort",sortList)}
+          {/*{returnListDom("SORT","sort",sortList)}*/}
           <div className={"operation"}>
             <Button
               onClick={()=>{

@@ -373,65 +373,65 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           </div>
         </>
         }
-          <div className={"reviews-list"}>
-              <div className={"review-title"}>
-                <p>Related Reviews{!!isLogin && <span  onClick={()=>{
-                                              const _year = movieDetail.year;
-                                              reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",
-                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
-                                            }}
-                >add review</span>}</p>
-                <div className={"review-more"}>
-                  More >
-                </div>
-              </div>
-              <div className={"review-box"}>
-                {reviewsList && reviewsList.map((item,index)=>{
-                  return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}
-                              key={"review-box-item-" + index}>
-                     <div className={"user-logo"}>
-                       <Avatar size={40}  icon={<UserOutlined />} />
-                     </div>
-                     <div className={"review-body"}>
-                        <div className={"user-name"}>
-                          <span className={"userName"}>Review By:<span>{item.userName}</span></span>
-                            <div className={"rate"}>
-                               <Rate  style={{
-                                  fontSize : "14px"
-                               }} allowHalf disabled defaultValue={item.rate || 1} />
-                                &nbsp;({item.rate || 1})
-                            </div>
-                        </div>
-                        <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
-                          {item.reviews}
-                        </div>
-                       {!!isLogin && <div className={"operation"}>
-                         <div className={"operation-like"}>
-                           <div
-                             onClick={()=>{
-                               const _reviewsList = _.cloneDeep(reviewsList);
-                               const isLike = _reviewsList[index].userIsLike;
-                               _reviewsList[index].userIsLike = !isLike;
-                               changeReviewsList(_reviewsList);
-                             }}
-                             className={"image-box"}>{svgGet(0,item.userIsLike)}</div>
-                           <div className={"a-href"}>
-                             {item.userIsLike &&  "Like review"}
-                           </div>
-                         </div>
-                         <div className={"operation-like-number"}>
-                           {getMsg(item.likes)} Likes
-                         </div>
-                       </div>}
-                     </div>
-                  </div>
-                })}
-              </div>
-          </div>
+          {/*<div className={"reviews-list"}>*/}
+          {/*    <div className={"review-title"}>*/}
+          {/*      <p>Related Reviews{!!isLogin && <span  onClick={()=>{*/}
+          {/*                                    const _year = movieDetail.year;*/}
+          {/*                                    reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible*/}
+          {/*                                    && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",*/}
+          {/*                                      movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);*/}
+          {/*                                  }}*/}
+          {/*      >add review</span>}</p>*/}
+          {/*      <div className={"review-more"}>*/}
+          {/*        More >*/}
+          {/*      </div>*/}
+          {/*    </div>*/}
+          {/*    <div className={"review-box"}>*/}
+          {/*      {reviewsList && reviewsList.map((item,index)=>{*/}
+          {/*        return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}*/}
+          {/*                    key={"review-box-item-" + index}>*/}
+          {/*           <div className={"user-logo"}>*/}
+          {/*             <Avatar size={40}  icon={<UserOutlined />} />*/}
+          {/*           </div>*/}
+          {/*           <div className={"review-body"}>*/}
+          {/*              <div className={"user-name"}>*/}
+          {/*                <span className={"userName"}>Review By:<span>{item.userName}</span></span>*/}
+          {/*                  <div className={"rate"}>*/}
+          {/*                     <Rate  style={{*/}
+          {/*                        fontSize : "14px"*/}
+          {/*                     }} allowHalf disabled defaultValue={item.rate || 1} />*/}
+          {/*                      &nbsp;({item.rate || 1})*/}
+          {/*                  </div>*/}
+          {/*              </div>*/}
+          {/*              <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>*/}
+          {/*                {item.reviews}*/}
+          {/*              </div>*/}
+          {/*             {!!isLogin && <div className={"operation"}>*/}
+          {/*               <div className={"operation-like"}>*/}
+          {/*                 <div*/}
+          {/*                   onClick={()=>{*/}
+          {/*                     const _reviewsList = _.cloneDeep(reviewsList);*/}
+          {/*                     const isLike = _reviewsList[index].userIsLike;*/}
+          {/*                     _reviewsList[index].userIsLike = !isLike;*/}
+          {/*                     changeReviewsList(_reviewsList);*/}
+          {/*                   }}*/}
+          {/*                   className={"image-box"}>{svgGet(0,item.userIsLike)}</div>*/}
+          {/*                 <div className={"a-href"}>*/}
+          {/*                   {item.userIsLike &&  "Like review"}*/}
+          {/*                 </div>*/}
+          {/*               </div>*/}
+          {/*               <div className={"operation-like-number"}>*/}
+          {/*                 {getMsg(item.likes)} Likes*/}
+          {/*               </div>*/}
+          {/*             </div>}*/}
+          {/*           </div>*/}
+          {/*        </div>*/}
+          {/*      })}*/}
+          {/*    </div>*/}
+          {/*</div>*/}
       </div>
-      <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
-                             isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>
+      {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
+      {/*                       isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>*/}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){

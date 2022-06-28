@@ -12,8 +12,13 @@ const baseJs = require( 'js-base64')
 
 const routerConfig = require('./router.config');
 const server = express();
+const corsOptions ={
+    origin:'http://localhost:5000',
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
 app.prepare().then(()=>{
-    server.use(cors());
+    server.use(cors(corsOptions));
     server.use(bodyParser.json());
     server.use(express.json());
     server.use(express.urlencoded({
@@ -21,7 +26,13 @@ app.prepare().then(()=>{
     }));
     server.use(cookieParser());
     server.use('/static', express.static(path.join(__dirname, 'static')))
-
+    server.use( (req, res, next) =>{
+        //Enabling CORS
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type,Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+        next();
+    });
     serverRouters(server);
     routerConfig(app,server);
     server.all(`/movie/*`, (req, res, next) => {

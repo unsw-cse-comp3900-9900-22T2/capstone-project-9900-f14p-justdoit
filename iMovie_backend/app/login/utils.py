@@ -88,7 +88,7 @@ def create_verifycode(num):
 #print movies basic on xx keyword
 def print_avg_rate(res_list):
     for i in res_list:
-        print("%s:%s " % (i['moviename'], i['avg_rate']))
+        print("%s:  %s  %s" % (i['moviename'], i['avg_rate'], i['year']))
 
 # order movies alphabetical after order by xxx categories
 # ex: after order by avg_rate, we need to order them by alphabetical
@@ -105,3 +105,21 @@ def orderBy_alphabetical(movie_list, keyword):
             cmp_val = m[keyword]
         temp.append(m)
     return res_list
+
+#"1921, 2022,2003" => [1921, 2022, 2003] str to list
+def year_strToList(year):
+    if year == None or len(year) ==0 :
+        return list()
+    year_lst = list()
+    tmp = ""
+    for i in year:
+        if str.isspace(i):
+            continue
+        if i == ',':
+            year_lst.append(int(tmp))
+            tmp = ""
+        else:
+            if str.isnumeric(i):
+                tmp += i
+    year_lst.append(int(tmp))
+    return year_lst

@@ -182,30 +182,42 @@ const HomeSearch = ({changeIsSearch,uid}) => {
     let fiveYear = 0;
     for(let i = 0 ; i < 5 ; i++){
       _yearList.push({
-        key: (noYear - i) + "-" + (noYear - i),
+        key: (noYear - i),
         value : noYear - i
       })
       if(i === 4){
         fiveYear = noYear - i;
       }
     }
+    const sixObjList = [];
+    for(let i = (fiveYear - 5) ; i <= (fiveYear - 1) ; i++){
+      sixObjList.push(i);
+    }
     const sixObj = {
-      key: (fiveYear - 5) + "-" + (fiveYear - 1),
+      key: sixObjList.join(","),
       value : (fiveYear - 5) + "-" + (fiveYear - 1),
     }
     _yearList.push(sixObj);
+      const sevenObjList = [];
+      for(let i = (fiveYear - 10) ; i <= (fiveYear - 6) ; i++){
+        sevenObjList.push(i);
+      }
     const sevenObj = {
-      key: (fiveYear - 10) + "-" + (fiveYear - 6),
+      key: sevenObjList.join(","),
       value : (fiveYear - 10) + "-" + (fiveYear - 6),
     }
     _yearList.push(sevenObj);
+      const eightObjList = [];
+      for(let i = (fiveYear - 20) ; i <= (fiveYear - 11) ; i++){
+        eightObjList.push(i);
+      }
     const eightObj = {
-      key: (fiveYear - 20) + "-" + (fiveYear - 11),
+      key: eightObjList.join(","),
       value : (fiveYear - 20) + "-" + (fiveYear - 11),
     }
     _yearList.push(eightObj);
     const nineObj = {
-      key: "-" + (fiveYear - 21),
+      key: -1,
       value : "before",
     }
     _yearList.push(nineObj);
@@ -275,6 +287,7 @@ const HomeSearch = ({changeIsSearch,uid}) => {
         page_index : _pageObj.number - 1,
         page_size : _pageObj.size,
         rating : rate,
+        year : year !== null && year !== undefined ? (year && year.toString() || "") : null,
         uid
       }).then(res => {
         if(res.code === 200){
@@ -427,7 +440,7 @@ const HomeSearch = ({changeIsSearch,uid}) => {
                   return <ImageDomComponent
                     item={item}
                     index={index}
-                    isLogin={true}
+                    isLogin={!!uid}
                     marginRight={{
                       marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                     }}

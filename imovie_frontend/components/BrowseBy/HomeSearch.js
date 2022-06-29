@@ -242,7 +242,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
     _yearList.push(eightObj);
     const nineObj = {
       key: -1,
-      value : "BEFORE",
+      value : "Before",
     }
     _yearList.push(nineObj);
     changeYearList(_yearList);

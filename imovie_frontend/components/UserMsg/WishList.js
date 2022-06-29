@@ -167,7 +167,7 @@ const WishListComponent = ({uid}) => {
                                              }}
                                              clearMovie={(index3)=>{
                                                confirm({
-                                                 title: 'Are you sure you want to delete this movie in your wishlist?',
+                                                 title: 'Are you sure you want to remove this movie from your wishlist?',
                                                  icon: <ExclamationCircleOutlined />,
                                                  okText : "YES",
                                                  cancelText : "NO",

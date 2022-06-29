@@ -48,7 +48,10 @@ const Rating = ({ratingRef,changeRating}) => {
             rate
           }).then(res => {
              if(res.code === 200){
-               message.success("Rated movie successfully");
+               if(!!rate){
+                 message.success("Rated movie successfully");
+               }
+
                changeVisible(false);
                changeRate(0);
                changeMovieName("");

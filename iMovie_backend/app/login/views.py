@@ -163,7 +163,7 @@ def change_password_in_detial():
         return jsonify({'code': 400, 'msg': 'Old password is wrong'})
 
     if old_password == new_password:
-        return jsonify({'code': 400, 'msg': 'New password is same to old password'})
+        return jsonify({'code': 400, 'msg': 'New password is same as old password'})
     try:
         en_password = EnPassWord(new_password)
         user.password = en_password

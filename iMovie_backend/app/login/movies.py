@@ -237,7 +237,7 @@ def rating_movie():
         movie.utime = getTime()[0]
         db.session.commit()
         result = {}
-        result["avg_rate"] = round(avg_rate_new, 2)
+        result["avg_rate"] = round(avg_rate_new, 1)
         return jsonify({'code': 200, 'msg': 'Successful rating', "result": result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})

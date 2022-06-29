@@ -49,19 +49,19 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
         }).then(res => {
           if(res.code === 200){
             if(!is){
-              message.success("add success");
+              message.success("Added successfully");
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
             }else{
-              message.success("delete success");
+              message.success("Deleted successfully");
               wishListDo && wishListDo();
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
             }
             changeThisItem(_thisItem);
           }else{
             if(!is) {
-              message.error("add fail")
+              message.error("Failed to add")
             }else{
-              message.error("delete fail")
+              message.error("Failed to delete")
             }
           }
         })
@@ -183,7 +183,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
               <Popover
                 zIndex={13}
                 overlayClassName='popUpStatus'
-                placement="rightTop" title={"More Operation"} content={()=>{
+                placement="rightTop" title={"More Operations"} content={()=>{
                 return <div className={"swiper-component-operation"}>
                   <div
                     onClick={()=>{
@@ -192,23 +192,23 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
                         mid,uid,is_user_rate);
                     }}
                     className={"swiper-component-operation-item padding1"}>
-                    Rating
+                    Rate
                   </div>
-                  <div
-                    onClick={()=>{
-                      reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                      && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
-                        mid,uid);
-                    }}
-                    className={"swiper-component-operation-item"}>
-                    Reviews and info
-                  </div>
+                  {/*<div*/}
+                  {/*  onClick={()=>{*/}
+                  {/*    reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible*/}
+                  {/*    && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),*/}
+                  {/*      mid,uid);*/}
+                  {/*  }}*/}
+                  {/*  className={"swiper-component-operation-item"}>*/}
+                  {/*  Reviews and info*/}
+                  {/*</div>*/}
                   <div
                     onClick={()=>{
                       changeOperation(3,index)
                     }}
                     className={"swiper-component-operation-item border-no padding2"}>
-                    {is_user_dislike ? "Cancel DisLike" : "DisLike"}
+                    {is_user_dislike ? "Cancel Dislike" : "Dislike"}
                   </div>
                 </div>
               }}>

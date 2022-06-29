@@ -26,10 +26,11 @@ const Rating = ({ratingRef,changeRating}) => {
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: RatingStyle }} />
       <Modal
-        title="Rating"
+        title="RATE THIS"
         centered
         visible={visible}
-        okText="submit"
+        okText="SUBMIT"
+        cancelText={"CANCEL"}
         destroyOnClose={true}
         onOk={() =>{
           if(!mid){
@@ -47,16 +48,16 @@ const Rating = ({ratingRef,changeRating}) => {
             rate
           }).then(res => {
              if(res.code === 200){
-               message.success("rating movie success");
+               message.success("Rated movie successfully");
                changeVisible(false);
                changeRate(0);
                changeMovieName("");
                changeRating && changeRating(mid,rate,res.result && res.result.avg_rate || 0);
              }else{
-               message.error("rating movie error");
+               message.error("Rated movie failed");
              }
           }).catch(err =>{
-            message.success("rating movie success");
+            message.error("Rated movie failed");
             changeVisible(false);
             changeRate(0);
             changeMovieName("");

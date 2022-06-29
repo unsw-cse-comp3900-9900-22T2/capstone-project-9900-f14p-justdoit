@@ -23,7 +23,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
   const [showDom,changeShowDom] = useState(false);
   const [tabList] = useState([{
      key : 1,
-     value : "wishlist",
+     value : "Wishlist",
     icon : <HeartOutlined />
   },
   //   {

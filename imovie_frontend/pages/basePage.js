@@ -82,7 +82,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       }
       changeUserTabList([...MSGList,...[{
         key : 3,
-        value : "profile",
+        value : "Profile",
         hasBorder : false,
         href : "/movie/userMsg"
       },
@@ -94,7 +94,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       // },
         {
         key : 5,
-        value : "wishList",
+        value : "Wishlist",
         hasBorder : false,
         href : "/movie/userMsg?activeKey=1&nouser=1"
       },
@@ -126,7 +126,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       // },
         {
         key : 11,
-        value : "sight out",
+        value : "Sight Out",
         hasBorder : false
       }]])
     }

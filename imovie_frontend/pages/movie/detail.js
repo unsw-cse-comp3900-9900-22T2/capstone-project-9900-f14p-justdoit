@@ -327,7 +327,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     }}
                     className={"image-box"}>{svgGet(1, movieDetail.is_user_watch)}</div>
                   <div className={"a-href"}>
-                    Watch
+                    Watchlist
                   </div>
                 </div>
                 <div className={"operation-image"}>
@@ -375,7 +375,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>}
                   </div>
                   <div className={"a-href"}>
-                    Rating
+                    Rate
                   </div>
                 </div>
               </div>

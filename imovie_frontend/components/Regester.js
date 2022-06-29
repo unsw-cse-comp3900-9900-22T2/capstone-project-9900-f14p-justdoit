@@ -34,15 +34,15 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
         onOk={() => {
           const {userName,passwordSure,password,email,checkAge,checkRules} = newUser;
           if(!userName || !(userName &&userName.trim())){
-            message.warn("Please enter userName");
+            message.warn("Please enter your username");
             return
           }
           if(!email || !(email &&email.trim())){
-            message.warn("Please enter email");
+            message.warn("Please enter your email");
             return
           }else{
             if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-              message.warn("Please enter a mailbox in the correct format");
+              message.warn("Please enter your email in the correct format");
               return
             }
           }
@@ -51,7 +51,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             return
           }
           if(password !== passwordSure){
-            message.warn("Entered passwords differ!");
+            message.warn("Passwords must match!");
             return
           }
           if(!checkAge){
@@ -69,7 +69,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             email : email.trim()
           }).then(res => {
             if(res.code === 200){
-              message.success("register was successful");
+              message.success("Your registration was successful");
               changeRegisterVisible(false);
               changeLoginInVisible && changeLoginInVisible(true,userName.trim());
               changeNewUser({
@@ -98,11 +98,11 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
         }}>
         <div className={"modal_box"}>
           <div className="box">
-            <h6>UserName</h6>
+            <h6>Username</h6>
             <div className="switch_box">
               <Input
                 value={newUser.userName}
-                placeholder="Please enter userName"
+                placeholder="Please enter your username"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
                   const _value = e.target.value;
@@ -119,7 +119,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
               <Input
                 prefix={<MailOutlined />}
                 value={newUser.email}
-                placeholder="Please enter email"
+                placeholder="Please enter your email"
                 onChange={(e) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(newUser)
@@ -173,7 +173,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
               checkRules:false
             })
             changeLoginInVisible && changeLoginInVisible(true)
-          }}>Login</span>
+          }}>LOGIN</span>
           </h6>
           <div className={"check-box"}>
             <Checkbox

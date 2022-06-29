@@ -25,11 +25,11 @@ const ResetPassword = ({resetPasswordRef}) => {
     function sendButtonEmail() {
       const {email} = newUser;
       if(!email|| !(email &&email.trim())){
-        message.warn("Please enter email");
+        message.warn("Please enter your email");
         return
       }else{
         if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-          message.warn("Please enter a mailbox in the correct format");
+          message.warn("Please enter your email in the correct format");
           return
         }
       }
@@ -46,10 +46,10 @@ const ResetPassword = ({resetPasswordRef}) => {
             }
           });
         }else{
-          message.error("send email error")
+          message.error("Send email error, please check your email.")
         }
       }).catch(err => {
-         message.error("send email error")
+         message.error("Send email error, please check your email.")
       })
     }
     return (
@@ -64,11 +64,11 @@ const ResetPassword = ({resetPasswordRef}) => {
         onOk={() => {
           const {code,passwordSure,password,email} = newUser;
           if(!email|| !(email &&email.trim())){
-            message.warn("Please enter email");
+            message.warn("Please enter your email");
             return
           }else{
             if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-              message.warn("Please enter a mailbox in the correct format");
+              message.warn("Please enter your email in the correct format");
               return
             }
           }
@@ -81,7 +81,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             return
           }
           if(password !== passwordSure){
-            message.warn("Entered passwords differ!");
+            message.warn("Passwords must match!");
             return
           }
           const _pass = Base64.encode(md5(password.trim()));
@@ -91,7 +91,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             password:_pass
           }).then(res => {
             if(res.code === 200){
-              message.success("change password successful");
+              message.success("Change password successful");
               changeRegisterVisible(false);
               changeNewUser({
                 code : "",
@@ -120,7 +120,7 @@ const ResetPassword = ({resetPasswordRef}) => {
               <Input
                 prefix={<MailOutlined />}
                 value={newUser.email}
-                placeholder="Please enter email"
+                placeholder="Please enter your email"
                 onChange={(e) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(newUser)
@@ -135,7 +135,7 @@ const ResetPassword = ({resetPasswordRef}) => {
                 onClick={()=>{
                   sendButtonEmail()
                 }}
-                type="primary">Send Email</Button>
+                type="primary">SEND EMAIL</Button>
             </div>
           </div>
           <div className="box">

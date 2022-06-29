@@ -21,7 +21,8 @@ const ReviewsInfo = ({reviewsInfoRef}) => {
         title="Reviews and Info"
         centered
         visible={visible}
-        okText="submit"
+        okText="SUBMIT"
+        cancelText={"CANCEL"}
         onOk={() =>{
           console.log("value",value)
           changeVisible(false);

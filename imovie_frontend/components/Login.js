@@ -34,11 +34,11 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
         onOk={() => {
           const {userName,password} = user;
           if(!userName|| !(userName &&userName.trim())){
-            message.warn("Please enter username");
+            message.warn("Please enter your username");
             return
           }
           if(!password|| !(password &&password.trim())){
-            message.warn("Please enter password");
+            message.warn("Please enter your password");
             return
           }
           const _pass = Base64.encode(md5(password.trim()))
@@ -47,7 +47,7 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             password : _pass
           }).then(res => {
             if(res.code === 200){
-              message.success("register was successful");
+              message.success("Your registration was successful");
               const msg = res.result;
               const {uid,token,email,username} = msg;
               setCookie("USER_MESSAGE",JSON.stringify({
@@ -95,11 +95,11 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
         }}>
         <div className={"modal_box"}>
           <div className="box box2">
-            <h6>UserName</h6>
+            <h6>Username</h6>
             <div className="switch_box">
               <Input
                 value={user.userName}
-                placeholder="Please enter username"
+                placeholder="Please enter your username"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
                   const _value = e.target.value;

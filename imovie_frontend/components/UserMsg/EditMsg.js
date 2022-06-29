@@ -30,20 +30,20 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
     function submitMsg() {
        if(!isChangePassWord){
           if(JSON.stringify(initMsg) === JSON.stringify(msg)){
-            message.warn("nothing change");
+            message.warn("Nothing change");
             return;
           }
           const {username,email,description} = msg;
           if(!username || !(username &&username.trim())){
-            message.warn("please enter username");
+            message.warn("Please enter your username");
             return;
           }
          if(!email || !(email &&email.trim())){
-           message.warn("please enter email");
+           message.warn("Please enter your email");
            return;
          }else{
            if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-             message.warn("Please enter a mailbox in the correct format");
+             message.warn("Please enter your email in the correct format.");
              return
            }
          }
@@ -58,7 +58,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            description :(description || "" ).trim()
          }).then(res => {
             if(res.code === 200){
-               message.success("modify success");
+               message.success("Modified successfully");
               changeInitMsg({
                 ...msg,
                 ...{
@@ -77,27 +77,27 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                 username : username.trim()
               })));
             }else{
-              message.error(res.msg   || "modify failed");
+              message.error(res.msg   || "Modified failed");
             }
          }).catch(err =>{
-           message.error("modify failed");
+           message.error("Modified failed");
          })
        }else{
          const {password,newPassWord,checkNewPassWord} = msg;
          if(!password || !(password &&password.trim())){
-           message.warn("please enter password");
+           message.warn("Please enter password");
            return;
          }
          if(!newPassWord|| !(newPassWord &&newPassWord.trim())){
-           message.warn("please enter newPassWord");
+           message.warn("Please enter new password");
            return;
          }
          if(!checkNewPassWord || !(checkNewPassWord &&checkNewPassWord.trim())){
-           message.warn("please check newPassWord");
+           message.warn("Please check new Password");
            return;
          }
          if(newPassWord !== checkNewPassWord){
-           message.warn("Entered new password differ!");
+           message.warn("Passwords must match!");
            return;
          }
          const _pass = Base64.encode(md5(password.trim()));
@@ -108,12 +108,22 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            uid
          }).then(res => {
            if(res.code === 200){
-             message.success("change password successful");
+             message.success("Password reset complete");
+             changeIsChangePassWord(false);
+             const _newPageMessage = _.clone(msg);
+             changeMsg({
+               ..._newPageMessage,
+               ...{
+                 password : "",
+                 newPassWord : "",
+                 checkNewPassWord : ""
+               }
+             })
            }else{
-             message.error(res.msg ||  "change password error")
+             message.error(res.msg ||  "Password change failed")
            }
          }).catch(err => {
-           message.error("change password error")
+           message.error("Password change failed")
          })
        }
     }
@@ -151,7 +161,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                <Input
                  disabled={isChangePassWord}
                  value={msg.username}
-                 placeholder="Please enter username"
+                 placeholder="Please enter your username"
                  onChange={(e) => {
                    const _value = e.target.value;
                    const _newPageMessage = _.clone(msg);
@@ -162,12 +172,12 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
              </div>
             <div className={"profile-item"}>
               <h6>
-                Email address
+                Email
               </h6>
               <Input
                 disabled={isChangePassWord}
                 value={msg.email}
-                placeholder="Please enter email address"
+                placeholder="Please enter your email"
                 onChange={(e) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(msg);
@@ -239,7 +249,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                     _newPageMessage.description = _value;
                     changeMsg(_newPageMessage);
                   }}
-                  placeholder="Writing you description"
+                  placeholder="Writing your description"
                   maxLength={800}
                   autoSize={{ minRows: 4, maxRows: 8 }}
                 />
@@ -253,14 +263,14 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                  changeIsChangePassWord(true);
                }}
             >
-              Change Password
+              CHANGE PASSWORD
             </Button> : <div/>}
             <Button
               onClick={()=>{
                 submitMsg();
               }}
               type="primary">
-              {!isChangePassWord ? "Save Changes" : "Change Password"}
+              {!isChangePassWord ? "SAVE CHANGES" : "CHANGE PASSWORD"}
             </Button>
           </div>
 

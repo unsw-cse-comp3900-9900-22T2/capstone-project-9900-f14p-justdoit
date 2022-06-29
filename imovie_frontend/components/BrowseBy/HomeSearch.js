@@ -242,7 +242,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
     _yearList.push(eightObj);
     const nineObj = {
       key: -1,
-      value : "before",
+      value : "BEFORE",
     }
     _yearList.push(nineObj);
     changeYearList(_yearList);
@@ -449,7 +449,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
                   sort : null
                 });
               }}
-              className="clear">clear</Button>
+              className="clear">CLEAR</Button>
             <Button type="primary"
                     onClick={()=>{
                       const _page = _.cloneDeep(page);
@@ -458,7 +458,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
                        searchList(_page);
                     }}
                     disabled={loading}
-                    className="search">{loading ? "search Loading" : "search"}</Button>
+                    className="search">{loading ? "SEARCH LOADING" : "SEARCH"}</Button>
           </div>
           <div className={"clearBoth"}/>
         </div>

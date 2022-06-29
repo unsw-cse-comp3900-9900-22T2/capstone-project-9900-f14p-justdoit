@@ -11,16 +11,16 @@ import {getWishlist,wishlistAddOrDelete,clearWishlist} from "../../pages/MockDat
 const WishListComponent = ({uid}) => {
     const [sortList] = useState([{
       key : 0,
-      value : "add time"
+      value : "Add Time"
     },{
       key : 1,
-      value : "highest rating"
+      value : "Highest Rating"
     },{
       key : 2,
-      value : "lowest rating"
+      value : "Lowest Rating"
     },{
       key : 3,
-      value : "year"
+      value : "Year"
     }]);
     const [page,changePage] = useState({
        size : 12,
@@ -68,10 +68,10 @@ const WishListComponent = ({uid}) => {
     }
   function addWatchList() {
     confirm({
-      title: 'Are you sure you want to turn all the movies on wishList into watched?',
+      title: 'Are you sure you want to turn all the movies on Wishlist into watched?',
       icon: <ExclamationCircleOutlined />,
-      okText : "Yes",
-      cancelText : "No",
+      okText : "YES",
+      cancelText : "NO",
       onOk() {
         console.log('OK');
       }
@@ -79,20 +79,19 @@ const WishListComponent = ({uid}) => {
   }
   function clearWishList() {
     confirm({
-      title: 'Are you sure you want to clear wishList?',
+      title: 'Are you sure you want to clear Wishlist?',
       icon: <ExclamationCircleOutlined />,
-      okText : "Yes",
-      cancelText : "No",
+      okText : "YES",
+      cancelText : "NO",
       onOk() {
-        console.log('OK');
         clearWishlist({
            uid
         }).then(res => {
            if(res.code === 200){
-              message.success("clear success");
+              message.success("Clear successfully");
               fetchData();
            }else{
-             message.success("clear fail");
+             message.error("Clear failed");
            }
         })
       }
@@ -106,10 +105,10 @@ const WishListComponent = ({uid}) => {
       add_or_del : "delete"
     }).then(res => {
        if(res.code === 200){
-         message.success("delete success");
+         message.success("Deleted successfully");
          fetchData();
        }else{
-         message.error("delete failed");
+         message.error("Failed to delete");
        }
     })
   }
@@ -129,7 +128,7 @@ const WishListComponent = ({uid}) => {
                         addWatchList();
                       }}
                       className={"operation-item"}>
-                      add films to watch list
+                      add films to watchlist
                     </h6>
                     <div className={"line"}/>
                     <h6
@@ -137,7 +136,7 @@ const WishListComponent = ({uid}) => {
                         clearWishList();
                       }}
                       className={"operation-item"}>
-                      clear wish list
+                      clear wishlist
                     </h6>
                     <div className={"line"}/>
                     <Select
@@ -147,8 +146,8 @@ const WishListComponent = ({uid}) => {
                       allowClear={true}
                       className={"select-operation"}
                       defaultValue={null}
-                      placeholder={"sort by"}
-                      style={{ width: 120 }} bordered={false}>
+                      placeholder={"SORT BY"}
+                      style={{ width: 150, textAlign : "center" }} bordered={false}>
                       {
                         sortList && sortList.map((item, index) => {
                           return <Option value={item.key}>{item.value}</Option>
@@ -168,10 +167,10 @@ const WishListComponent = ({uid}) => {
                                              }}
                                              clearMovie={(index3)=>{
                                                confirm({
-                                                 title: 'Are you sure you want to delete this movie in your wishList?',
+                                                 title: 'Are you sure you want to delete this movie in your wishlist?',
                                                  icon: <ExclamationCircleOutlined />,
-                                                 okText : "Yes",
-                                                 cancelText : "No",
+                                                 okText : "YES",
+                                                 cancelText : "NO",
                                                  onOk() {
                                                    clearMovie(index3);
                                                  }

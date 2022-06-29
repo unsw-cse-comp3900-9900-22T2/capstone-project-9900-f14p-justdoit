@@ -16,7 +16,7 @@ Week 2 Plan
 Complete the user requirements analysis and later design and define the structure of the database.
 Build the back-end front-end framework for the project.
 
-write date: 2022/06/05
+write date: 05/06/2022
 -------------------------------------------------- --------------------------------------
 
 Week 2
@@ -25,6 +25,7 @@ Week 2
 2. Complete the assigned user story writing tasks.
 3. Learn front-end knowledge.
 
+write date: 12/06/2022
 -------------------------------------------------- --------------------------------------
 
 week 3
@@ -34,9 +35,12 @@ week 3
 3. Communicate with other team members who draw prototype diagrams and draw large page jump diagrams for proposals
 4. Complete the page related function description for the proposal
 
+write date: 19/06/2022
 -------------------------------------------------- --------------------------------------
 
 Week 4
 
 1. Configure the programming environment.
 2. Organize the movie database, filter and replace the wrong movie data, and improve the movie information with missing information
+
+write date: 24/06/2022

@@ -17,3 +17,26 @@ Complete the user requirements analysis and later design and define the structur
 Build the back-end front-end framework for the project.
 
 write date: 2022/06/05
+-------------------------------------------------- --------------------------------------
+
+Week 2
+
+1. Participate in group meetings and integrate a complete list of needs according to the needs brain map.
+2. Complete the assigned user story writing tasks.
+3. Learn front-end knowledge.
+
+-------------------------------------------------- --------------------------------------
+
+week 3
+
+1. Participate in the meeting and complete the assigned proposal work.
+2. Draw prototype interface: wishlist, watchlist, movielist, movie list details page, blacklist. For proposals and subsequent coding
+3. Communicate with other team members who draw prototype diagrams and draw large page jump diagrams for proposals
+4. Complete the page related function description for the proposal
+
+-------------------------------------------------- --------------------------------------
+
+Week 4
+
+1. Configure the programming environment.
+2. Organize the movie database, filter and replace the wrong movie data, and improve the movie information with missing information

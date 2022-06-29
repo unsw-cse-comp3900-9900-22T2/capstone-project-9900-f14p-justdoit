@@ -42,7 +42,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            message.warn("please enter email");
            return;
          }else{
-           if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+           if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
              message.warn("Please enter a mailbox in the correct format");
              return
            }
@@ -77,7 +77,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                 username : username.trim()
               })));
             }else{
-              message.error("modify failed");
+              message.error(res.msg   || "modify failed");
             }
          }).catch(err =>{
            message.error("modify failed");
@@ -110,7 +110,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            if(res.code === 200){
              message.success("change password successful");
            }else{
-             message.error(res.msg)
+             message.error(res.msg ||  "change password error")
            }
          }).catch(err => {
            message.error("change password error")

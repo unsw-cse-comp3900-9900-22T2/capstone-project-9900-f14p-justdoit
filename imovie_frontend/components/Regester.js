@@ -34,14 +34,14 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
         onOk={() => {
           const {userName,passwordSure,password,email,checkAge,checkRules} = newUser;
           if(!userName || !(userName &&userName.trim())){
-            message.warn("Please enter username");
+            message.warn("Please enter userName");
             return
           }
           if(!email || !(email &&email.trim())){
             message.warn("Please enter email");
             return
           }else{
-            if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+            if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
               message.warn("Please enter a mailbox in the correct format");
               return
             }
@@ -102,7 +102,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             <div className="switch_box">
               <Input
                 value={newUser.userName}
-                placeholder="Please enter username"
+                placeholder="Please enter userName"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
                   const _value = e.target.value;

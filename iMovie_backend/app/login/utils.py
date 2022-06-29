@@ -58,9 +58,11 @@ def login_require(func):
 
 # chect validate Email, 1:validate, 0:invalidate
 def validateEmail(email):
-    if len(email) > 7:
-        if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
-            print("good")
+    if len(email) > 7 and len(email) < 60:
+        # if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
+            # print("good")
+        # if "@" in email:
+        if re.match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$", email) != None:
             return 1
     return 0
 

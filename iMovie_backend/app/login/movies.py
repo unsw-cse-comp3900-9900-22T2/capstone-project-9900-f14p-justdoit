@@ -29,7 +29,7 @@ def res_movie_detail(uid, user, movie):
     result["country"] = movie.country
     result["language"] = movie.language
     if movie.avg_rate:
-        result["avg_rate"] = round(movie.avg_rate, 2)
+        result["avg_rate"] = round(movie.avg_rate, 1)
     else:
         result["avg_rate"] = -1
     result["release_date"] = movie.release_date

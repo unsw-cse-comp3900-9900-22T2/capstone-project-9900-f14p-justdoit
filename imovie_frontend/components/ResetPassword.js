@@ -28,7 +28,7 @@ const ResetPassword = ({resetPasswordRef}) => {
         message.warn("Please enter email");
         return
       }else{
-        if(!((email &&email.trim()).match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"))){
+        if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
           message.warn("Please enter a mailbox in the correct format");
           return
         }
@@ -67,7 +67,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             message.warn("Please enter email");
             return
           }else{
-            if(!((email &&email.trim()).match(/^\w+@\w+\.\w+$/i))){
+            if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
               message.warn("Please enter a mailbox in the correct format");
               return
             }

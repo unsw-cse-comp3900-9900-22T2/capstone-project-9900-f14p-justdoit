@@ -19,7 +19,7 @@ def res_movie_detail(uid, user, movie):
     genre_cap = []
     for i in genre_list:
         genre_cap.append(i.capitalize())
-        print(i.capitalize())
+        # print(i.capitalize())
     result["genre"] = genre_cap
     cast_list = movie.cast.split(";")
     result["cast"] = cast_list
@@ -154,8 +154,10 @@ def get_movies():
         if num >= 16:
             break;
         mdict = res_movie_detail(uid, user, i)
-        num = num + 1
-        mlist.append(mdict)
+        if "Music" not in mdict["genre"]:
+            # print(mdict["genre"])
+            num = num + 1
+            mlist.append(mdict)
     result["count"] = num
     result["mlist"] = mlist
     return jsonify({'code': 200, 'result': result})

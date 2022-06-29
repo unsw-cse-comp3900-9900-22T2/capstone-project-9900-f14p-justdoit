@@ -55,7 +55,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            uid,
            username : username.trim(),
            email : email.trim(),
-           description :description.trim()
+           description :(description || "" ).trim()
          }).then(res => {
             if(res.code === 200){
                message.success("modify success");
@@ -70,7 +70,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
               setUserMsg({
                 username : username.trim(),
                 email : email.trim(),
-                description : description.trim()
+                description : (description || "" ).trim()
               })
               window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
                 email : email.trim(),

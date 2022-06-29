@@ -188,11 +188,21 @@ def modify_user_detail():
 
     if not user:
         return jsonify({'code': 400, 'msg': 'User is not defined'})
+    username = username.strip()
+    email = email.strip()
+    description = description.strip()
+    if not username or not email:
+        return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
+
     if user.username != username:
         check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
         if check_username:
             return jsonify({'code' : 400, 'msg': 'User name already exists'})
+        if len(username) > 50:
+            return jsonify({'code': 400, 'msg': 'Your username is too long.'})
     if user.email != email:
+        if not validateEmail(email):
+            return jsonify({'code': 400, 'msg': 'Please enter a right email'})
         check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
         if check_email:
             return jsonify({'code' : 400, 'msg': 'Email is already exists'})
@@ -201,7 +211,8 @@ def modify_user_detail():
         time_form = getTime()[0]
         user.username = username
         user.email = email
-        user.description = description
+        if description:
+            user.description = description
         user.utime = time_form
         db.session.commit()
         return jsonify({'code': 200, "result": "Successfully update profile"})

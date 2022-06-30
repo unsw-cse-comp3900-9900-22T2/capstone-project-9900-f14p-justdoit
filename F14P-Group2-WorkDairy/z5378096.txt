@@ -40,3 +40,20 @@ WEEK4
 1. collect movie data
 2. rate movie back-end function
 write date: 19/06/2022
+
+
+Week5
+
+* week4 done work:
+1. collect movie data
+2. change the user password in the user profile page (python)
+3. done email function (python)
+4. browse by end page according to rate and year(python)
+
+* Week5 plan:
+1. testing the sprint1
+2. prepare the demo for sprint1
+
+write date: 27/06/2022
+
+-----------------------------------------------------------------------------------------

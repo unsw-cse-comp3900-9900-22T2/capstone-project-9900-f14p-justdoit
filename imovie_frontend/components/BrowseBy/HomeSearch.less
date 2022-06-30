@@ -1,0 +1,108 @@
+.home-search-component-box{
+  margin-bottom : 50px;
+  .total-title{
+    width : 100%;
+    text-align: center;
+    margin : 0 auto;
+    color: #666;
+    font-size: 14px;
+    font-weight : 600;
+  }
+  .home-search-component{
+    width : 80%;
+    margin: 20px auto 50px auto;
+    &.home-search-component-is-search{
+      margin-bottom: 20px;
+    }
+    .home-search-component-item{
+      display : flex;
+      justify-content: space-between;
+      h6{
+        font-size : 14px;
+        font-weight : bold;
+        line-height: 21px;
+      }
+      .home-search-component-item-select{
+        width : 90%;
+        display : flex;
+        flex-wrap: wrap;
+        position:relative;
+        &.home-search-component-item-select-out{
+          height : 34px;
+          overflow: hidden;
+          padding-right: 50px;
+        }
+        .lookMore{
+          position: absolute;
+          right :0;
+          top :0;
+          font-size :12px;
+          line-height: 21px;
+          cursor:pointer;
+          color:#1d39c4;
+          text-decoration: underline;
+        }
+        .select-item{
+          margin-right : 20px;
+          margin-bottom : 10px;
+          cursor:pointer;
+          padding: 5px 10px;
+          border: 1px solid #ececec;
+          border-radius: 4px;
+          font-size:12px;
+          line-height:12px;
+          &.select-item-choose{
+            background: #1890ff;
+            color :#fff;
+            border-color: #1890ff;
+          }
+        }
+      }
+    }
+    .operation{
+      float: right;
+      .clear{
+        margin-right: 30px;
+        height: 30px;
+        line-height: 1;
+      }
+      .search{
+        height: 30px;
+        line-height: 1;
+      }
+    }
+    .clearBoth{
+      clear:both;
+    }
+  }
+  .list-detail-pagination{
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .imgBox{
+    position: relative;
+    width : 80%;
+    display: flex;
+    /*justify-content: space-between;*/
+    flex-wrap: wrap;
+    margin: 40px auto 20px auto;
+    .swiper-image-list-item{
+      margin-bottom: 20px;
+    }
+  }
+  .empty{
+    width : 100%;
+    margin:  0 auto;
+    img {
+      display: block;
+      width: 15%;
+      margin: 10px auto 10px auto;
+    }
+    h5{
+      text-align: center;
+      font-size: 14px;
+      color:#cdcdcd;
+    }
+  }
+}

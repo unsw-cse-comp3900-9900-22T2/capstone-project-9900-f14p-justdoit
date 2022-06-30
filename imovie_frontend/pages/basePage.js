@@ -1,51 +1,52 @@
 import { withRouter } from 'next/router'
 import { useState, useImperativeHandle, useEffect, useRef } from 'react'
 import React from 'react'
-import _ from 'lodash'
-import { Base64 } from 'js-base64'
 import basePageStyle from "./basePage.less"
-import { message, Modal ,Input,Select} from "antd";
+import {Select,Avatar,Popover} from "antd";
 const { Option } = Select;
-import { userLogin, userRegister } from "./MockData";
-import { LockOutlined, MailOutlined, UserOutlined ,SearchOutlined} from "@ant-design/icons";
+import { SearchOutlined,UserOutlined} from "@ant-design/icons";
 import DocunceSelectComponent from "../components/DounceSelect"
-const Page = ({ router, children }) => {
+import LoginComponent from "../components/Login"
+import RegesterComponent from "../components/Regester"
+import ResetPasswordComponent from "../components/ResetPassword"
+import { delCookie } from "../util/common";
+import { Base64 } from "js-base64";
+const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
   const [tabList] = useState([{
-     value : 1,
-     name : "HOME",
-     href : "/movie/home",
-  },{
     value : 2,
-    name : "LOGIN IN",
+    name : "LOGIN",
+    login : false,
   },{
     value : 3,
-    name : "REGESTER",
+    name : "REGISTER",
+    login : false,
   },{
-    value : 4,
-    name : "MOVIELIST",
-    href : "/movie/list",
-  },{
+    value : 1,
+    name : "HOME",
+    href : "/movie/home",
+    login : true,
+  },
+  //   {
+  //   value : 4,
+  //   name : "MOVIE LISTS",
+  //   href : "/movie/list",
+  //   login : true,
+  // },
+    {
     value : 5,
     name : "BROWSE BY",
-    href : "/movie/home?browseBy=1",
+    href : "/movie/browseBy",
+    login : true,
   }]);
+  const [userTabList,changeUserTabList] = useState([])
   const [enterTab , changeEnterTab] = useState("");
   const [chooseTab,changeChooseTab] = useState("");
-  const [newUser,changeNewUser] = useState({
-    userName : "",
-    password : "",
-    email : "",
-    passwordSure : ""
-  });
-  const [user,changeUser] = useState({
-    userName : "",
-    password : "",
-  });
+  const loginRef=useRef();
+  const regesterRef=useRef();
+  const resetPasswordRef=useRef();
   const [scrollTop,changeScrollTop] = useState(0);
   const [searchValue,changeSearchValue] = useState("")
-  const [registerVisible, changeRegisterVisible] = useState(false);
-  const [loginInVisible, changeLoginInVisible] = useState(false);
   if (body !== children) {
     changeBody(children)
   }
@@ -58,16 +59,99 @@ const Page = ({ router, children }) => {
         break;
       }
     }
+    if(!!USERMESSAGE){
+      const USER_MESSAGE_FOR_USER = window.localStorage.getItem("USER_MESSAGE_FOR_USER");
+      let msg = Base64.decode(USER_MESSAGE_FOR_USER);
+      try{
+        msg = JSON.parse(msg);
+      }catch (e) {
+        msg = null
+      }
+      let MSGList = [];
+      if(!!msg){
+        MSGList = [{
+          key : 1,
+          value : msg.username,
+          onHref : true
+        },{
+          key : 2,
+          value : msg.email,
+          hasBorder : true,
+          onHref : true
+        }]
+      }
+      changeUserTabList([...MSGList,...[{
+        key : 3,
+        value : "Profile",
+        hasBorder : false,
+        href : "/movie/userMsg"
+      },
+      //   {
+      //   key : 4,
+      //   value : "history",
+      //   hasBorder : false,
+      //   href : "/movie/userMsg?activeKey=4&nouser=1"
+      // },
+        {
+        key : 5,
+        value : "Wishlist",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=1&nouser=1"
+      },
+      //   {
+      //   key : 6,
+      //   value : "watched",
+      //   hasBorder : false,
+      //   href : "/movie/userMsg?activeKey=2&nouser=1"
+      // },{
+      //   key : 7,
+      //   value : "movie lists",
+      //   hasBorder : false,
+      //   href : "/movie/userMsg?activeKey=3&nouser=1"
+      // },{
+      //   key : 8,
+      //   value : "reviews",
+      //   hasBorder : false,
+      //   href : "/movie/userMsg?activeKey=5&nouser=1"
+      // },{
+      //   key : 9,
+      //   value : "likes",
+      //   hasBorder : false,
+      //   href : "/movie/userMsg?activeKey=6&nouser=1"
+      // },{
+      //   key : 10,
+      //   value : "disLikes",
+      //   hasBorder : true,
+      //   href : "/movie/userMsg?activeKey=7&nouser=1"
+      // },
+        {
+        key : 11,
+        value : "Sight Out",
+        hasBorder : false
+      }]])
+    }
+
   },[]);
   function tabClick(item) {
     if(!!item.href){
        window.location.href = item.href
     }else{
        if(item.value === 2){
-         changeLoginInVisible(true);
+         loginRef && loginRef.current && loginRef.current.changeVisible(true);
        }else if(item.value === 3){
-         changeRegisterVisible(true);
+         regesterRef && regesterRef.current && regesterRef.current.changeVisible(true);
        }
+    }
+  }
+  function userTabClick(item) {
+    const {key,href} = item;
+    if(!!href){
+      window.location.href = href;
+    }
+    if(key === 11){
+      delCookie('USER_MESSAGE');
+      window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
+      window.location.reload();
     }
   }
   return (
@@ -82,9 +166,14 @@ const Page = ({ router, children }) => {
                 <div className={"logo"}/>
                 <div className={"tab-select"}>
                   <div className={"tab-select-line"}/>
-                 <div className={"tab-select-list"}>
+                 <div className={"tab-select-list"} style={{ justifyContent : "flex-end"}}>
                    {
                      tabList && tabList.map((item,index) => {
+                       if(!!USERMESSAGE){
+                         if(!item.login){
+                           return null;
+                         }
+                       }
                        return <div
                          onMouseEnter={()=>{
                            changeEnterTab(item.value);
@@ -108,46 +197,124 @@ const Page = ({ router, children }) => {
                    }
                  </div>
                   <div className={"tab-search"}>
-                    <div className={"tag-search-logo"}>
-                      <SearchOutlined/>
-                    </div>
-                    <DocunceSelectComponent  value={searchValue || undefined}
-                                             allowClear
-                                             placeholder="Search Movie"
-                                             size={'middle'}
-                                             fetchOptions={null}
-                                             onChange={(newValue) => {
-                                               changeSearchValue(newValue);
-                                             }}
-                                             style={{
-                                               width: '90%',
-                                             }}
-                                             defaultActiveFirstOption={false}
-                                             showArrow={false}
-                                             filterOption={false}
-                                             bordered={false}
-                                             nodeDom={(options)=>{
-                                               return options &&
-                                                 options.map((item) => {
-                                                   return (
-                                                     <Option key={'labelData_' + item.poiId + "_poiId"} value={item.poiId}>
-                                                       <div
-                                                         style={{
-                                                           width: "100%",
-                                                           wordWrap: 'break-word',
-                                                           wordBreak: 'break-all',
-                                                           whiteSpace: 'normal',
-                                                         }}
-                                                         dangerouslySetInnerHTML={{
-                                                           __html: item.hierarchy
-                                                         }}
-                                                       />
-                                                     </Option>
-                                                   );
-                                                 })
-                                             }}
-                                             showSearch />
+                    {/*<div className={"tag-search-logo"}>*/}
+                    {/*  <SearchOutlined/>*/}
+                    {/*</div>*/}
+                    {/*<DocunceSelectComponent  value={searchValue || undefined}*/}
+                    {/*                         allowClear*/}
+                    {/*                         placeholder="Search Movie"*/}
+                    {/*                         size={'middle'}*/}
+                    {/*                         fetchOptions={null}*/}
+                    {/*                         onChange={(newValue) => {*/}
+                    {/*                           changeSearchValue(newValue);*/}
+                    {/*                         }}*/}
+                    {/*                         style={{*/}
+                    {/*                           width: '90%',*/}
+                    {/*                         }}*/}
+                    {/*                         defaultActiveFirstOption={false}*/}
+                    {/*                         showArrow={false}*/}
+                    {/*                         filterOption={false}*/}
+                    {/*                         bordered={false}*/}
+                    {/*                         nodeDom={(options)=>{*/}
+                    {/*                           return options &&*/}
+                    {/*                             options.map((item) => {*/}
+                    {/*                               return (*/}
+                    {/*                                 <Option key={'labelData_' + item.poiId + "_poiId"} value={item.poiId}>*/}
+                    {/*                                   <div*/}
+                    {/*                                     style={{*/}
+                    {/*                                       width: "100%",*/}
+                    {/*                                       wordWrap: 'break-word',*/}
+                    {/*                                       wordBreak: 'break-all',*/}
+                    {/*                                       whiteSpace: 'normal',*/}
+                    {/*                                     }}*/}
+                    {/*                                     dangerouslySetInnerHTML={{*/}
+                    {/*                                       __html: item.hierarchy*/}
+                    {/*                                     }}*/}
+                    {/*                                   />*/}
+                    {/*                                 </Option>*/}
+                    {/*                               );*/}
+                    {/*                             })*/}
+                    {/*                         }}*/}
+                    {/*                         showSearch />*/}
                   </div>
+                  {
+                    !!USERMESSAGE && <div className="user-logo">
+                      <Popover
+                        overlayClassName='user-logo-status'
+                        placement="bottom"
+                        title={null}
+                        onVisibleChange={(visible)=>{
+                          if(visible){
+                            const USER_MESSAGE_FOR_USER = window.localStorage.getItem("USER_MESSAGE_FOR_USER");
+                            let msg = Base64.decode(USER_MESSAGE_FOR_USER);
+                            try{
+                              msg = JSON.parse(msg);
+                            }catch (e) {
+                              msg = null
+                            }
+                            let MSGList = [];
+                            if(!!msg){
+                              MSGList = [{
+                                key : 1,
+                                value : msg.username,
+                                onHref : true
+                              },{
+                                key : 2,
+                                value : msg.email,
+                                hasBorder : true,
+                                onHref : true
+                              }];
+                              let _userTabList = _.cloneDeep(userTabList);
+                              const filter = _userTabList && _userTabList.filter((item)=>{
+                                return item.key === 1 || item.key === 2
+                              }) || []
+                              if(!filter || filter.length === 0){
+                                _userTabList = [...MSGList,..._userTabList];
+                              }else{
+                                for(let i = 0 ; i < _userTabList.length ; i++){
+                                   if(_userTabList[i].key === 1){
+                                    _userTabList[i].value = msg.username
+                                  }else if(_userTabList[i].key === 2){
+                                     _userTabList[i].value = msg.email
+                                   }
+                                }
+                              }
+                              changeUserTabList(_userTabList);
+                            }
+                          }
+                        }}
+                        content={() => {
+                          return (
+                            <div className={"user-msg-popover-box"}>
+                              <ul style={{
+                                width:  '200px',
+                                margin : 0,
+                                padding:0,
+                                border:"none"
+                              }}>
+                                {userTabList && userTabList.map((item)=>{
+                                  return <li
+                                    onClick={()=>{
+                                      userTabClick(item)
+                                    }}
+                                    className={ `${item.onHref && "no-href" || ""} ${!item.hasBorder && "no-border" || ""}`}>
+                                    {item.value}
+                                  </li>
+                                })}
+                              </ul>
+                            </div>
+                          )
+                        }}
+                        trigger="hover">
+                        <Avatar size={40}
+                               /* onClick={()=>{
+                                  window.location.href = "/movie/userMsg"
+                                }}*/
+                                icon={<UserOutlined />} />
+                      </Popover>
+                    </div>
+                  }
+
                </div>
              </div>
         </div>
@@ -155,206 +322,18 @@ const Page = ({ router, children }) => {
           body
         }
       </div>
-      <Modal
-        visible={registerVisible}
-        title={`register`}
-        okText="ok"
-        zIndex={300}
-        cancelText="cancel"
-        onOk={() => {
-          const {userName,passwordSure,password,email} = newUser;
-          if(!userName){
-            message.warn("Please enter userName");
-            return
-          }
-          if(!email){
-            message.warn("Please enter email");
-            return
-          }else{
-            if(!(email.match(/^\w+@\w+\.\w+$/i))){
-              message.warn("Please enter a mailbox in the correct format");
-              return
-            }
-          }
-          if(!password){
-            message.warn("Please enter password");
-            return
-          }
-          if(password !== passwordSure){
-            message.warn("Entered passwords differ!");
-            return
-          }
-          const _pass = Base64.encode(md5(password))
-          userRegister({
-            username:userName,password : _pass,email
-          }).then(res => {
-            if(res.status === 200){
-              message.success("register was successful");
-              changeRegisterVisible(false);
-              changeNewUser({
-                userName : "",
-                password : "",
-                email : "",
-                passwordSure : ""
-              })
-            }else{
-              message.error(res.msg)
-            }
-          })
+      <LoginComponent
+        changeResetPasswordVisible={()=>{
+          resetPasswordRef && resetPasswordRef.current && resetPasswordRef.current.changeVisible(true);
         }}
-        onCancel={() => {
-          changeRegisterVisible(false);
-          changeNewUser({
-            userName : "",
-            password : "",
-            email : "",
-            passwordSure : ""
-          })
-        }}>
-        <div className={"modal_box"}>
-          <div className="box">
-            <h6>UserName</h6>
-            <div className="switch_box">
-              <Input
-                value={newUser.userName}
-                placeholder="Please enter userName"
-                prefix={<UserOutlined />}
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.userName = _value;
-                  changeNewUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>Email</h6>
-            <div className="switch_box">
-              <Input
-                prefix={<MailOutlined />}
-                value={newUser.email}
-                placeholder="Please enter email"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser)
-                  _newPageMessage.email = _value
-                  changeNewUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>PassWord</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={newUser.password}
-                placeholder="Please enter password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.password = _value;
-                  changeNewUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>Confirm</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={newUser.passwordSure}
-                placeholder="Please confirm password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.passwordSure = _value;
-                  changeNewUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </Modal>
-      <Modal
-        visible={loginInVisible}
-        title={`Login In`}
-        okText="ok"
-        zIndex={300}
-        cancelText="cancel"
-        onOk={() => {
-          const {userName,password} = user;
-          if(!userName){
-            message.warn("Please enter userName");
-            return
-          }
-          if(!password){
-            message.warn("Please enter password");
-            return
-          }
-          const _pass = Base64.encode(md5(password))
-          userLogin({
-            username:userName,password : _pass
-          }).then(res => {
-            if(res.status === 200){
-              message.success("register was successful");
-              changeLoginInVisible(false);
-              changeUser({
-                userName : "",
-                password : ""
-              })
-            }else{
-              message.error(res.msg)
-            }
-          })
+        loginRef={loginRef}/>
+      <RegesterComponent
+        changeLoginInVisible={(isVis,userName)=>{
+          loginRef && loginRef.current && loginRef.current.changeVisible(true,userName);
         }}
-        onCancel={() => {
-          changeLoginInVisible(false);
-          changeUser({
-            userName : "",
-            password : "",
-          })
-        }}>
-        <div className={"modal_box"}>
-          <div className="box">
-            <h6>UserName</h6>
-            <div className="switch_box">
-              <Input
-                value={user.userName}
-                placeholder="Please enter userName"
-                prefix={<UserOutlined />}
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(user);
-                  _newPageMessage.userName = _value;
-                  changeUser(_newPageMessage);
-                }}
-              />
-            </div>
-          </div>
-          <div className="box">
-            <h6>PassWord</h6>
-            <div className="switch_box">
-              <Input.Password
-                prefix={<LockOutlined />}
-                value={user.password}
-                placeholder="Please enter password"
-                onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(user);
-                  _newPageMessage.password = _value;
-                  changeUser(_newPageMessage)
-                }}
-              />
-            </div>
-          </div>
-          <h6 className={"forgetPassword"}>
-            Forget Password
-          </h6>
-        </div>
-      </Modal>
+        regesterRef={regesterRef}/>
+      <ResetPasswordComponent
+        resetPasswordRef={resetPasswordRef}/>
     </React.Fragment>
   )
 }

@@ -1,145 +1,43 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import ScrollImageComponent from "../../components/Home/ScrollImage"
-import HomeSearchComponent from "../../components/Home/HomeSearch"
 import homeStyle from "./home.less";
-import {getQueryString} from "../../util/common";
-const TextIndex = () => {
-  const [list1,changeList1] = useState([
-     [{
-        image : "https://swiperjs.com/demos/images/nature-1.jpg",
-        look :23000,
-        like :24,
-        isLike : false,
-        isLook : false,
-        isCollection : false,
-        collection : 256,
-        rate : 3,
-        year : "2022",
-        tags : [{
-          value : "Renre",
-          key : 1,
-        },{
-          value : "Renre1",
-          key : 2,
-        },{
-          value : "Renre2",
-          key : 3,
-        }],
-        movieName : "movie name",
-        director : ["jerry jackson"],
-        cast : ["Tom","Haidi"]
-      },{
-       image : "https://swiperjs.com/demos/images/nature-1.jpg",
-       look :24,
-       like :24,
-       collection : 256,
-       movieName : "movie name"
-     },{
-       image : "https://swiperjs.com/demos/images/nature-1.jpg",
-       look :25,
-       like :24,
-       collection : 256,
-       movieName : "movie name"
-     },{
-       image : "https://swiperjs.com/demos/images/nature-1.jpg",
-       look :26,
-       like :24,
-       collection : 256,
-       movieName : "movie name"
-     }],
-    [{
-      image : "https://swiperjs.com/demos/images/nature-2.jpg",
-      look :23,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-2.jpg",
-      look :24,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-2.jpg",
-      look :25,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-2.jpg",
-      look :26,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    }],
-    [{
-      image : "https://swiperjs.com/demos/images/nature-3.jpg",
-      look :23,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-3.jpg",
-      look :24,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-3.jpg",
-      look :25,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-3.jpg",
-      look :26,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    }],
-    [{
-      image : "https://swiperjs.com/demos/images/nature-4.jpg",
-      look :23,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-4.jpg",
-      look :24,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-4.jpg",
-      look :25,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    },{
-      image : "https://swiperjs.com/demos/images/nature-4.jpg",
-      look :26,
-      like :24,
-      collection : 256,
-      movieName : "movie name"
-    }]
-  ])
-  const [browseBy,changeBrowseBy] = useState(false);
+import {getMovies} from "../MockData";
+const Home = ({USERMESSAGE}) => {
+  const [list,changeList] = useState([])
   useEffect(()=>{
-    const _browseBy = getQueryString("browseBy") === "1";
-    changeBrowseBy(_browseBy)
+    getMovies({
+      uid : USERMESSAGE && USERMESSAGE.uid || null
+    }).then(res => {
+       if(res.code === 200){
+          const {result} = res;
+          const {mlist} = result;
+          const _list = [];
+          let  childList = [];
+          for(let i = 0 ; i < mlist.length ; i++){
+               childList.push(mlist[i]);
+               if(i % 4 === 3){
+                 _list.push(childList);
+                 childList = _.cloneDeep(childList);
+                 childList = [];
+               }
+          }
+         changeList(_list)
+       }
+    }).catch(err => {
+    })
   },[]);
   return (
-    <PageBase>
+    <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
-      {
-        browseBy && <HomeSearchComponent/>
-      }
-      <ScrollImageComponent list={list1} title={"RECENT POPULAR FILMS"}/>
-      <ScrollImageComponent list={list1} title={"RECENT RELESE"}/>
-      <ScrollImageComponent list={list1} title={"GUESS LIKE"}/>
+      <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
+                            isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>
+      {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
+      {/*                       isLogin={!!USERMESSAGE} list={list} title={"RECENT RELESE"}/>*/}
+      {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
+      {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
     </PageBase>
   )
 }
 
-export default TextIndex
+export default Home

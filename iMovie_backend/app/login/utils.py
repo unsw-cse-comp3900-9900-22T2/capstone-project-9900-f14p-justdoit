@@ -58,9 +58,11 @@ def login_require(func):
 
 # chect validate Email, 1:validate, 0:invalidate
 def validateEmail(email):
-    if len(email) > 7:
-        if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
-            print("good")
+    if len(email) > 7 and len(email) < 60:
+        # if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
+            # print("good")
+        # if "@" in email:
+        if re.match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$", email) != None:
             return 1
     return 0
 
@@ -70,8 +72,8 @@ def randomString(num):
     return ''.join(a)
 # get datetime and timestamp
 def getTime():
-    time_stamp = time.localtime(time.time())
-    time_form = time.strftime('%Y-%m-%d %H:%M:%S', time_stamp)
+    time_stamp = time.localtime(time.time()) # 132131232434
+    time_form = time.strftime('%Y-%m-%d %H:%M:%S', time_stamp)  # 2022-6-27 12:13:00
 
     time_stamp = int(time.mktime(time_stamp))
     return [time_form, time_stamp]
@@ -80,3 +82,52 @@ def getUniqueid():
     time_stamp = getTime()[1]
     uniqueId = str(randomString(10)) + str(time_stamp)
     return uniqueId
+# create verifycode
+def create_verifycode(num):
+    a = random.sample('0123456789', num)
+    return ''.join(a)
+
+#print movies basic on xx keyword
+def print_avg_rate(res_list):
+    for i in res_list:
+        print("%s:  %s  %s" % (i['moviename'], i['avg_rate'], i['year']))
+
+# order movies alphabetical after order by xxx categories
+# ex: after order by avg_rate, we need to order them by alphabetical
+def orderBy_alphabetical(movie_list, keyword):
+    # order by alphabetical order
+    cmp_val = None
+    res_list = list()  # use to divides diff avg_rate movies
+    temp = list()
+    for m in movie_list:
+        if m[keyword] != cmp_val:
+            temp = sorted(temp, key=lambda m: m["moviename"])
+            res_list.extend(temp)
+            temp = list()
+            cmp_val = m[keyword]
+        temp.append(m)
+    return res_list
+
+#"1921, 2022,2003" => [1921, 2022, 2003] str to list
+def year_strToList(year):
+    if year == None or len(year) == 0 :
+        return list()
+
+    if year == "-1":
+        year_lst = list()
+        year_lst.append(-1)
+        return year_lst
+
+    year_lst = list()
+    tmp = ""
+    for i in year:
+        if str.isspace(i):
+            continue
+        if i == ',':
+            year_lst.append(int(tmp))
+            tmp = ""
+        else:
+            if str.isnumeric(i):
+                tmp += i
+    year_lst.append(int(tmp))
+    return year_lst

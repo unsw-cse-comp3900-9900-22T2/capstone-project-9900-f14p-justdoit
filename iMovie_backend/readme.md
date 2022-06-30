@@ -5,7 +5,7 @@ create database imovie
 ```
 ### install package
 ```shell
-pip install -r requirement.txt
+pip3 install -r requirement.txt
 ```
 
 ### create tables
@@ -32,4 +32,9 @@ config.py:  config
 ###if you want to change tables in database
 ```shell
 flask db update
-```
+``` 
+
+### insert movie data
+```shell
+python3 insert_movies.py
+``` 

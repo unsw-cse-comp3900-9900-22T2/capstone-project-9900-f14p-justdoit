@@ -15,12 +15,13 @@
      height : 64px;
      box-shadow: 0 2px 8px #f0f1f2;
      position: relative;
-     z-index: 10;
+     z-index: 30;
     background: #fff;
     &.base_page_choose_fixed{
         position: fixed;
         top :0;
         left :0;
+      z-index: 30;
         background: #fff;
         box-shadow: 0 2px 8px rgba(0,0,0,0.6);
         animation: animate 0.3s;
@@ -51,10 +52,10 @@
         margin-left: calc(5% + 50px);
       }
       .tab-select{
-        width: 64%;
+        width: 67%;
         display: flex;
         position: relative;
-        margin-left: 8%;
+        margin-left: 5%;
         .tab-select-line{
           position: absolute;
           height: 22px;
@@ -135,9 +136,17 @@
   .box {
     display: flex;
     margin-bottom: 10px;
+    &.box2{
+      h6{
+        min-width: 80px;
+      }
+      .switch_box {
+        width : calc(100% - 100px)
+      }
+    }
     h6 {
       font-size: 14px;
-      min-width: 80px;
+      min-width: 110px;
       line-height: 30px;
       margin: 0;
     }
@@ -148,7 +157,7 @@
       display: flex;
       align-items: center;
       word-break: break-all;
-      width : calc(100% - 100px)
+      width : calc(100% - 130px)
     }
     .imgBox {
       width: 104px;
@@ -172,6 +181,68 @@
     color : #1d39c4;
     cursor: pointer;
     margin: 5px 20px 15px 0;
+    span{
+      text-underline: #1d39c4;
+    }
+  }
+  .register-to-login{
+    text-align: left;
+    color : #1d39c4;
+    margin: 5px 20px 3px 0;
+    font-size: 14px;
+    span{
+      cursor: pointer;
+      margin-left:5px;
+      text-decoration-line: underline;
+    }
+  }
+  .check-box{
+    text-align: left;
+    font-size: 12px;
+  }
+}
+.user-logo{
+   height :64px;
+   align-items: center;
+  display: flex;
+}
+.user-msg-popover-box{
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  li {
+    list-style: none;
+    padding: 0 16px;
+    margin: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 30px;
+    border-bottom:1px solid #bfbfbf;
+    cursor: pointer;
+    color:#333;
+    &:hover {
+      /*background: #efe9e9;*/
+      color:#1d39c4;
+    }
+    &.no-border{
+      border:none;
+    }
+    &.no-href{
+      cursor: initial;
+      &:hover{
+        color:#333;
+      }
+    }
+  }
 
+}
+.user-logo-status{
+  .ant-popover-arrow{
+  /*  display: none!important;*/
+    left: 90px!important;
+    box-shadow:0 2px 8px #f0f1f2
+  }
+  .ant-popover-inner{
+    position: relative;
   }
 }

@@ -1,6 +1,3 @@
-/**
- * Created by chenjiajie on 2020/4/10.
- */
 import React from 'react'
 import Time from "../services/common/time"
 import BasePage from "../components/BasePage"

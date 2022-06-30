@@ -1,17 +1,17 @@
 {
-  "name": "cjj-project",
+  "name": "only-movie",
   "version": "0.1.0",
   "main": "main.js",
   "private": true,
   "scripts": {
     "dev": "node main.js",
     "build": "next build",
-    "start": "next start",
+    "start": "node app.js",
     "bootstrap": "npm i --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
-    "antd": "^4.20.6",
+    "antd": "4.21.4",
     "axios": "^0.19.0",
     "braft-convert": "^2.3.0",
     "braft-editor": "^2.3.9",
@@ -19,6 +19,7 @@
     "braft-utils": "^3.0.10",
     "chart.js": "^2.9.3",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "css-loader": "^3.2.0",
     "echarts": "5.0.2",

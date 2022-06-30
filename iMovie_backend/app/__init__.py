@@ -1,4 +1,4 @@
-from . import login, index, models
+from . import login, index, models, email
 from flask import Flask, request
 from flask_cors import CORS
 # 创建flask app
@@ -12,3 +12,5 @@ models.init_db(app)
 index.init_route(app)
 # 注册登陆的路由
 login.init_route(app)
+# email的路由
+email.init_app(app)

@@ -16,6 +16,38 @@ export const setDate = (day) => {
   const s = ten(_newDate.getSeconds())
   return `${y}-${mon}-${d} ${h}:${min}:${s}`
 }
+export const tableSet = (name, value,goType) => {
+  const data = {};
+  for (let i in value) {
+    const _queryData = value[i];
+    if (
+        _queryData !== null &&
+        _queryData !== undefined &&
+        _queryData !== '' &&
+        _queryData !== 'null' &&
+        _queryData !== 'undefined'
+    ) {
+      data[i] = _queryData;
+    }
+  }
+  addHref(name, encodeURIComponent(JSON.stringify(data)),goType);
+};
+export const tableGet = (name, url) => {
+  let _query = getQueryString(name, url);
+  try {
+    _query = JSON.parse(decodeURIComponent(_query));
+    /* tableRemove(name);*/
+  } catch (e) {
+    _query = null;
+  }
+  return _query;
+};
+export const tableGetValue = (value, initValue) => {
+  if (value !== null && value !== undefined && value !== 'null' && value !== 'undefined') {
+    return value;
+  }
+  return initValue || '';
+};
 export const resInData = (value, data) => {
   if (data[value] === undefined) {
     return false

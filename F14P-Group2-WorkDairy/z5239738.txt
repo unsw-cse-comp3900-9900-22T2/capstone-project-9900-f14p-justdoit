@@ -58,3 +58,27 @@ Admin inserts a new movie page, browse by and search interacting with movie sear
 
 
 write date: 19/06/2022
+
+-----------------------------------------------------------------------------------------
+Week4
+
+* week4 done work:
+1. collect movie data 
+2. rate movie back-end function (python) 
+3. rate movie front-end (JS) page
+4. movie detail front-end page(JS)
+5. get movie detail back-end function (python) 
+6. user profile front-end page(JS)
+7. user Wishlist front-end page(JS)
+8. change the user password in the user profile page and backend function (python and JS)
+9. browse by front end page (JS)
+10. change user profile page front-end page(JS)
+
+* Week5 plan: 
+1. movie recommendation algorithm backend (python)
+2. Help coordinate the front-end and back-end communication of team members, answer questions about project needs, and answer technical questions for other group members.
+
+
+write date: 26/06/2022
+
+-----------------------------------------------------------------------------------------

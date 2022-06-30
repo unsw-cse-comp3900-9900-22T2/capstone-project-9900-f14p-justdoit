@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
-import "./ReviewsInfo.less"
+
 import {Modal,Input} from "antd"
+import ReviewsInfoStyle from "./ReviewsInfo.less";
 const { TextArea } = Input;
 const ReviewsInfo = ({reviewsInfoRef}) => {
    const [visible ,changeVisible] = useState(false);
@@ -14,11 +15,14 @@ const ReviewsInfo = ({reviewsInfoRef}) => {
       },
     }));
     return (
+      <React.Fragment>
+        <style dangerouslySetInnerHTML={{ __html: ReviewsInfoStyle }} />
       <Modal
         title="Reviews and Info"
         centered
         visible={visible}
-        okText="submit"
+        okText="SUBMIT"
+        cancelText={"CANCEL"}
         onOk={() =>{
           console.log("value",value)
           changeVisible(false);
@@ -50,6 +54,7 @@ const ReviewsInfo = ({reviewsInfoRef}) => {
           </div>
         </div>
       </Modal>
+      </React.Fragment>
     )
 }
 

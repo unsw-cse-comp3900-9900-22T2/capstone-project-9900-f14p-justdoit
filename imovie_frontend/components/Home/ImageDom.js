@@ -279,6 +279,8 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             const _thisItem = _.cloneDeep(thisItem);
             _thisItem.avg_rate = avg_rate;
             _thisItem.is_user_rate = rate;
+            _thisItem.is_user_wish = false;
+            _thisItem.wishlist_num = (_thisItem.wishlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.wishlist_num || 0) - 1);
             const _is_user_watch = _thisItem.is_user_watch;
             if(!_is_user_watch){
               _thisItem.is_user_watch = true;

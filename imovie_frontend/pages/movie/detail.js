@@ -445,16 +445,18 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){
-            const _movieDatail = _.cloneDeep(movieDetail);
-            _movieDatail.avg_rate = avg_rate;
-            _movieDatail.is_user_rate = rate;
-            const _is_user_watch = _movieDatail.is_user_watch;
+            const _movieDetail = _.cloneDeep(movieDetail);
+            _movieDetail.avg_rate = avg_rate;
+            _movieDetail.is_user_rate = rate;
+            _movieDetail.is_user_wish = false;
+            _movieDetail.wishlist_num = (_movieDetail.wishlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+            const _is_user_watch = _movieDetail.is_user_watch;
             if(!_is_user_watch){
-              _movieDatail.is_user_watch = true;
-              _movieDatail.watchlist_num = (_movieDatail.watchlist_num || 0)+ 1;
+              _movieDetail.is_user_watch = true;
+              _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0)+ 1;
             }
 
-            changeMovieDetail(_movieDatail);
+            changeMovieDetail(_movieDetail);
             changeRateChange(false);
             setTimeout(()=>{
               changeRateChange(true);

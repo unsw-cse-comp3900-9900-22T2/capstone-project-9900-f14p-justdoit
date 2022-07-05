@@ -15,21 +15,19 @@ def init_route(app: Flask):
 
     # for movies
     app.add_url_rule('/app/movies/get_movie_detail', view_func=movies.get_movie_detail, methods=['POST'])
-    # app.add_url_rule('/app/movies/get_movie_detial_login', view_func=movies.get_movie_detial_login, methods=['POST'])
     app.add_url_rule('/app/movies/rating_movie', view_func=movies.rating_movie, methods=['POST'])
+    app.add_url_rule('/app/movies/get_movies', view_func=movies.get_movies, methods=['POST'])
 
-    # app.add_url_rule('/insert', view_func=views.insert, methods=['POST'])
-
-
+    # wishlist
     app.add_url_rule('/app/movies/get_wishlist', view_func=movies.get_wishlist, methods=['POST'])
     app.add_url_rule('/app/movies/wishlist_add_or_delete', view_func=movies.wishlist_add_or_delete, methods=['POST'])
-    app.add_url_rule('/app/movies/get_movies', view_func=movies.get_movies, methods=['POST'])
-    # app.add_url_rule('/app/movies/delete_from_wishlist', view_func=movies.delete_from_wishlist, methods=['POST'])
     app.add_url_rule('/app/movies/clear_wishlist', view_func=movies.clear_wishlist, methods=['POST'])
     # app.add_url_rule('/app/movies/trans_movie_from_wishlist_to_watchedlist', view_func=movies.trans_movie_from_wishlist_to_watchedlist, methods=['POST'])
-    # app.add_url_rule('/app/movies/insert_movie_for_test', view_func=movies.insert_movie_for_test, methods=['POST'])
 
-#browse by
+    # browse by
     app.add_url_rule('/app/movies/browse_by', view_func=movies.browse_by, methods=['POST'])
 
+    # watchlist
+    app.add_url_rule('/app/movies/get_watchlist', view_func=movies.get_watchlist, methods=['POST'])
+    app.add_url_rule('/app/movies/watchlist_add_or_delete', view_func=movies.watchlist_add_or_delete, methods=['POST'])
 

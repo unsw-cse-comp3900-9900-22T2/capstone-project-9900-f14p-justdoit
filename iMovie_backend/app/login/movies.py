@@ -4,7 +4,6 @@ from app.login.utils import *
 from app.models import *
 
 
-
 def res_movie_detail(uid, user, movie):
     result = {}
     mid = movie.mid
@@ -63,7 +62,6 @@ def res_movie_detail(uid, user, movie):
             result["wish_ctime"] = None
         result["is_user_wish"] = is_user_wish
 
-
         # check watch or not
         user_watch = wishWatchModel.query.filter(wishWatchModel.mid == mid, wishWatchModel.uid == uid,
                                                  wishWatchModel.type == 1,
@@ -118,9 +116,6 @@ def res_movie_detail(uid, user, movie):
     return result
 
 
-
-
-
 def get_movie_detail():
     data = request.get_json(force=True)
     mid = data["mid"]
@@ -137,7 +132,6 @@ def get_movie_detail():
     result = res_movie_detail(uid, user, movie)
 
     return jsonify({'code': 200, 'result': result})
-
 
 
 def get_movies():
@@ -161,8 +155,6 @@ def get_movies():
     result["count"] = num
     result["mlist"] = mlist
     return jsonify({'code': 200, 'result': result})
-
-
 
 
 def rating_movie():
@@ -205,7 +197,6 @@ def rating_movie():
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})
 
-
     # if a movie be rated then this movie will be add in watched list ,and remove from wishlist
     wish_list = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid, wishWatchModel.type == 0, wishWatchModel.active == 1).first()
     if wish_list:
@@ -220,7 +211,6 @@ def rating_movie():
             wish_watch_list = wishWatchModel(wid=wid, type=1, uid=uid, mid=mid, ctime=timeform, utime=timeform)
             db.session.add(wish_watch_list)
             db.session.commit()
-
 
     # calculate avg rate
     all_rate = 0
@@ -241,8 +231,6 @@ def rating_movie():
         return jsonify({'code': 200, 'msg': 'Successful rating', "result": result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})
-
-
 
 
 # 0: add time, 1: highest  rating,2: lowest rating , 3:released data，null: not sort
@@ -286,8 +274,8 @@ def get_wishlist():
             else:
                 return jsonify({'code': 400, 'msg': 'Invalid command.'})
         else:
-            # print("默认")
             res_list = sorted(list, key=lambda m:m['wish_ctime'], reverse=True)
+
         start = page_index * page_size
         end = start + page_size
         if end < result["count"]:
@@ -318,7 +306,7 @@ def wishlist_add_or_delete():
         wish_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
                                                  wishWatchModel.type == 0, wishWatchModel.active == 1).first()
         if wish_movie:
-            return jsonify({'code': 200, 'msg': 'Movie is already in wish list.'})
+            return jsonify({'code': 200, 'msg': 'Movie is already in wishlist.'})
         try:
             wid = getUniqueid()
             timeform = getTime()[0]
@@ -446,3 +434,103 @@ def browse_by():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Browseby failed.'})
+
+
+def get_watchlist():
+    data = request.get_json(force=True)
+    # print(data)
+    page_index = data["page_index"]
+    page_size = data["page_size"]
+    sort_by = data["sort_by"]
+    uid = data["uid"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    watchlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 1, wishWatchModel.active == 1).all()
+    if not watchlist:
+        return jsonify({'code': 200, 'msg': 'Watchlist is empty'})
+
+    try:
+        result = {}
+        result["count"] = len(watchlist)
+        list = []
+        for m in watchlist:
+            movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
+            if movie:
+                movie_info = res_movie_detail(uid, user, movie)
+                list.append(movie_info)
+
+        if sort_by is not None:
+            if sort_by == 0:
+                # when add
+                res_list = list
+            elif sort_by == 1:
+                # highest rate
+                res_list = sorted(list, key=lambda m: m['avg_rate'], reverse=True)
+            elif sort_by == 2:
+                # highest rate
+                res_list = sorted(list, key=lambda m: m['avg_rate'])
+            elif sort_by == 3:
+                res_list = sorted(list, key=lambda m: m['year'], reverse=True)
+            else:
+                return jsonify({'code': 400, 'msg': 'Invalid command.'})
+        else:
+            res_list = sorted(list, key=lambda m: m['watch_ctime'], reverse=True)
+
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["list"] = res_list[start:end]
+        else:
+            result["list"] = res_list[start:]
+
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Get watchlist failed.', 'error_msg': str(e)})
+
+
+def watchlist_add_or_delete():
+    data = request.get_json(force=True)
+    # print(data)
+    add_or_del = data["add_or_del"]
+    uid = data["uid"]
+    mid = data["mid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # uid和mid是否已经存在过watch里面, 只看active是1的
+    if add_or_del == "add":
+        watch_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
+                                                 wishWatchModel.type == 1, wishWatchModel.active == 1).first()
+        if watch_movie:
+            return jsonify({'code': 200, 'msg': 'Movie is already in watchlist.'})
+        try:
+            wid = getUniqueid()
+            timeform = getTime()[0]
+            watchlist = wishWatchModel(wid=wid, type=1, uid=uid, mid=mid, ctime=timeform, utime=timeform)
+            db.session.add(watchlist)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    elif add_or_del == "delete":
+        watch_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
+                                                 wishWatchModel.type == 1, wishWatchModel.active == 1).first()
+        if not watch_movie:
+            return jsonify({'code': 400, 'msg': 'Movie is not in watchlist.'})
+        try:
+            watch_movie.active = 0
+            watch_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})
+
+

@@ -9,6 +9,7 @@ import { UserOutlined ,LikeOutlined ,DislikeOutlined,
 import { delCookie } from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
+import WatchListComponent from "../../components/UserMsg/WatchList"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
@@ -26,11 +27,12 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
      value : "Wishlist",
     icon : <HeartOutlined />
   },
-  //   {
-  //   key : 2,
-  //   value : "watched",
-  //   icon : <EyeOutlined />
-  // },{
+    {
+    key : 2,
+    value : "Watchlist",
+    icon : <EyeOutlined />
+  },
+  // {
   //   key : 3,
   //   value : "movielist",
   //   icon : <PlaySquareOutlined />
@@ -82,6 +84,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     switch (item.key) {
       case 1:
         return <WishListComponent uid={uid}/>;
+      case 2:
+        return <WatchListComponent uid={uid}/>;
       default:
         return <div>{item.key}</div>
     }

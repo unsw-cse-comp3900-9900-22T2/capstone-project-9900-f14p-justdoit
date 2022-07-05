@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import { Select, Pagination, Modal,message} from "antd";
 const {Option} = Select;
@@ -68,7 +67,7 @@ const WishListComponent = ({uid}) => {
     }
   function addWatchList() {
     confirm({
-      title: 'Are you sure you want to turn all the movies on Wishlist into watched?',
+      title: 'Are you sure you want to turn all the movies on Wishlist into Watchlist?',
       icon: <ExclamationCircleOutlined />,
       okText : "YES",
       cancelText : "NO",
@@ -84,9 +83,7 @@ const WishListComponent = ({uid}) => {
       okText : "YES",
       cancelText : "NO",
       onOk() {
-        clearWishlist({
-           uid
-        }).then(res => {
+        clearWishlist({uid}).then(res => {
            if(res.code === 200){
               message.success("Clear successfully");
               fetchData();
@@ -114,13 +111,17 @@ const WishListComponent = ({uid}) => {
   }
     return (
       <React.Fragment>
+        {/* 样式表 */}
         <style dangerouslySetInnerHTML={{ __html: WishListStyle }} />
+        {/* 整个组件 */}
          <div className="wishListComponent">
+              {/* 操作框 */}
               <div className={"title-box"}>
                   <p className="title">
                     You want to see
                   </p>
                 {
+                  // 条件判断
                   page.total > 0 &&
                   <div className={"operation"}>
                     <h6
@@ -130,6 +131,7 @@ const WishListComponent = ({uid}) => {
                       className={"operation-item"}>
                       add films to watchlist
                     </h6>
+                    {/* 竖线 */}
                     <div className={"line"}/>
                     <h6
                       onClick={() => {
@@ -139,7 +141,9 @@ const WishListComponent = ({uid}) => {
                       clear wishlist
                     </h6>
                     <div className={"line"}/>
+                    {/* 下拉框 */}
                     <Select
+                    // 干嘛用的没看懂？？？？？？？？？？？？？？？？？？
                       onChange={(value) => {
                         selectChange(value);
                       }}
@@ -149,6 +153,7 @@ const WishListComponent = ({uid}) => {
                       placeholder={"SORT BY"}
                       style={{ width: 150, textAlign : "center" }} bordered={false}>
                       {
+                        // 添加下拉框选项
                         sortList && sortList.map((item, index) => {
                           return <Option value={item.key}>{item.value}</Option>
                         })
@@ -166,6 +171,8 @@ const WishListComponent = ({uid}) => {
                                                fetchData();
                                              }}
                                              clearMovie={(index3)=>{
+                                              // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
+                                               console.log(index3)
                                                confirm({
                                                  title: 'Are you sure you want to remove this movie from your wishlist?',
                                                  icon: <ExclamationCircleOutlined />,

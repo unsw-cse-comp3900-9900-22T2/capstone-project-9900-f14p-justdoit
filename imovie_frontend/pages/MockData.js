@@ -78,14 +78,23 @@ export function getMovieDetail(param) {
 export function wishlistAddOrDelete(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/wishlist_add_or_delete', param);
 }
+export function watchlistAddOrDelete(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/watchlist_add_or_delete', param);
+}
 export function ratingMovie(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/rating_movie', param);
 }
 export function getWishlist(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/get_wishlist', param);
 }
+export function getWatchlist(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_watchlist', param);
+}
 export function clearWishlist(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/clear_wishlist', param);
+}
+export function clearWatchlist(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/clear_watchlist', param);
 }
 export function browseBy(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/browse_by', param);

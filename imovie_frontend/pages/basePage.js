@@ -1,5 +1,5 @@
 import { withRouter } from 'next/router'
-import { useState, useImperativeHandle, useEffect, useRef } from 'react'
+import { useState, useImperativeHandle, useEffect, useRef, useReducer } from 'react'
 import React from 'react'
 import basePageStyle from "./basePage.less"
 import {Select,Avatar,Popover} from "antd";
@@ -11,6 +11,7 @@ import RegesterComponent from "../components/Regester"
 import ResetPasswordComponent from "../components/ResetPassword"
 import { delCookie } from "../util/common";
 import { Base64 } from "js-base64";
+
 const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
   const [tabList] = useState([{
@@ -39,6 +40,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
     href : "/movie/browseBy",
     login : true,
   }]);
+// const reducer=useReducer()
   const [userTabList,changeUserTabList] = useState([])
   const [enterTab , changeEnterTab] = useState("");
   const [chooseTab,changeChooseTab] = useState("");
@@ -98,12 +100,13 @@ const Page = ({ router, children,USERMESSAGE }) => {
         hasBorder : false,
         href : "/movie/userMsg?activeKey=1&nouser=1"
       },
-      //   {
-      //   key : 6,
-      //   value : "watched",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=2&nouser=1"
-      // },{
+        {
+        key : 6,
+        value : "Watched",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=2&nouser=1"
+      },
+      // {
       //   key : 7,
       //   value : "movie lists",
       //   hasBorder : false,
@@ -126,7 +129,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       // },
         {
         key : 11,
-        value : "Sight Out",
+        value : "Sigh Out",
         hasBorder : false
       }]])
     }
@@ -154,6 +157,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       window.location.reload();
     }
   }
+
   return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: basePageStyle }} />

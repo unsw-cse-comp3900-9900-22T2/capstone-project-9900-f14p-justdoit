@@ -294,6 +294,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             if(from === "wishList"){
               wishListDo && wishListDo();
             }
+            if(from === "watchList"){
+              watchListDo && watchListDo();
+            }
           }
         }}
         ratingRef={ratingRef}/>

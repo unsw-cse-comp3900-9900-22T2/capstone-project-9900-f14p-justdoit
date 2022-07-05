@@ -102,7 +102,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       },
         {
         key : 6,
-        value : "Watched",
+        value : "Watchlist",
         hasBorder : false,
         href : "/movie/userMsg?activeKey=2&nouser=1"
       },

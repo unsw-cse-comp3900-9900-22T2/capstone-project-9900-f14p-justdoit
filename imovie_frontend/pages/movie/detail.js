@@ -7,7 +7,7 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
@@ -171,6 +171,30 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     const _movieDetail = _.cloneDeep(movieDetail);
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
+    if(type === 1){
+      watchlistAddOrDelete({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("add success");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) + 1;
+          }else{
+            message.success("delete success");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("add fail")
+          }else{
+            message.error("delete fail")
+          }
+        }
+      })
+    }
     if(type === 2){
         wishlistAddOrDelete({
           mid : movieDetail.mid,
@@ -449,7 +473,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             _movieDetail.avg_rate = avg_rate;
             _movieDetail.is_user_rate = rate;
             _movieDetail.is_user_wish = false;
+            _movieDetail.is_user_watch = false;
             _movieDetail.wishlist_num = (_movieDetail.wishlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+            _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
             const _is_user_watch = _movieDetail.is_user_watch;
             if(!_is_user_watch){
               _movieDetail.is_user_watch = true;

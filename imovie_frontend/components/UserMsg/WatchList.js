@@ -83,9 +83,7 @@ const WatchListComponent = ({uid}) => {
       okText : "YES",
       cancelText : "NO",
       onOk() {
-        clearWatchlist({
-           uid
-        }).then(res => {
+        clearWatchlist({uid}).then(res => {
            if(res.code === 200){
               message.success("Clear successfully");
               fetchData();
@@ -122,7 +120,7 @@ const WatchListComponent = ({uid}) => {
                 {
                   page.total > 0 &&
                   <div className={"operation"}>
-                    <h6
+                    {/* <h6
                       onClick={() => {
                         addWatchList();
                       }}
@@ -137,7 +135,7 @@ const WatchListComponent = ({uid}) => {
                       className={"operation-item"}>
                       clear watchlist
                     </h6>
-                    <div className={"line"}/>
+                    <div className={"line"}/> */}
                     <Select
                       onChange={(value) => {
                         selectChange(value);

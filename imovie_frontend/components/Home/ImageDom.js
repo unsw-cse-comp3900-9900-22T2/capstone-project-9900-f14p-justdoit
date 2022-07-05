@@ -5,10 +5,12 @@ import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
 import {wishlistAddOrDelete} from "../../pages/MockData";
+import {watchlistAddOrDelete} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
-const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
+// 下面这个watch是新加的
+const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const ratingRef = useRef();
@@ -41,6 +43,31 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];
     _thisItem[_type] = !is;
+    if(type === 1){
+      watchlistAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Added successfully");
+            _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) + 1;
+          }else{
+            message.success("Deleted successfully");
+            watchListDo && watchListDo();
+            _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["watchlist_num"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to add")
+          }else{
+            message.error("Failed to delete")
+          }
+        }
+      })
+    }
     if(type === 2){
         wishlistAddOrDelete({
           mid,
@@ -65,8 +92,8 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             }
           }
         })
-
-    }else{
+    }
+    else{
       changeThisItem(_thisItem);
     }
   }
@@ -280,7 +307,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             _thisItem.avg_rate = avg_rate;
             _thisItem.is_user_rate = rate;
             _thisItem.is_user_wish = false;
+            _thisItem.is_user_watch = false;
             _thisItem.wishlist_num = (_thisItem.wishlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.wishlist_num || 0) - 1);
+            _thisItem.watchlist_num = (_thisItem.watchlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.watchlist_num || 0) - 1);
             const _is_user_watch = _thisItem.is_user_watch;
             if(!_is_user_watch){
               _thisItem.is_user_watch = true;

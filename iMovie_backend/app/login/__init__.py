@@ -22,7 +22,7 @@ def init_route(app: Flask):
     app.add_url_rule('/app/movies/get_wishlist', view_func=movies.get_wishlist, methods=['POST'])
     app.add_url_rule('/app/movies/wishlist_add_or_delete', view_func=movies.wishlist_add_or_delete, methods=['POST'])
     app.add_url_rule('/app/movies/clear_wishlist', view_func=movies.clear_wishlist, methods=['POST'])
-    # app.add_url_rule('/app/movies/trans_movie_from_wishlist_to_watchedlist', view_func=movies.trans_movie_from_wishlist_to_watchedlist, methods=['POST'])
+    app.add_url_rule('/app/movies/wish_to_watch', view_func=movies.wish_to_watch, methods=['POST'])
 
     # browse by
     app.add_url_rule('/app/movies/browse_by', view_func=movies.browse_by, methods=['POST'])

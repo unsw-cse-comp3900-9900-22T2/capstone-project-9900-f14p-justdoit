@@ -354,6 +354,28 @@ def clear_wishlist():
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
+def wish_to_watch():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+    wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
+                                           wishWatchModel.active == 1).all()
+    if not wishlist:
+        return jsonify({'code': 200, 'msg': 'Wishlist is empty.'})
+    try:
+        for wish_m in wishlist:
+            wish_m.type = 1
+            wish_m.utime = getTime()[0]
+            db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Turn all movies on wishlist to watchlist successfully.'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
+
+
 # browse by
 # 0 ： high to low，1： low to high
 def browse_by():

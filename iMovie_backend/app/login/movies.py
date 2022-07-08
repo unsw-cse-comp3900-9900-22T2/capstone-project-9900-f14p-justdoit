@@ -570,3 +570,103 @@ def watchlist_add_or_delete():
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+def like_add_or_delete():
+    data = request.get_json(force=True)
+    # print(data)
+    add_or_del = data["add_or_del"]
+    uid = data["uid"]
+    mid = data["mid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # uid和mid是否已经存在过like里面, 只看active是1的
+    if add_or_del == "add":
+        like_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                 movielikeModel.type == 0, movielikeModel.active == 1).first()
+        if like_movie:
+            return jsonify({'code': 200, 'msg': 'Movie is already liked.'})
+        dislike_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                    movielikeModel.type == 1, movielikeModel.active == 1).first()
+        if dislike_movie:
+            dislike_movie.type = 0
+            dislike_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Trans movie from dislike to like.'})
+        try:
+            mlid = getUniqueid()
+            timeform = getTime()[0]
+            like = movielikeModel(mlid=mlid, type=0, uid=uid, mid=mid, ctime=timeform, utime=timeform)
+            db.session.add(like)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    elif add_or_del == "delete":
+        like_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                 movielikeModel.type == 0, movielikeModel.active == 1).first()
+        if not like_movie:
+            return jsonify({'code': 400, 'msg': 'Movie is not liked.'})
+        try:
+            like_movie.active = 0
+            like_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})
+
+
+def dislike_add_or_delete():
+    data = request.get_json(force=True)
+    # print(data)
+    add_or_del = data["add_or_del"]
+    uid = data["uid"]
+    mid = data["mid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # uid和mid是否已经存在过like里面, 只看active是1的
+    if add_or_del == "add":
+        dislike_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                    movielikeModel.type == 1, movielikeModel.active == 1).first()
+        if dislike_movie:
+            return jsonify({'code': 200, 'msg': 'Movie is already disliked.'})
+        like_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                 movielikeModel.type == 0, movielikeModel.active == 1).first()
+        if like_movie:
+            like_movie.type = 1
+            like_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Trans movie from like to dislike.'})
+        try:
+            mlid = getUniqueid()
+            timeform = getTime()[0]
+            dislike = movielikeModel(mlid=mlid, type=1, uid=uid, mid=mid, ctime=timeform, utime=timeform)
+            db.session.add(dislike)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    elif add_or_del == "delete":
+        dislike_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
+                                                    movielikeModel.type == 1, movielikeModel.active == 1).first()
+        if not dislike_movie:
+            return jsonify({'code': 400, 'msg': 'Movie is not disliked.'})
+        try:
+            dislike_movie.active = 0
+            dislike_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})

@@ -29,7 +29,8 @@ def init_route(app: Flask):
     # app.add_url_rule('/app/movies/trans_movie_from_wishlist_to_watchedlist', view_func=movies.trans_movie_from_wishlist_to_watchedlist, methods=['POST'])
     # app.add_url_rule('/app/movies/insert_movie_for_test', view_func=movies.insert_movie_for_test, methods=['POST'])
 
-#browse by
+    #browse by
     app.add_url_rule('/app/movies/browse_by', view_func=movies.browse_by, methods=['POST'])
-
+    #search by
+    app.add_url_rule('/app/movies/search_by', view_func=movies.search_by, methods=['POST'])
 

@@ -2,7 +2,7 @@ from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists,func
 from app.login.utils import *
 from app.models import *
-
+from sqlalchemy import or_
 
 
 def res_movie_detail(uid, user, movie):
@@ -117,6 +117,28 @@ def res_movie_detail(uid, user, movie):
 
     return result
 
+# simplify the res_movie_detail
+# display the mid, cast, director,genre, & moviename
+def res_movie_detail_spf(uid, user, movie):
+    result = {}
+    mid = movie.mid
+    result["mid"] = mid
+    result["moviename"] = movie.moviename
+    # split string (去空格)
+    genre = movie.genre
+    genre.lower()
+    genre_list = genre.split(" ")
+    genre_cap = []
+    for i in genre_list:
+        genre_cap.append(i.capitalize())
+        # print(i.capitalize())
+    result["genre"] = genre_cap
+    cast_list = movie.cast.split(";")
+    result["cast"] = cast_list
+    # result["crew"] = movie.crew
+    result["director"] = movie.director
+
+    return result
 
 
 
@@ -446,3 +468,36 @@ def browse_by():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Browseby failed.'})
+
+
+# search by
+def search_by():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    if uid:
+        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    else:
+        user = None
+    keyword = data["keyword"]
+    count = 0
+    # try:
+    movie_list = []
+    result = {}
+    #search movies
+    movies = MoviesModel.query.filter(or_(
+        MoviesModel.moviename.ilike("%"+str(keyword)+'%'),
+        MoviesModel.director.ilike("%" + str(keyword) + '%'),
+        MoviesModel.cast.ilike("%" + str(keyword) + '%')
+        ),
+        MoviesModel.active == 1
+    ).order_by("moviename").all()
+    for movie in movies:  # movies: [movies0, movies[1]....]
+        movie_info = res_movie_detail_spf(uid, user, movie)
+        movie_list.append(movie_info)
+        count += 1
+    result["count"] = count
+    result["movies"] = movie_list
+    return jsonify({'code': 200, 'result': result})
+
+    # except Exception as e:
+    #     return jsonify({'code': 400, 'msg': 'search failed.'})

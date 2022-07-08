@@ -541,8 +541,8 @@ def watchlist_add_or_delete():
         wish_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
                                                  wishWatchModel.type == 0, wishWatchModel.active == 1).first()
         if wish_movie:
-            watch_movie.type = 1
-            watch_movie.utime = getTime()[0]
+            wish_movie.type = 1
+            wish_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Add movie from wishlist to watchlist.'})
         try:

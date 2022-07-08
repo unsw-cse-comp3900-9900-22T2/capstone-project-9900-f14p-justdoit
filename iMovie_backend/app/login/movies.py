@@ -307,6 +307,13 @@ def wishlist_add_or_delete():
                                                  wishWatchModel.type == 0, wishWatchModel.active == 1).first()
         if wish_movie:
             return jsonify({'code': 200, 'msg': 'Movie is already in wishlist.'})
+        watch_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
+                                                 wishWatchModel.type == 1, wishWatchModel.active == 1).first()
+        if watch_movie:
+            watch_movie.type = 0
+            watch_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Add movie from watchlist to wishlist.'})
         try:
             wid = getUniqueid()
             timeform = getTime()[0]
@@ -531,6 +538,13 @@ def watchlist_add_or_delete():
                                                  wishWatchModel.type == 1, wishWatchModel.active == 1).first()
         if watch_movie:
             return jsonify({'code': 200, 'msg': 'Movie is already in watchlist.'})
+        wish_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
+                                                 wishWatchModel.type == 0, wishWatchModel.active == 1).first()
+        if wish_movie:
+            watch_movie.type = 1
+            watch_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Add movie from wishlist to watchlist.'})
         try:
             wid = getUniqueid()
             timeform = getTime()[0]

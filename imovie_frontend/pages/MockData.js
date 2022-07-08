@@ -90,12 +90,15 @@ export function getWishlist(param) {
 export function getWatchlist(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/get_watchlist', param);
 }
+export function wish_to_watch(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/wish_to_watch', param);
+}
 export function clearWishlist(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/clear_wishlist', param);
 }
-export function clearWatchlist(param) {
-    return fetchData('http://127.0.0.1:5000/app/movies/clear_watchlist', param);
-}
+// export function clearWatchlist(param) {
+//     return fetchData('http://127.0.0.1:5000/app/movies/clear_watchlist', param);
+// }
 export function browseBy(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/browse_by', param);
 }

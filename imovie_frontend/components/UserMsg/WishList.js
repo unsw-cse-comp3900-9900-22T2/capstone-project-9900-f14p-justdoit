@@ -6,7 +6,7 @@ import _ from "lodash"
 import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {getWishlist,wishlistAddOrDelete,clearWishlist} from "../../pages/MockData";
+import {getWishlist,wishlistAddOrDelete,clearWishlist,wish_to_watch} from "../../pages/MockData";
 const WishListComponent = ({uid}) => {
     const [sortList] = useState([{
       key : 0,
@@ -65,14 +65,21 @@ const WishListComponent = ({uid}) => {
 
       })
     }
-  function addWatchList() {
+  function wish_to_Watch() {
     confirm({
       title: 'Are you sure you want to turn all the movies on Wishlist into Watchlist?',
       icon: <ExclamationCircleOutlined />,
       okText : "YES",
       cancelText : "NO",
       onOk() {
-        console.log('OK');
+        wish_to_watch({uid}).then(res => {
+          if(res.code === 200){
+             message.success("Add successfully");
+             fetchData();
+          }else{
+            message.error("Add failed");
+          }
+        })
       }
     });
   }
@@ -126,10 +133,10 @@ const WishListComponent = ({uid}) => {
                   <div className={"operation"}>
                     <h6
                       onClick={() => {
-                        addWatchList();
+                        wish_to_Watch();
                       }}
                       className={"operation-item"}>
-                      add films to watchlist
+                      add all films to watchlist
                     </h6>
                     {/* 竖线 */}
                     <div className={"line"}/>

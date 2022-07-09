@@ -56,10 +56,10 @@ def res_movie_detail(uid, user, movie):
         # print(user_wish)
         if user_wish:
             is_user_wish = 1
-            result["wish_ctime"] = user_wish.ctime
+            result["wish_utime"] = user_wish.utime
         else:
             is_user_wish = 0
-            result["wish_ctime"] = None
+            result["wish_utime"] = None
         result["is_user_wish"] = is_user_wish
 
         # check watch or not
@@ -68,10 +68,10 @@ def res_movie_detail(uid, user, movie):
                                                  wishWatchModel.active == 1).first()
         if user_watch:
             is_user_watch = 1
-            result["watch_ctime"] = user_watch.ctime
+            result["watch_utime"] = user_watch.utime
         else:
             is_user_watch = 0
-            result["watch_ctime"] = None
+            result["watch_utime"] = None
         result["is_user_watch"] = is_user_watch
 
         # check like or not
@@ -274,7 +274,7 @@ def get_wishlist():
             else:
                 return jsonify({'code': 400, 'msg': 'Invalid command.'})
         else:
-            res_list = sorted(list, key=lambda m: m['wish_ctime'], reverse=True)
+            res_list = sorted(list, key=lambda m: m['wish_utime'], reverse=True)
 
         start = page_index * page_size
         end = start + page_size
@@ -527,7 +527,7 @@ def get_watchlist():
             else:
                 return jsonify({'code': 400, 'msg': 'Invalid command.'})
         else:
-            res_list = sorted(list, key=lambda m: m['watch_ctime'], reverse=True)
+            res_list = sorted(list, key=lambda m: m['watch_utime'], reverse=True)
 
         start = page_index * page_size
         end = start + page_size

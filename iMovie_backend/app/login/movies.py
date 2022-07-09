@@ -602,6 +602,7 @@ def get_like():
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     likelist = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.type == 0, movielikeModel.active == 1).all()
     if not likelist:
         return jsonify({'code': 200, 'msg': 'Likelist is empty'})
@@ -769,47 +770,102 @@ def dislike_add_or_delete():
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
-# def get_view_history():
-#     data = request.get_json(force=True)
-#     # print(data)
-#     uid = data["uid"]
-#     # check uid and mid
-#     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-#     if not user:
-#         return jsonify({'code': 400, 'msg': 'User does not exist'})
-#
-#
-# def view_history_add_or_delete():
-#     data = request.get_json(force=True)
-#     # print(data)
-#     uid = data["uid"]
-#     mid = data["mid"]
-#     # check uid and mid
-#     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-#     if not user:
-#         return jsonify({'code': 400, 'msg': 'User does not exist'})
-#     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
-#     if not movie:
-#         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+def get_view_history():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+
+    view_history = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.active == 1).order_by(viewhistoryModel.utime.desc()).all()
+    if not view_history:
+        return jsonify({'code': 200, 'msg': 'View history is empty'})
+
+    try:
+        result = {"count": len(view_history)}
+        list = []
+        for m in view_history:
+            movie = MoviesModel.query.filter(MoviesModel.mid == m.mid, MoviesModel.active == 1).first()
+            if movie:
+                movie_info = res_movie_detail(uid, user, movie)
+                list.append(movie_info)
+
+        if 20 < result["count"]:
+            result["list"] = list[count - 20:count]
+        else:
+            result["list"] = list
+
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Get view history failed.', 'error_msg': str(e)})
 
 
-# def clear_view_history():
-#     data = request.get_json(force=True)
-#     # print(data)
-#     uid = data["uid"]
-#     # check uid
-#     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-#     if not user:
-#         return jsonify({'code': 400, 'msg': 'User does not exist'})
-#     view_history = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
-#                                            wishWatchModel.active == 1).all()
-#     if not view_history:
-#         return jsonify({'code': 200, 'msg': 'View history is empty'})
-#     try:
-#         for wish_m in view_history:
-#             wish_m.active = 0
-#             wish_m.utime = getTime()[0]
-#             db.session.commit()
-#         return jsonify({'code': 200, 'msg': 'Wishlist clear succeed'})
-#     except Exception as e:
-#         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
+def view_history_add_or_delete():
+    data = request.get_json(force=True)
+    # print(data)
+    add_or_del = data["add_or_del"]
+    uid = data["uid"]
+    mid = data["mid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+
+    if add_or_del == "add":
+        viewed_movie = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.mid == mid,
+                                                     viewhistoryModel.active == 1).first()
+        if viewed_movie:
+            viewed_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Viewed time update.'})
+        try:
+            vid = getUniqueid()
+            timeform = getTime()[0]
+            viewed = viewhistoryModel(vid=vid, uid=uid, mid=mid, ctime=timeform, utime=timeform)
+            db.session.add(viewed)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    elif add_or_del == "delete":
+        viewed_movie = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.mid == mid,
+                                                     viewhistoryModel.active == 1).first()
+        if not viewed_movie:
+            return jsonify({'code': 400, 'msg': 'Movie is not viewed.'})
+        try:
+            viewed_movie.active = 0
+            viewed_movie.utime = getTime()[0]
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})
+
+
+def clear_view_history():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+
+    view_history = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.active == 1).all()
+    if not view_history:
+        return jsonify({'code': 200, 'msg': 'View history is empty'})
+
+    try:
+        for v_m in view_history:
+            v_m.active = 0
+            v_m.utime = getTime()[0]
+            db.session.commit()
+        return jsonify({'code': 200, 'msg': 'View history clear succeed'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Clear View history failed.', 'error_msg': str(e)})

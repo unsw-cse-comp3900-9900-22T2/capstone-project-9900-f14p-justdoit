@@ -44,6 +44,8 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
     const is = _thisItem[_type];
     _thisItem[_type] = !is;
     if(type === 1){
+      // 提取互斥项
+      const iss = _thisItem["is_user_wish"];
       watchlistAddOrDelete({
         mid,
         uid,
@@ -53,6 +55,11 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
           if(!is){
             message.success("Added successfully");
             _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) + 1;
+            // 用于判断互斥项是否为true
+            if(iss) {
+              _thisItem["is_user_wish"] = !iss;
+              _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
+            }
           }else{
             message.success("Deleted successfully");
             watchListDo && watchListDo();
@@ -69,6 +76,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
       })
     }
     else if(type === 2){
+      const iss = _thisItem["is_user_watch"];
         wishlistAddOrDelete({
           mid,
           uid,
@@ -78,6 +86,10 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
             if(!is){
               message.success("Added successfully");
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
+              if(iss) {
+                _thisItem["is_user_watch"] = !iss;
+                _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["watchlist_num"] || 0) - 1;
+              }
             }else{
               message.success("Deleted successfully");
               wishListDo && wishListDo();
@@ -95,6 +107,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
     }
     // 加了这个else才能实时改变数字
     else if(type === 0){
+      const iss = _thisItem["is_user_dislike"];
       likeAddOrDelete({
         mid,
         uid,
@@ -104,6 +117,10 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
           if(!is){
             message.success("Liked successfully");
             _thisItem["num_like"] = (_thisItem["num_like"] || 0) + 1;
+            if(iss) {
+              _thisItem["is_user_dislike"] = !iss;
+              // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
+            }
           }else{
             message.success("Canceled the like successfully");
             _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
@@ -118,7 +135,8 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
         }
       })
   }
-    else{
+    else if(type === 3){
+      const iss = _thisItem["is_user_like"];
       dislikeAddOrDelete({
         mid,
         uid,
@@ -128,9 +146,12 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
           if(!is){
             message.success("Disliked successfully");
             // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) + 1;
+            if(iss) {
+              _thisItem["is_user_like"] = !iss;
+              _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
+            }
           }else{
             message.success("Canceled the dislike successfully");
-            
             // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
           }
           changeThisItem(_thisItem);
@@ -142,6 +163,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
           }
         }
       })
+    }
+    else{
+      changeThisItem(_thisItem)
     }
   }
   function svgGet(type ,isGet){

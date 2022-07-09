@@ -34,3 +34,7 @@ def init_route(app: Flask):
     # like & dislike
     app.add_url_rule('/app/movies/like_add_or_delete', view_func=movies.like_add_or_delete, methods=['POST'])
     app.add_url_rule('/app/movies/dislike_add_or_delete', view_func=movies.dislike_add_or_delete, methods=['POST'])
+
+    # view_history
+    # app.add_url_rule('/app/movies/get_view_history', view_func=movies.get_view_history, methods=['POST'])
+    # app.add_url_rule('/app/movies/add_view_history', view_func=movies.add_view_history, methods=['POST'])

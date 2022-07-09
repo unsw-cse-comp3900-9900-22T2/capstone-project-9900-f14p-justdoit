@@ -182,7 +182,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       }).then(res => {
         if(res.code === 200){
           if(!is){
-            message.success("add success");
+            message.success("Added successfully");
             _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) + 1;
             // 用于判断互斥项是否为true
             if(iss) {
@@ -190,15 +190,15 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
             }
           }else{
-            message.success("delete success");
+            message.success("Deleted successfully");
             _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
           }
           changeMovieDetail(_movieDetail);
         }else{
           if(!is) {
-            message.error("add fail")
+            message.error("Failed to add")
           }else{
-            message.error("delete fail")
+            message.error("Failed to delete")
           }
         }
       })
@@ -212,22 +212,22 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }).then(res => {
           if(res.code === 200){
             if(!is){
-              message.success("add success");
+              message.success("Added successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
               if(iss) {
                 _movieDetail["is_user_watch"] = !iss;
                 _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
               }
             }else{
-              message.success("delete success");
+              message.success("Deleted successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
             }
             changeMovieDetail(_movieDetail);
           }else{
             if(!is) {
-              message.error("add fail")
+              message.error("Failed to add")
             }else{
-              message.error("delete fail")
+              message.error("Failed to delete")
             }
           }
         })
@@ -242,21 +242,21 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       }).then(res => {
         if(res.code === 200){
           if(!is){
-            message.success("like success");
+            message.success("Liked successfully");
             _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) + 1;
             if(iss) {
               _movieDetail["is_user_dislike"] = !iss;
             }
           }else{
-            message.success("cancel the like success");
+            message.success("Canceled the like successfully");
             _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
           }
           changeMovieDetail(_movieDetail);
         }else{
           if(!is) {
-            message.error("like fail")
+            message.error("Failed to like")
           }else{
-            message.error("cancel the like fail")
+            message.error("Failed to cancel the like")
           }
         }
       })
@@ -270,22 +270,22 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       }).then(res => {
         if(res.code === 200){
           if(!is){
-            message.success("dislike success");
+            message.success("Disliked successfully");
             // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) + 1;
             if(iss) {
               _movieDetail["is_user_like"] = !iss;
               _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
             }
           }else{
-            message.success("cancel the dislike success");
+            message.success("Canceled the dislike successfully");
             // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
           }
           changeMovieDetail(_movieDetail);
         }else{
           if(!is) {
-            message.error("dislike fail")
+            message.error("Failed to dislike")
           }else{
-            message.error("cancel the dislike fail")
+            message.error("Failed to cancel the dislike")
           }
         }
       })

@@ -39,6 +39,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
     },
   }));
   function changeOperation(type) {
+
     const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];

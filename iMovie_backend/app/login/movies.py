@@ -507,27 +507,40 @@ def search_by():
 def search_result():
     data = request.get_json(force=True)
     uid = data["uid"]
+    page_index = data["page_index"]
+    page_size = data["page_size"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     else:
         user = None
     keyword = data["keyword"]
     count = 0
-    movie_list = []
-    result = {}
-    # search movies
-    movies = MoviesModel.query.filter(or_(
-        MoviesModel.moviename.ilike(str(keyword)),
-        MoviesModel.director.ilike(str(keyword)),
-        MoviesModel.cast.ilike(str(keyword))
-    ),
-        MoviesModel.active == 1
-    ).order_by("moviename").all()
+    try:
+        movie_list = []
+        result = {}
+        # search movies
+        movies = MoviesModel.query.filter(or_(
+            MoviesModel.moviename.ilike("%"+str(keyword)+"%"),
+            MoviesModel.director.ilike("%"+str(keyword)+"%"),
+            MoviesModel.cast.ilike("%"+str(keyword)+"%")
+        ),
+            MoviesModel.active == 1
+        ).order_by("moviename").all()
 
-    for movie in movies:  # movies: [movies0, movies[1]....]
-        movie_info = res_movie_detail_spf(uid, user, movie)
-        movie_list.append(movie_info)
-        count += 1
-    result["count"] = count
-    result["movies"] = movie_list
-    return jsonify({'code': 200, 'result': result})
+        for movie in movies:  # movies: [movies0, movies[1]....]
+            movie_info = res_movie_detail(uid, user, movie)
+            movie_list.append(movie_info)
+            count += 1
+        result["count"] = count
+
+        # display movie nums per page
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["movies"] = movie_list[start:end]
+        else:
+            result["movies"] = movie_list[start:]
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'search result return failed.'})

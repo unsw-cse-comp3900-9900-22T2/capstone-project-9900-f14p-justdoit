@@ -8,6 +8,7 @@ import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail } from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
@@ -195,7 +196,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }
       })
     }
-    if(type === 2){
+    else if(type === 2){
         wishlistAddOrDelete({
           mid : movieDetail.mid,
           uid : USERMESSAGE && USERMESSAGE.uid,
@@ -218,7 +219,57 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             }
           }
         })
-    }else{
+    }
+    // 加了这个else才能实时改变detail页面的数字
+    else if(type === 0){
+      likeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+        add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("like success");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) + 1;
+          }else{
+            message.success("cancel the like success");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("like fail")
+          }else{
+            message.error("cancel the like fail")
+          }
+        }
+      })
+    }
+    else if(type === 3){
+      dislikeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("dislike success");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) + 1;
+          }else{
+            message.success("cancel the dislike success");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("dislike fail")
+          }else{
+            message.error("cancel the dislike fail")
+          }
+        }
+      })
+    }
+    else{
       changeMovieDetail(_movieDetail);
     }
   }

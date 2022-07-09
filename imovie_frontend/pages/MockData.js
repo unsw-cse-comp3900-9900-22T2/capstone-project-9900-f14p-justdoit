@@ -102,3 +102,9 @@ export function clearWishlist(param) {
 export function browseBy(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/browse_by', param);
 }
+export function likeAddOrDelete(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/like_add_or_delete', param);
+}
+export function dislikeAddOrDelete(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/dislike_add_or_delete', param);
+}

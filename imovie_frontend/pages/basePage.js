@@ -133,7 +133,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
         hasBorder : false
       }]])
     }
-
+    
   },[]);
   function tabClick(item) {
     if(!!item.href){

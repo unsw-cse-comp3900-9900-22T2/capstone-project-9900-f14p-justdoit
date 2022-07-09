@@ -4,8 +4,8 @@ import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
 import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
-import {wishlistAddOrDelete} from "../../pages/MockData";
-import {watchlistAddOrDelete} from "../../pages/MockData";
+import {wishlistAddOrDelete,watchlistAddOrDelete} from "../../pages/MockData";
+import {dislikeAddOrDelete,likeAddOrDelete} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
@@ -68,7 +68,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
         }
       })
     }
-    if(type === 2){
+    else if(type === 2){
         wishlistAddOrDelete({
           mid,
           uid,
@@ -93,8 +93,55 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
           }
         })
     }
+    // 加了这个else才能实时改变数字
+    else if(type === 0){
+      likeAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Liked successfully");
+            _thisItem["num_like"] = (_thisItem["num_like"] || 0) + 1;
+          }else{
+            message.success("Canceled the like successfully");
+            _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to like")
+          }else{
+            message.error("Failed to cancel the like")
+          }
+        }
+      })
+  }
     else{
-      changeThisItem(_thisItem);
+      dislikeAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Disliked successfully");
+            // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) + 1;
+          }else{
+            message.success("Canceled the dislike successfully");
+            
+            // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to dislike")
+          }else{
+            message.error("Failed to cancel the dislike")
+          }
+        }
+      })
     }
   }
   function svgGet(type ,isGet){

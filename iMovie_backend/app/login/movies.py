@@ -594,18 +594,14 @@ def like_add_or_delete():
             dislike_movie.type = 0
             dislike_movie.utime = getTime()[0]
             db.session.commit()
-            count = movielikeModel.query.filter(movielikeModel.type == 0, movielikeModel.active == 1).count()
-            result = {"count": count, "msg": "Trans movie from dislike to like."}
-            return jsonify({'code': 200, 'result': result})
+            return jsonify({'code': 200, 'msg': 'Trans movie from dislike to like.'})
         try:
             mlid = getUniqueid()
             timeform = getTime()[0]
             like = movielikeModel(mlid=mlid, type=0, uid=uid, mid=mid, ctime=timeform, utime=timeform)
             db.session.add(like)
             db.session.commit()
-            count = movielikeModel.query.filter(movielikeModel.type == 0, movielikeModel.active == 1).count()
-            result = {"count": count, "msg": "Addition succeed."}
-            return jsonify({'code': 200, 'result': result})
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
     elif add_or_del == "delete":
@@ -617,9 +613,7 @@ def like_add_or_delete():
             like_movie.active = 0
             like_movie.utime = getTime()[0]
             db.session.commit()
-            count = movielikeModel.query.filter(movielikeModel.type == 0, movielikeModel.active == 1).count()
-            result = {"count": count, "msg": "Deletion succeed."}
-            return jsonify({'code': 200, 'result': result})
+            return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
     else:
@@ -675,3 +669,17 @@ def dislike_add_or_delete():
             return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
     else:
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
+
+
+def add_view_history():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    mid = data["mid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})

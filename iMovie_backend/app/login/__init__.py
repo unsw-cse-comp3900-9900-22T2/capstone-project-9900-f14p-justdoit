@@ -31,6 +31,7 @@ def init_route(app: Flask):
 
     #browse by
     app.add_url_rule('/app/movies/browse_by', view_func=movies.browse_by, methods=['POST'])
-    #search by
+    #enter the keyword into the search bar
     app.add_url_rule('/app/movies/search_by', view_func=movies.search_by, methods=['POST'])
-
+    # return result depends on the search keyword
+    app.add_url_rule('/app/movies/search_result', view_func=movies.search_result, methods=['POST'])

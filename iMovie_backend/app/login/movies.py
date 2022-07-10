@@ -2,7 +2,7 @@ from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists, func
 from app.login.utils import *
 from app.models import *
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, not_
 
 def res_movie_detail(uid, user, movie):
     result = {}
@@ -424,6 +424,7 @@ def browse_by():
     yearList = year_strToList(year)
     genreList = strToList(genre)
     countryList = strToList(country)
+    countryList2 = ["USA", "UK", "Australia", "France", "Germany", "Italy", "India", "China", "Korea", "Japan", "Thailand"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     try:
@@ -436,7 +437,12 @@ def browse_by():
         # movies include both keyword at same time
         genre_rule = and_(*[MoviesModel.genre.ilike("%" +input+"%") for input in genreList])
         # movies include either keyword
-        country_rule = or_(*[MoviesModel.country.ilike("%" +input+"%") for input in countryList])
+
+        # if "others", display those not popular countries
+        if len(countryList) == 1 and countryList[0] == "Others":
+            country_rule = not_(MoviesModel.country.in_(countryList2))
+        else:
+            country_rule = or_(*[MoviesModel.country.ilike("%" +input+"%") for input in countryList])
 
         if rating is None and year is None:
             movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule, country_rule).order_by("moviename").all()

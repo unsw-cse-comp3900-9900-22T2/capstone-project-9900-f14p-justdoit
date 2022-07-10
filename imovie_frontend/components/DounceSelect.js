@@ -279,7 +279,7 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     );
                 }}
                 onSearch={debounceFetcher}
-                notFoundContent={fetching ? <Spin size="small" /> : focusNow ? null : <div>暂无数据</div>}
+                notFoundContent={fetching ? <Spin size="small" /> : focusNow ? null : <div>No films yet</div>}
                 {...props}
                 onChange={(newValue)=>{
                     props.onChange && props.onChange(newValue);

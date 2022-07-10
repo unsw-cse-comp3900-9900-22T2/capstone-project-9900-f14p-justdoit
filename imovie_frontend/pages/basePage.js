@@ -249,7 +249,6 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                                })
                                              }}
                                              onChange={(newValue) => {
-                                               console.log("newValue",newValue)
                                                changeSearchValue(newValue);
                                              }}
                                              style={{
@@ -263,7 +262,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                                const theEvent = window.event || e;
                                                const code = theEvent.keyCode || theEvent.which || theEvent.charCode;
                                                if (code === 13) {
-                                                 debugger
+                                                 e.stopPropagation();
                                                  window.location.href = "/movie/searchMovie?keyword=" + encodeURIComponent(searchValue);
                                                }
                                              }}

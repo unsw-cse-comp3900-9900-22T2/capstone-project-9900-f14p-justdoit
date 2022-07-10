@@ -2,7 +2,7 @@ from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists, func
 from app.login.utils import *
 from app.models import *
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 def res_movie_detail(uid, user, movie):
     result = {}
@@ -416,18 +416,18 @@ def browse_by():
     page_size = data["page_size"]
     rating = data["rating"]
     year = data["year"]
-    yearList = year_strToList(year)
     genre = data["genre"]
     yearList = year_strToList(year)
-    genre_new = addSignalToStr(genre)
+    genreList = strToList(genre)
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     try:
         res_list = []
         result = {}
+        # add genre_rule
+        genre_rule = and_(*[MoviesModel.genre.ilike("%" +input+"%") for input in genreList])
         if rating is None and year is None:
-            print(genre_new)
-            movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.genre.ilike(genre_new)).order_by("moviename").all()
+            movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule).order_by("moviename").all()
             for movie in movies:            # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
                 res_list.append(movie_info)
@@ -435,10 +435,10 @@ def browse_by():
             result["count"] = count
         elif rating is None:
             if yearList[0] == -1:
-                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year <= 1997).order_by(
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year <= 1997,genre_rule).order_by(
                     "moviename").all()
             else:
-                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList)).order_by(
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList),genre_rule).order_by(
                     "moviename").all()
             for movie in movies:  # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
@@ -448,47 +448,48 @@ def browse_by():
         else:
             if len(yearList) == 0:
                 unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
-                                                          MoviesModel.avg_rate is None).order_by("moviename").all()
+                                                          MoviesModel.avg_rate is None,genre_rule).order_by("moviename").all()
             else:
                 if yearList[0] == -1:  # before 1997
                     unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is None,
-                                                              MoviesModel.year <= 1997).order_by("moviename").all()
+                                                              MoviesModel.year <= 1997, genre_rule).order_by("moviename").all()
                 else:
                     unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is None,
-                                                              MoviesModel.year.in_(yearList)).order_by(
+                                                              MoviesModel.year.in_(yearList), genre_rule).order_by(
                         "moviename").all()
             if rating == 0:
                 # from high to low depends on avg_rate
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
-                                                            MoviesModel.avg_rate is not None).order_by(
+                                                            MoviesModel.avg_rate is not None, genre_rule).order_by(
                         MoviesModel.avg_rate.desc(), "moviename").all()
                 else:
                     if yearList[0] == -1:  # before 1997
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year <= 1997).order_by(
+                                                                MoviesModel.year <= 1997, genre_rule).order_by(
                             MoviesModel.avg_rate.desc(), "moviename").all()
                     else:
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year.in_(yearList)).order_by(
+                                                                MoviesModel.year.in_(yearList),
+                                                                genre_rule).order_by(
                             MoviesModel.avg_rate.desc(), "moviename").all()
                 # from low to high depends on avg_rate
             if rating == 1:
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is not None,
-                                                            MoviesModel.year.in_(yearList)).order_by("avg_rate",
-                                                                                                     "moviename").all()
+                                                            MoviesModel.year.in_(yearList),
+                                                            genre_rule).order_by("avg_rate","moviename").all()
 
                 else:
                     if yearList[0] == -1:  # before 1997
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year <= 1997).order_by("avg_rate",
+                                                                MoviesModel.year <= 1997,genre_rule).order_by("avg_rate",
                                                                                                    "moviename").all()
                     else:
-                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule,
                                                                 MoviesModel.avg_rate is not None,
                                                                 MoviesModel.year.in_(yearList)).order_by("avg_rate",
                                                                                                          "moviename").all()

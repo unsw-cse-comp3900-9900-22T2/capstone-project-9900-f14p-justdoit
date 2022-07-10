@@ -135,7 +135,10 @@ def res_movie_detail_spf(uid, user, movie):
     result["cast"] = cast_list
     # result["crew"] = movie.crew
     result["director"] = movie.director
-
+    if movie.year:
+        result["year"] = movie.year
+    else:
+        result["year"] = 0
     return result
 
 def get_movie_detail():

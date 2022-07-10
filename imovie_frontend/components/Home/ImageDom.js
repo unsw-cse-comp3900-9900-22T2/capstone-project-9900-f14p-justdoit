@@ -10,7 +10,7 @@ import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
 // 下面这个watch是新加的
-const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
+const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const ratingRef = useRef();
@@ -39,7 +39,6 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
     },
   }));
   function changeOperation(type) {
-
     const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];
@@ -397,6 +396,12 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,
             }
             if(from === "watchList"){
               watchListDo && watchListDo();
+            }
+            if(from === "disLike"){
+              disLikeDo && disLikeDo();
+            }
+            if(from === "liKe"){
+              liKeDo && liKeDo();
             }
           }
         }}

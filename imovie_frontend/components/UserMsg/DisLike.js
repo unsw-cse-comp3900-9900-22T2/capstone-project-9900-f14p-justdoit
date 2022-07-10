@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import { Select, Pagination, Modal,message} from "antd";
 const {Option} = Select;
-import WatchListStyle from "./WatchList.less"
+import DisLikeStyle from "./DisLike.less"
 import _ from "lodash"
 import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {getWatchlist,watchlistAddOrDelete} from "../../pages/MockData";
-const WatchListComponent = ({uid}) => {
-    const [sortList] = useState([{
-      key : 0,
-      value : "Add Time"
-    },{
-      key : 1,
-      value : "Highest Rating"
-    },{
-      key : 2,
-      value : "Lowest Rating"
-    },{
-      key : 3,
-      value : "Year"
-    }]);
+import {getDislike,dislikeAddOrDelete} from "../../pages/MockData";
+const DisLikeComponent = ({uid}) => {
+    // const [sortList] = useState([{
+    //   key : 0,
+    //   value : "Add Time"
+    // },{
+    //   key : 1,
+    //   value : "Highest Rating"
+    // },{
+    //   key : 2,
+    //   value : "Lowest Rating"
+    // },{
+    //   key : 3,
+    //   value : "Year"
+    // }]);
     const [page,changePage] = useState({
        size : 12,
        number : 1,
@@ -40,7 +40,7 @@ const WatchListComponent = ({uid}) => {
     }
     function fetchData(pageObj) {
       const _pageObj = pageObj || page;
-      getWatchlist({
+      getDislike({
         sort_by: _pageObj.sort,
         page_index: _pageObj.number - 1 < 0 ? 0 : _pageObj.number - 1,
         page_size: _pageObj.size,
@@ -65,14 +65,14 @@ const WatchListComponent = ({uid}) => {
 
       })
     }
-  // function clearWatchList() {
+  // function clearDisLike() {
   //   confirm({
-  //     title: 'Are you sure you want to clear Watchlist?',
+  //     title: 'Are you sure you want to clear list of dislikes?',
   //     icon: <ExclamationCircleOutlined />,
   //     okText : "YES",
   //     cancelText : "NO",
   //     onOk() {
-  //       clearWatchlist({uid}).then(res => {
+  //       clearDislike({uid}).then(res => {
   //          if(res.code === 200){
   //             message.success("Clear successfully");
   //             fetchData();
@@ -85,7 +85,7 @@ const WatchListComponent = ({uid}) => {
   // }
   function clearMovie(index) {
     const _mid = imgList[index].mid;
-    watchlistAddOrDelete({
+    dislikeAddOrDelete({
       mid : _mid,
       uid,
       add_or_del : "delete"
@@ -100,16 +100,30 @@ const WatchListComponent = ({uid}) => {
   }
     return (
       <React.Fragment>
-        <style dangerouslySetInnerHTML={{ __html: WatchListStyle }} />
-         <div className="watchListComponent">
+        {/* 样式表 */}
+        <style dangerouslySetInnerHTML={{ __html: DisLikeStyle }} />
+        {/* 整个组件 */}
+         <div className="disLikeComponent">
+              {/* 操作框 */}
               <div className={"title-box"}>
                   <p className="title">
-                    You have seen
+                    You disliked
                   </p>
                 {
+                  // 条件判断
                   page.total > 0 &&
                   <div className={"operation"}>
-                    <Select
+                    {/* <h6
+                      onClick={() => {
+                        clearDisLike();
+                      }}
+                      className={"operation-item"}>
+                      clear list of dislikes
+                    </h6> */}
+                    {/* <div className={"line"}/> */}
+                    {/* 下拉框 */}
+                    {/* <Select
+                    // 干嘛用的没看懂？？？？？？？？？？？？？？？？？？
                       onChange={(value) => {
                         selectChange(value);
                       }}
@@ -119,11 +133,12 @@ const WatchListComponent = ({uid}) => {
                       placeholder={"SORT BY"}
                       style={{ width: 150, textAlign : "center" }} bordered={false}>
                       {
+                        // 添加下拉框选项
                         sortList && sortList.map((item, index) => {
                           return <Option value={item.key}>{item.value}</Option>
                         })
                       }
-                    </Select>
+                    </Select> */}
                   </div>
                 }
               </div>
@@ -131,13 +146,15 @@ const WatchListComponent = ({uid}) => {
              <div className={"imgBox"}>
                {page.total > 0 && imgList && imgList.map((item,index)=>{
                   return <ImageDomComponent
-                                             from ={"watchList"}
-                                             watchListDo={()=>{
+                                             from ={"disLike"}
+                                             disLikeDo={()=>{
                                                fetchData();
                                              }}
                                              clearMovie={(index3)=>{
+                                              // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
+                                               console.log(index3)
                                                confirm({
-                                                 title: 'Are you sure you want to remove this movie from your watchlist?',
+                                                 title: 'Are you sure you want to remove this movie from your list of dislikes?',
                                                  icon: <ExclamationCircleOutlined />,
                                                  okText : "YES",
                                                  cancelText : "NO",
@@ -191,4 +208,4 @@ const WatchListComponent = ({uid}) => {
     )
 }
 
-export default WatchListComponent
+export default DisLikeComponent

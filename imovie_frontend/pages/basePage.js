@@ -88,12 +88,6 @@ const Page = ({ router, children,USERMESSAGE }) => {
         hasBorder : false,
         href : "/movie/userMsg"
       },
-      //   {
-      //   key : 4,
-      //   value : "history",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=4&nouser=1"
-      // },
         {
         key : 5,
         value : "Wishlist",
@@ -106,6 +100,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
         hasBorder : false,
         href : "/movie/userMsg?activeKey=2&nouser=1"
       },
+      {
+        key : 4,
+        value : "History",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=4&nouser=1"
+      },
       // {
       //   key : 7,
       //   value : "movie lists",
@@ -116,17 +116,18 @@ const Page = ({ router, children,USERMESSAGE }) => {
       //   value : "reviews",
       //   hasBorder : false,
       //   href : "/movie/userMsg?activeKey=5&nouser=1"
-      // },{
-      //   key : 9,
-      //   value : "likes",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=6&nouser=1"
-      // },{
-      //   key : 10,
-      //   value : "disLikes",
-      //   hasBorder : true,
-      //   href : "/movie/userMsg?activeKey=7&nouser=1"
       // },
+      {
+        key : 9,
+        value : "Like",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=6&nouser=1"
+      },{
+        key : 10,
+        value : "Dislike",
+        hasBorder : true,
+        href : "/movie/userMsg?activeKey=7&nouser=1"
+      },
         {
         key : 11,
         value : "Sigh Out",

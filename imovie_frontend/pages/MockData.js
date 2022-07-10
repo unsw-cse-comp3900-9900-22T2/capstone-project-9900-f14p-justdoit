@@ -108,3 +108,24 @@ export function likeAddOrDelete(param) {
 export function dislikeAddOrDelete(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/dislike_add_or_delete', param);
 }
+export function historyAddOrDelete(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/view_history_add_or_delete', param);
+}
+export function getLike(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_like', param);
+}
+export function getDislike(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_dislike', param);
+}
+export function getHistory(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_view_history', param);
+}
+// export function clearLike(param) {
+//     return fetchData('http://127.0.0.1:5000/app/movies/clear_like', param);
+// }
+// export function clearDislike(param) {
+//     return fetchData('http://127.0.0.1:5000/app/movies/clear_dislike', param);
+// }
+export function clearHistory(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/clear_view_history', param);
+}

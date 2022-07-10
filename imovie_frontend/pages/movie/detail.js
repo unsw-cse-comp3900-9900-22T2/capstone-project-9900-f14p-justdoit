@@ -7,7 +7,7 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail } from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete} from "../MockData";
 import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
@@ -95,6 +95,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         if(res.code === 200){
            const {result} = res;
           changeMovieDetail(result || null);
+          // 改了这儿
+          historyAddOrDelete({
+            mid : initQuery.movieId,
+            uid : USERMESSAGE && USERMESSAGE.uid || null,
+            add_or_del : "add" 
+          })
         }
       }).catch(err => {
         const result = {

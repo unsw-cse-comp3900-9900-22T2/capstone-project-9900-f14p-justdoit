@@ -425,6 +425,8 @@ def browse_by():
         res_list = []
         result = {}
         # add genre_rule
+        # if null, return all results
+        # else return the genre contains keyword
         genre_rule = and_(*[MoviesModel.genre.ilike("%" +input+"%") for input in genreList])
         if rating is None and year is None:
             movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule).order_by("moviename").all()

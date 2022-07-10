@@ -3,6 +3,7 @@ import { Select, Spin,Tooltip } from 'antd';
 const { Option } = Select;
 import _ from 'lodash';
 import InputComponent from "./compositionInput"
+let scrollTopVal = 0 ;
 function getNewDom(string,searchWord){
     string = (string || "").toString();
     searchWord = (searchWord || "").toString();
@@ -153,6 +154,13 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                 onFocus={() => {
                     changeOpen(true);
                     changeFocusNow(true);
+                    scrollTopVal = document.documentElement.scrollTop || document.body.scrollTop;
+                    // 禁止滑动
+                    const _dom =  document.getElementsByClassName("base_page")[0];
+                    _dom.style.position = "fixed";
+                    _dom.style.top = "-" + scrollTopVal + 'px';
+                    _dom.style.width = '100%';
+                    _dom.style.overflow = "hidden";
                 }}
                 onClear={()=>{
                     if(initShowList ){
@@ -187,6 +195,17 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     changeOpen(false);
                     setFetching(false);
                     changeFocusNow(false);
+                    const _dom = document.getElementsByClassName("base_page")[0];
+                    var scrollVal = Math.abs(parseFloat(_dom.style.top));
+                    _dom.style.position = "";
+                    _dom.style.overflow = "";
+                    _dom.style.top = "";
+                    if (document.body) {
+                        document.body.scrollTop = scrollVal;
+                    }
+                    if (document.documentElement) {
+                        document.documentElement.scrollTop = scrollVal;
+                    }
                 }}
                 tagRender={(props) => {
                     const { label } = props;

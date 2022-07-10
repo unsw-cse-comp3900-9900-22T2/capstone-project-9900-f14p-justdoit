@@ -129,3 +129,9 @@ export function getHistory(param) {
 export function clearHistory(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/clear_view_history', param);
 }
+export function searchBy(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/search_by', param);
+}
+export function searchResult(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/search_result', param);
+}

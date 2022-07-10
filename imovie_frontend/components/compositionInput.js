@@ -60,6 +60,9 @@ const InputComponent = (props) => {
                                 console.log("value",value)
                                 onChange(value)
                             }}
+                            onScroll={(event)=>{
+                                event.stopPropagation();
+                            }}
                         />:
                         <div/>
             }

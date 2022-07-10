@@ -31,13 +31,13 @@ const HisToryComponent = ({uid}) => {
     useEffect(()=>{
       fetchData();
     },[])
-    function selectChange(value) {
-      const _page = _.cloneDeep(page);
-      _page.sort = value === undefined || value === null ? null : value;
-      _page.number = 1;
-      changePage(_page);
-      fetchData(_page);
-    }
+    // function selectChange(value) {
+    //   const _page = _.cloneDeep(page);
+    //   _page.sort = value === undefined || value === null ? null : value;
+    //   _page.number = 1;
+    //   changePage(_page);
+    //   fetchData(_page);
+    // }
     function fetchData(pageObj) {
       const _pageObj = pageObj || page;
       getHistory({
@@ -107,7 +107,7 @@ const HisToryComponent = ({uid}) => {
               {/* 操作框 */}
               <div className={"title-box"}>
                   <p className="title">
-                    You have viewed
+                    You have viewed (latest 20)
                   </p>
                 {
                   // 条件判断
@@ -183,7 +183,7 @@ const HisToryComponent = ({uid}) => {
                    </div>
                }
              </div>
-             {
+             {/* {
                page.total > 0 && <div className={"list-detail-pagination"}>
                <Pagination
                current={page.number}
@@ -200,7 +200,7 @@ const HisToryComponent = ({uid}) => {
              }}
                />
                </div>
-             }
+             } */}
 
            </div>
          </div>

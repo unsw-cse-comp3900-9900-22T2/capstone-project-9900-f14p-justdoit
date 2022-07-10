@@ -15,23 +15,34 @@ def init_route(app: Flask):
 
     # for movies
     app.add_url_rule('/app/movies/get_movie_detail', view_func=movies.get_movie_detail, methods=['POST'])
-    # app.add_url_rule('/app/movies/get_movie_detial_login', view_func=movies.get_movie_detial_login, methods=['POST'])
     app.add_url_rule('/app/movies/rating_movie', view_func=movies.rating_movie, methods=['POST'])
+    app.add_url_rule('/app/movies/get_movies', view_func=movies.get_movies, methods=['POST'])
 
-    # app.add_url_rule('/insert', view_func=views.insert, methods=['POST'])
-
-
+    # wishlist
     app.add_url_rule('/app/movies/get_wishlist', view_func=movies.get_wishlist, methods=['POST'])
     app.add_url_rule('/app/movies/wishlist_add_or_delete', view_func=movies.wishlist_add_or_delete, methods=['POST'])
-    app.add_url_rule('/app/movies/get_movies', view_func=movies.get_movies, methods=['POST'])
-    # app.add_url_rule('/app/movies/delete_from_wishlist', view_func=movies.delete_from_wishlist, methods=['POST'])
     app.add_url_rule('/app/movies/clear_wishlist', view_func=movies.clear_wishlist, methods=['POST'])
-    # app.add_url_rule('/app/movies/trans_movie_from_wishlist_to_watchedlist', view_func=movies.trans_movie_from_wishlist_to_watchedlist, methods=['POST'])
-    # app.add_url_rule('/app/movies/insert_movie_for_test', view_func=movies.insert_movie_for_test, methods=['POST'])
+    app.add_url_rule('/app/movies/wish_to_watch', view_func=movies.wish_to_watch, methods=['POST'])
 
-    #browse by
+    # browse by
     app.add_url_rule('/app/movies/browse_by', view_func=movies.browse_by, methods=['POST'])
-    #enter the keyword into the search bar
+
+    # watchlist
+    app.add_url_rule('/app/movies/get_watchlist', view_func=movies.get_watchlist, methods=['POST'])
+    app.add_url_rule('/app/movies/watchlist_add_or_delete', view_func=movies.watchlist_add_or_delete, methods=['POST'])
+
+    # like & dislike
+    app.add_url_rule('/app/movies/get_like', view_func=movies.get_like, methods=['POST'])
+    app.add_url_rule('/app/movies/like_add_or_delete', view_func=movies.like_add_or_delete, methods=['POST'])
+    app.add_url_rule('/app/movies/get_dislike', view_func=movies.get_dislike, methods=['POST'])
+    app.add_url_rule('/app/movies/dislike_add_or_delete', view_func=movies.dislike_add_or_delete, methods=['POST'])
+
+    # view_history
+    app.add_url_rule('/app/movies/get_view_history', view_func=movies.get_view_history, methods=['POST'])
+    app.add_url_rule('/app/movies/view_history_add_or_delete', view_func=movies.view_history_add_or_delete, methods=['POST'])
+    app.add_url_rule('/app/movies/clear_view_history', view_func=movies.clear_view_history, methods=['POST'])
+
+    # enter the keyword into the search bar
     app.add_url_rule('/app/movies/search_by', view_func=movies.search_by, methods=['POST'])
     # return result depends on the search keyword
     app.add_url_rule('/app/movies/search_result', view_func=movies.search_result, methods=['POST'])

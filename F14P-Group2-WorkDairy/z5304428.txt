@@ -22,11 +22,32 @@ write date: 12/06/2022
 
 -----------------------------------------------------------------------------------------
 week3
-Working on our proposal. And still thinking about some features and learning.
+Configuring the back-end and front-end environments and familiar with the database basic operations.
+Working on our proposal. And thinking about some novel features according different systems.
 
 write date: 19/06/2022
 
 -----------------------------------------------------------------------------------------
+week4
+We had a meeting this week, assigned tasks and we are working on Sprint1. And we also updated the database 
+to make it more complete. We then discussed how to optimize the user interface for a better user experience.
+In addition, we also discussed some details about our demo in Week5 and prepared a presentation outline for the demo.
+
+write date: 24/06/2022
+
+-----------------------------------------------------------------------------------------
+week5
+We imported the ready data into the database, tested the various features of the system we had built in Sprint1, reported bugs, fixed 
+them and then continued testing. In addition, we prepare the draft of Demo A, revised it and rehearsed several times during this week.
+This week, we met for an hour after the lab to talk about what went right and wrong in Sprint1 and how to improve the functionality of 
+our system in the next Sprint2, and then I was ready to start writing Retrospective A report.
+
+write data: 01/07/2022
+
+-----------------------------------------------------------------------------------------
+
+
+
 
 
 

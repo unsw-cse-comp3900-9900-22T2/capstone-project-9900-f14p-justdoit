@@ -4,11 +4,13 @@ import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
 import { Rate,Popover ,Tooltip,message} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
-import {wishlistAddOrDelete} from "../../pages/MockData";
+import {wishlistAddOrDelete,watchlistAddOrDelete} from "../../pages/MockData";
+import {dislikeAddOrDelete,likeAddOrDelete} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
-const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
+// 下面这个watch是新加的
+const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const ratingRef = useRef();
@@ -41,7 +43,40 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
     const _thisItem = _.cloneDeep(thisItem);
     const is = _thisItem[_type];
     _thisItem[_type] = !is;
-    if(type === 2){
+    if(type === 1){
+      // 提取互斥项
+      const iss = _thisItem["is_user_wish"];
+      watchlistAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Added successfully");
+            _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) + 1;
+            // 用于判断互斥项是否为true
+            if(iss) {
+              _thisItem["is_user_wish"] = !iss;
+              _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
+            }
+          }else{
+            message.success("Deleted successfully");
+            watchListDo && watchListDo();
+            _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["watchlist_num"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to add")
+          }else{
+            message.error("Failed to delete")
+          }
+        }
+      })
+    }
+    else if(type === 2){
+      const iss = _thisItem["is_user_watch"];
         wishlistAddOrDelete({
           mid,
           uid,
@@ -51,6 +86,10 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             if(!is){
               message.success("Added successfully");
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
+              if(iss) {
+                _thisItem["is_user_watch"] = !iss;
+                _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["watchlist_num"] || 0) - 1;
+              }
             }else{
               message.success("Deleted successfully");
               wishListDo && wishListDo();
@@ -65,9 +104,68 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             }
           }
         })
-
-    }else{
-      changeThisItem(_thisItem);
+    }
+    // 加了这个else才能实时改变数字
+    else if(type === 0){
+      const iss = _thisItem["is_user_dislike"];
+      likeAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Liked successfully");
+            _thisItem["num_like"] = (_thisItem["num_like"] || 0) + 1;
+            if(iss) {
+              _thisItem["is_user_dislike"] = !iss;
+              // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
+            }
+          }else{
+            message.success("Canceled the like successfully");
+            _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to like")
+          }else{
+            message.error("Failed to cancel the like")
+          }
+        }
+      })
+  }
+    else if(type === 3){
+      const iss = _thisItem["is_user_like"];
+      dislikeAddOrDelete({
+        mid,
+        uid,
+        add_or_del : !is ? "add" : "delete"
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Disliked successfully");
+            // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) + 1;
+            if(iss) {
+              _thisItem["is_user_like"] = !iss;
+              _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
+            }
+          }else{
+            message.success("Canceled the dislike successfully");
+            // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
+          }
+          changeThisItem(_thisItem);
+        }else{
+          if(!is) {
+            message.error("Failed to dislike")
+          }else{
+            message.error("Failed to cancel the dislike")
+          }
+        }
+      })
+    }
+    else{
+      changeThisItem(_thisItem)
     }
   }
   function svgGet(type ,isGet){
@@ -280,7 +378,9 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             _thisItem.avg_rate = avg_rate;
             _thisItem.is_user_rate = rate;
             _thisItem.is_user_wish = false;
+            _thisItem.is_user_watch = false;
             _thisItem.wishlist_num = (_thisItem.wishlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.wishlist_num || 0) - 1);
+            _thisItem.watchlist_num = (_thisItem.watchlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.watchlist_num || 0) - 1);
             const _is_user_watch = _thisItem.is_user_watch;
             if(!_is_user_watch){
               _thisItem.is_user_watch = true;
@@ -293,6 +393,15 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,
             },0)
             if(from === "wishList"){
               wishListDo && wishListDo();
+            }
+            if(from === "watchList"){
+              watchListDo && watchListDo();
+            }
+            if(from === "disLike"){
+              disLikeDo && disLikeDo();
+            }
+            if(from === "liKe"){
+              liKeDo && liKeDo();
             }
           }
         }}

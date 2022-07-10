@@ -9,6 +9,11 @@ import { UserOutlined ,LikeOutlined ,DislikeOutlined,
 import { delCookie } from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
+import WatchListComponent from "../../components/UserMsg/WatchList"
+// 改了这
+import HisToryComponent from "../../components/UserMsg/HisTory"
+import DisLikeComponent from "../../components/UserMsg/DisLike"
+import LiKeComponent from "../../components/UserMsg/LiKe"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
@@ -26,31 +31,35 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
      value : "Wishlist",
     icon : <HeartOutlined />
   },
-  //   {
-  //   key : 2,
-  //   value : "watched",
-  //   icon : <EyeOutlined />
-  // },{
+    {
+    key : 2,
+    value : "Watchlist",
+    icon : <EyeOutlined />
+  },
+  // {
   //   key : 3,
   //   value : "movielist",
   //   icon : <PlaySquareOutlined />
-  // },{
-  //   key : 4,
-  //   value : "history",
-  //   icon : <HistoryOutlined />
-  // },{
+  // },
+  {
+    key : 4,
+    value : "History",
+    icon : <HistoryOutlined />
+  },
+  // {
   //   key : 5,
   //   value : "reviews",
   //   icon :<HighlightOutlined />
-  // },{
-  //   key : 6,
-  //   value : "like",
-  //   icon : <LikeOutlined />
-  // },{
-  //   key : 7,
-  //   value : "dislike",
-  //   icon : <DislikeOutlined />
-  // }
+  // },
+  {
+    key : 6,
+    value : "Like",
+    icon : <LikeOutlined />
+  },{
+    key : 7,
+    value : "Dislike",
+    icon : <DislikeOutlined />
+  }
   ])
   useEffect(()=>{
     if(!!USERMESSAGE){
@@ -82,6 +91,14 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     switch (item.key) {
       case 1:
         return <WishListComponent uid={uid}/>;
+      case 2:
+        return <WatchListComponent uid={uid}/>;
+      case 4:
+        return <HisToryComponent uid={uid}/>;
+      case 6:
+        return <LiKeComponent uid={uid}/>;
+      case 7:
+        return <DisLikeComponent uid={uid}/>;
       default:
         return <div>{item.key}</div>
     }

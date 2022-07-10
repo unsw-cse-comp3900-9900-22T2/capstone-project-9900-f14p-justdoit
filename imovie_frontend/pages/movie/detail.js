@@ -7,7 +7,8 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete} from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
@@ -94,6 +95,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         if(res.code === 200){
            const {result} = res;
           changeMovieDetail(result || null);
+          // 改了这儿
+          historyAddOrDelete({
+            mid : initQuery.movieId,
+            uid : USERMESSAGE && USERMESSAGE.uid || null,
+            add_or_del : "add" 
+          })
         }
       }).catch(err => {
         const result = {
@@ -171,7 +178,39 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     const _movieDetail = _.cloneDeep(movieDetail);
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
-    if(type === 2){
+    if(type === 1){
+      // 提取互斥项
+      const iss = _movieDetail["is_user_wish"];
+      watchlistAddOrDelete({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Added successfully");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) + 1;
+            // 用于判断互斥项是否为true
+            if(iss) {
+              _movieDetail["is_user_wish"] = !iss;
+              _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+            }
+          }else{
+            message.success("Deleted successfully");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to add")
+          }else{
+            message.error("Failed to delete")
+          }
+        }
+      })
+    }
+    else if(type === 2){
+      const iss = _movieDetail["is_user_watch"];
         wishlistAddOrDelete({
           mid : movieDetail.mid,
           uid : USERMESSAGE && USERMESSAGE.uid,
@@ -179,22 +218,85 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }).then(res => {
           if(res.code === 200){
             if(!is){
-              message.success("add success");
+              message.success("Added successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
+              if(iss) {
+                _movieDetail["is_user_watch"] = !iss;
+                _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
+              }
             }else{
-              message.success("delete success");
+              message.success("Deleted successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
             }
             changeMovieDetail(_movieDetail);
           }else{
             if(!is) {
-              message.error("add fail")
+              message.error("Failed to add")
             }else{
-              message.error("delete fail")
+              message.error("Failed to delete")
             }
           }
         })
-    }else{
+    }
+    // 加了这个else才能实时改变detail页面的数字
+    else if(type === 0){
+      const iss = _movieDetail["is_user_dislike"];
+      likeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+        add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Liked successfully");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) + 1;
+            if(iss) {
+              _movieDetail["is_user_dislike"] = !iss;
+            }
+          }else{
+            message.success("Canceled the like successfully");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to like")
+          }else{
+            message.error("Failed to cancel the like")
+          }
+        }
+      })
+    }
+    else if(type === 3){
+      const iss = _movieDetail["is_user_like"];
+      dislikeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Disliked successfully");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) + 1;
+            if(iss) {
+              _movieDetail["is_user_like"] = !iss;
+              _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
+            }
+          }else{
+            message.success("Canceled the dislike successfully");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to dislike")
+          }else{
+            message.error("Failed to cancel the dislike")
+          }
+        }
+      })
+    }
+    else{
       changeMovieDetail(_movieDetail);
     }
   }
@@ -449,7 +551,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             _movieDetail.avg_rate = avg_rate;
             _movieDetail.is_user_rate = rate;
             _movieDetail.is_user_wish = false;
+            _movieDetail.is_user_watch = false;
             _movieDetail.wishlist_num = (_movieDetail.wishlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+            _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
             const _is_user_watch = _movieDetail.is_user_watch;
             if(!_is_user_watch){
               _movieDetail.is_user_watch = true;

@@ -18,3 +18,8 @@ Uploaded user stories to Jira backlog and seperated them into three sprints.
 Wrote and finished the project proposal.
 Installed environment.
 ----------------------------------------------------------------------------------------------------
+Week 4
+
+Set environment successfully and started to write code.
+Finish the functions of get, add, delete and clear movies from wishlist.
+Finish the test of these functions between frontend and backend.

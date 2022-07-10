@@ -793,7 +793,7 @@ def get_view_history():
                 list.append(movie_info)
 
         if 20 < result["count"]:
-            result["list"] = list[count - 20:count]
+            result["list"] = list[0:20]
         else:
             result["list"] = list
 

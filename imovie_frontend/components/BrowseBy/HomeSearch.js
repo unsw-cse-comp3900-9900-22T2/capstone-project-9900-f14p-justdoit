@@ -127,9 +127,6 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
     },{
       key : "Western",
       value : "Western"
-    },{
-      key : "Others",
-      value : "Others"
     }]);
    const [yearList,changeYearList] = useState([]);
    const [rateList] = useState([{
@@ -181,7 +178,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
                return item.key === i;
             })
             if(indexFilter >= 0){
-              _heightOut[indexFilter].out = height >= 40;
+              _heightOut[indexFilter].out = !_selectOption[i] && height >= 40 || false;
             }
           }
         }

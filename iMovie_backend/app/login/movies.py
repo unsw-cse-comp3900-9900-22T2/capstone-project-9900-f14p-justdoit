@@ -400,13 +400,17 @@ def browse_by():
     rating = data["rating"]
     year = data["year"]
     yearList = year_strToList(year)
+    genre = data["genre"]
+    yearList = year_strToList(year)
+    genre_new = addSignalToStr(genre)
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     try:
         res_list = []
         result = {}
         if rating is None and year is None:
-            movies = MoviesModel.query.filter(MoviesModel.active == 1).order_by("moviename").all()
+            print(genre_new)
+            movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.genre.ilike(genre_new)).order_by("moviename").all()
             for movie in movies:            # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
                 res_list.append(movie_info)

@@ -131,3 +131,25 @@ def year_strToList(year):
                 tmp += i
     year_lst.append(int(tmp))
     return year_lst
+
+# "a,b, c"  =>  ['a','b','c']
+def strToList(string):
+    if string == None:
+        return list()
+    temp = "".join(string.split())
+    if len(string) == 0:
+        return list()
+    lst = temp.split(',')
+    return lst
+
+# "a,b,c,  d, e" => '%a%b%c%d%e%'
+# make string could be 'like' strightly
+def addSignalToStr(string):
+    if string == None:
+        return "%"
+    temp = "".join(string.split())
+    if len(string) == 0:
+        return "%"
+
+    lst = temp.replace(',', '%')
+    return '%'+lst+'%'

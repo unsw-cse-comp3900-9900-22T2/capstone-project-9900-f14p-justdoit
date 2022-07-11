@@ -285,7 +285,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                                          }}
                                                        >
                                                          <h5>{item.moviename}{!!item.year && ("(" + item.year +")")}</h5>
-                                                         <h6>{(item.genre || []).join(",")} {isInCast && <span>{inputValue}</span>}</h6>
+                                                         <h6>{(item.director || "")} {isInCast && <span>{inputValue}</span>}</h6>
                                                        </div>
                                                      </Option>
                                                    );

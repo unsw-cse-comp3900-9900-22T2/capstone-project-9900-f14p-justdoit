@@ -52,7 +52,8 @@ def register():
     # username is too long
     if len(username) > 50:
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
-
+    if len(username) < 5:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
     # valid email
     if not validateEmail(email):
         return jsonify({'code': 400, 'msg': 'Please enter a right email'})
@@ -87,6 +88,24 @@ def register():
 @login_require
 def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
+
+
+def check_username():
+    username = request.json.get('username')
+    username = username.strip()
+    if not username:
+        return jsonify({'code': 400, 'msg': 'Please enter your username'})
+    # username is too long
+    if len(username) > 50:
+        return jsonify({'code': 400, 'msg': 'Your username is too long.'})
+    if len(username) < 5:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
+    check_name = db.session.query(exists().where(UserModel.username == username)).scalar()
+    if check_name:
+        return jsonify({'code': 400, 'msg': 'User name already exists'})
+
+    return jsonify({'code': 200})
+
 
 
 def get_user_detail():

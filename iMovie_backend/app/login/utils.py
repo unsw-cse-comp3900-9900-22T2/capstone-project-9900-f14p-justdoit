@@ -66,6 +66,11 @@ def validateEmail(email):
             return 1
     return 0
 
+def validateUsername(username):
+    return (bool(re.match('^[A-Za-z_]+$', username)))
+
+
+
 # generate random String
 def randomString(num):
     a = random.sample('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', num)

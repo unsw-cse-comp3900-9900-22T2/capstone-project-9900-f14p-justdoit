@@ -990,7 +990,7 @@ def clear_view_history():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Clear View history failed.', 'error_msg': str(e)})
 
-
+#  create review into movieReview, reviewReview, reviewLike
 def create_review():
     data = request.get_json(force=True)
     # print(data)
@@ -1007,13 +1007,25 @@ def create_review():
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
 
-    mrid = getUniqueid()
-    urid = getUniqueid()
-    time_form = getTime()[0]
+    if review == None or len(review) == 0 or review.isspace():
+        return jsonify({'code': 400, 'msg': 'text is empty'})
 
-    movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
-    db.session.add(movieReview)
-    userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
-    db.session.add(userreview)
-    db.session.commit()
-    return jsonify({'code': 200, 'msg': 'create review successfully.'})
+    try:
+        mrid = getUniqueid()
+        urid = getUniqueid()
+        rlid = getUniqueid()
+        time_form = getTime()[0]
+
+        movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+        db.session.add(movieReview)
+
+        userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
+        db.session.add(userreview)
+
+
+        reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
+        db.session.add(reviewlike)
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'create review successfully.'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})

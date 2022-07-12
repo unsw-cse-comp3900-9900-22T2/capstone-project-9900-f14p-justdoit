@@ -989,3 +989,31 @@ def clear_view_history():
         return jsonify({'code': 200, 'msg': 'View history clear succeed'})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Clear View history failed.', 'error_msg': str(e)})
+
+
+def create_review():
+    data = request.get_json(force=True)
+    # print(data)
+    uid = data["uid"]
+    mid = data["mid"]
+    review = data["review"]
+    # check uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+
+    mrid = getUniqueid()
+    urid = getUniqueid()
+    time_form = getTime()[0]
+
+    movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+    db.session.add(movieReview)
+    userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
+    db.session.add(userreview)
+    db.session.commit()
+    return jsonify({'code': 200, 'msg': 'create review successfully.'})

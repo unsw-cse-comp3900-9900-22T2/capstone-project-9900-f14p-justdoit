@@ -46,3 +46,6 @@ def init_route(app: Flask):
     app.add_url_rule('/app/movies/search_by', view_func=movies.search_by, methods=['POST'])
     # return result depends on the search keyword
     app.add_url_rule('/app/movies/search_result', view_func=movies.search_result, methods=['POST'])
+
+    # write comment on movie details page
+    app.add_url_rule('/app/movies/create_review', view_func=movies.create_review, methods=['POST'])

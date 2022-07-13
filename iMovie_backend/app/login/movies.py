@@ -940,9 +940,11 @@ def view_history_add_or_delete():
         viewed_movie = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.mid == mid,
                                                      viewhistoryModel.active == 1).first()
         if viewed_movie:
+            temp_f = viewed_movie.frequency
+            viewed_movie.frequency = temp_f + 1
             viewed_movie.utime = getTime()[0]
             db.session.commit()
-            return jsonify({'code': 200, 'msg': 'Viewed time update.'})
+            return jsonify({'code': 200, 'msg': 'Viewed time and frequency update.'})
         try:
             vid = getUniqueid()
             timeform = getTime()[0]

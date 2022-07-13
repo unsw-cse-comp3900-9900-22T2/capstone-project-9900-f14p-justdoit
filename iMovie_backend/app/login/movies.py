@@ -993,7 +993,6 @@ def clear_view_history():
 #  create review into movieReview, reviewReview, reviewLike
 def create_review():
     data = request.get_json(force=True)
-    # print(data)
     uid = data["uid"]
     mid = data["mid"]
     review = data["review"]
@@ -1025,14 +1024,10 @@ def create_review():
     else:
         try:
             mrid = getUniqueid()
-            # urid = getUniqueid()
             # rlid = getUniqueid()
             time_form = getTime()[0]
             movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
             db.session.add(movieReview)
-
-            # userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
-            # db.session.add(userreview)
 
 
             # reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
@@ -1041,3 +1036,35 @@ def create_review():
             return jsonify({'code': 200, 'msg': 'create review successfully.'})
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Invalid command.'})
+
+
+# user review
+def reply_review():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    mrid = data["mrid"]
+    review = data["review"]
+
+
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+
+
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.active == 1).first()
+
+    if not movieReview:
+        return jsonify({'code': 400, 'msg': 'MovieReview does not exist'})
+
+    try:
+        urid = getUniqueid()
+        time_form = getTime()[0]
+        userReview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
+        db.session.add(userReview)
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'reply review successfully.'})
+
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'reply failed.'})
+

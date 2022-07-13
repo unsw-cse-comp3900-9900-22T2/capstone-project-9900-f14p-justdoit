@@ -1010,22 +1010,34 @@ def create_review():
     if review == None or len(review) == 0 or review.isspace():
         return jsonify({'code': 400, 'msg': 'text is empty'})
 
-    try:
-        mrid = getUniqueid()
-        urid = getUniqueid()
-        rlid = getUniqueid()
+
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid).first()
+
+    # add review before, update the review
+    if movieReview:
         time_form = getTime()[0]
-
-        movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
-        db.session.add(movieReview)
-
-        userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
-        db.session.add(userreview)
-
-
-        reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
-        db.session.add(reviewlike)
+        movieReview.review = review
+        movieReview.utime = getTime()[0]
         db.session.commit()
-        return jsonify({'code': 200, 'msg': 'create review successfully.'})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'Invalid command.'})
+        return jsonify({'code': 400, 'msg': 'Your new review would cover the past review'})
+
+    # have no review before, update the review
+    else:
+        try:
+            mrid = getUniqueid()
+            # urid = getUniqueid()
+            # rlid = getUniqueid()
+            time_form = getTime()[0]
+            movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+            db.session.add(movieReview)
+
+            # userreview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
+            # db.session.add(userreview)
+
+
+            # reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
+            # db.session.add(reviewlike)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'create review successfully.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Invalid command.'})

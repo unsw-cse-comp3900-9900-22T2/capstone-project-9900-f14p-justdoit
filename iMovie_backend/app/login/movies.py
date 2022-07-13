@@ -1028,10 +1028,6 @@ def create_review():
             time_form = getTime()[0]
             movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
             db.session.add(movieReview)
-
-
-            # reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
-            # db.session.add(reviewlike)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'create review successfully.'})
         except Exception as e:
@@ -1068,3 +1064,30 @@ def reply_review():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'reply failed.'})
 
+# like other' review
+def like_review():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    urid = data["urid"]
+    # check uid and mid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist'})
+    userReview = MoviesModel.query.filter(userReviewModel.urid == urid, userReviewModel.active == 1).first()
+    if not userReview:
+        return jsonify({'code': 400, 'msg': 'userReview does not exist'})
+
+    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.urid == urid, reviewlikeModel.active == 1).first()
+
+    if not reviewLike:
+        try:
+            rlid = getUniqueid()
+            time_form = getTime()[0]
+            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
+            db.session.add(reviewlike)
+            db.session.commit()
+            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+        except Exception as e:
+            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+    else:
+        return jsonify({'code': 400, 'msg': 'like failed.'})

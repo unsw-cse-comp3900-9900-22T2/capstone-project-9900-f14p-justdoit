@@ -50,5 +50,8 @@ def init_route(app: Flask):
     # write comment on movie details page
     app.add_url_rule('/app/movies/create_review', view_func=movies.create_review, methods=['POST'])
 
-    # reply other users' comment
+    # reply other users' review
     app.add_url_rule('/app/movies/reply_review', view_func=movies.reply_review, methods=['POST'])
+
+    # like user' review
+    app.add_url_rule('/app/movies/like_review', view_func=movies.like_review, methods=['POST'])

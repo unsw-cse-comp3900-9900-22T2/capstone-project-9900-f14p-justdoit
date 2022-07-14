@@ -67,7 +67,7 @@ def validateEmail(email):
     return 0
 
 def validateUsername(username):
-    return (bool(re.match('^[A-Za-z_]+$', username)))
+    return (bool(re.match('^[A-Za-z0-9_-]*$', username)))
 
 
 

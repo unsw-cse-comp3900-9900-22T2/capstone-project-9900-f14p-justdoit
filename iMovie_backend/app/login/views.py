@@ -213,7 +213,6 @@ def modify_user_detail():
     data = request.get_json(force=True)
     uid = data["uid"]
     username = data["username"]
-    email = data["email"]
     description = data["description"]
     #
     #数据库找判断
@@ -223,10 +222,9 @@ def modify_user_detail():
     if not user:
         return jsonify({'code': 400, 'msg': 'User is not defined'})
     username = username.strip()
-    email = email.strip()
     description = description.strip()
-    if not username or not email:
-        return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
+    if not username:
+        return jsonify({'code': 400, 'msg': 'Please enter the account and password'})
 
     if user.username != username:
         check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
@@ -234,17 +232,12 @@ def modify_user_detail():
             return jsonify({'code' : 400, 'msg': 'User name already exists'})
         if len(username) > 50:
             return jsonify({'code': 400, 'msg': 'Your username is too long.'})
-    if user.email != email:
-        if not validateEmail(email):
-            return jsonify({'code': 400, 'msg': 'Please enter a right email'})
-        check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
-        if check_email:
-            return jsonify({'code' : 400, 'msg': 'Email is already exists'})
+        if not validateUsername(username):
+            return jsonify({'code': 400, 'msg': 'Your username is not follow the rule.'})
     # # 给 backend
     try:
         time_form = getTime()[0]
         user.username = username
-        user.email = email
         if description:
             user.description = description
         user.utime = time_form

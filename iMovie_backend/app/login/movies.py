@@ -1088,8 +1088,61 @@ def like_review():
             reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
             db.session.add(reviewlike)
             db.session.commit()
-            return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+            return jsonify({'code': 200, 'msg': 'like review succeed.'})
         except Exception as e:
-            return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+            return jsonify({'code': 400, 'msg': 'like review  failed.', 'error_msg': str(e)})
     else:
         return jsonify({'code': 400, 'msg': 'like failed.'})
+
+
+# fucntion of display movie review details, includes the userReview for it
+def res_movieReview_detail(movieReview):
+    result = {}
+    uid = movieReview.uid
+    mrid = movieReview.mrid
+    result["mrid"] = mrid
+    result["uid"] = uid
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    username = user.username
+    result["username"] = username
+    result["review"] = movieReview.review
+    result["utime"] = movieReview.utime
+    userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid).order_by(userReviewModel.utime.desc()).all()
+    count = userReviewModel.query.filter(userReviewModel.mrid == mrid).count()
+    userReview_lst = list()
+    if userReview:
+        for ur in userReview:
+            ur_dic = dict()
+            ur_dic["urid"] = ur.urid
+            ur_dic["uid"] = ur.uid
+            ur_dic["username"] = (UserModel.query.filter(UserModel.uid == ur.uid, UserModel.active == 1).first()).username
+            ur_dic["review"] = ur.review
+            ur_dic["utime"] = ur.utime
+            ur_dic["likeReview"] = reviewlikeModel.query.filter(reviewlikeModel.urid == ur.urid, reviewlikeModel.active == 1).count()
+            userReview_lst.append(ur_dic)
+    result["userReview"] = userReview_lst
+    result["userReview_count"] = count
+    return result
+
+
+
+
+
+# display movie Review
+def display_movieReview():
+    data = request.get_json(force=True)
+    mid = data["mid"]
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).all()
+    count = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).count()
+    if not movieReview:
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+
+    movieReview_list = []
+    result = {}
+
+    for m in movieReview:  # movies: [movies0, movies[1]....]
+        movieReview_info = res_movieReview_detail(m)
+        movieReview_list.append(movieReview_info)
+    result["movieReview"] = movieReview_list
+    result["movieReview_count"] = count
+    return jsonify({'code': 200, 'result': result})

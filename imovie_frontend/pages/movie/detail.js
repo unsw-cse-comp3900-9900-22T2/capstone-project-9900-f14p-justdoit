@@ -143,7 +143,30 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         name.push(list[i]);
       }
     }
-    return name.join(" / ")
+    return name && name.map((item,index) => {
+       return <>
+             <span key={"href_broswe_by_gener_" + index}
+                        onClick={()=>{
+                          if(item){
+                            window.location.href = "/movie/browseBy?queryForBrowseBy="
+                              + encodeURIComponent(JSON.stringify({
+                                size : 16,
+                                number : 1,
+                                total : 0,
+                                area : null,
+                                genre : item,
+                                year : null,
+                                sort : null,
+                                rate : null,
+                              }))
+                          }
+                        }}
+                        className={"href_broswe_by"}>{item}</span>
+             {
+               index < name.length - 1 && " / " || ""
+             }
+         </>
+    })
   }
   function svgGet(type ,isGet){
 
@@ -379,7 +402,14 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             <div className={"movie-msg-box-right"}>
               {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
                 <p>DIRECTOR: </p>
-                <h6>{movieDetail.director}</h6>
+                <h6
+                  onClick={()=>{
+                    if(movieDetail.director){
+                      window.location.href = "/movie/searchMovie?keyword=" + movieDetail.director
+                    }
+                  }}
+                  className={"href_broswe_by"}
+                >{movieDetail.director}</h6>
               </div>}
               {!!movieDetail.prodecers &&
               <div className={"movie-message-body"}>
@@ -394,7 +424,20 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               }
               {!!movieDetail.cast && <div className={"movie-message-body"}>
                 <p>CAST: </p>
-                <h6>{movieDetail.cast.join(",")}</h6>
+                <h6>{movieDetail.cast && movieDetail.cast.map((item,index) => {
+                return  <>
+                         <span key={"href_broswe_by_cast_" + index}
+                               onClick={()=>{
+                                 if(item){
+                                   window.location.href = "/movie/searchMovie?keyword=" + item
+                                 }
+                               }}
+                               className={"href_broswe_by"}>{item}</span>
+                          {
+                            index < movieDetail.cast.length - 1 && "," || ""
+                          }
+                        </>
+                })}</h6>
               </div>}
               {!!movieDetail.description && <div className={"movie-message-body"}>
                 <p>DETAILS: </p>
@@ -408,7 +451,23 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               {!!movieDetail.country &&
               <div className={"movie-message-body movie-message-body-flex"}>
                 <p>COUNTRY: </p>
-                <h6>{movieDetail.country}</h6>
+                <h6
+                  onClick={()=>{
+                    if(movieDetail.country){
+                      window.location.href = "/movie/browseBy?queryForBrowseBy="
+                        + encodeURIComponent(JSON.stringify({
+                          size : 16,
+                          number : 1,
+                          total : 0,
+                          area : movieDetail.country,
+                          genre : null,
+                          year : null,
+                          sort : null,
+                          rate : null,
+                        }))
+                    }
+                  }}
+                  className={"href_broswe_by"}>{movieDetail.country}</h6>
               </div>}
               {!!movieDetail.language &&
               <div className={"movie-message-body movie-message-body-flex"}>

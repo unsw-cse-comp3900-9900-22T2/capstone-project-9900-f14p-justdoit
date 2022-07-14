@@ -12,6 +12,8 @@ def init_route(app: Flask):
     app.add_url_rule('/app/views/change_password', view_func=views.change_password, methods=['POST'])
     app.add_url_rule('/app/views/change_password_in_detial', view_func=views.change_password_in_detial, methods=['POST'])
     app.add_url_rule('/app/views/modify_user_detail', view_func=views.modify_user_detail, methods=['POST'])
+    app.add_url_rule('/app/views/check_username', view_func=views.check_username, methods=['POST'])
+    app.add_url_rule('/app/views/check_email', view_func=views.check_email, methods=['POST'])
 
     # for movies
     app.add_url_rule('/app/movies/get_movie_detail', view_func=movies.get_movie_detail, methods=['POST'])
@@ -41,3 +43,8 @@ def init_route(app: Flask):
     app.add_url_rule('/app/movies/get_view_history', view_func=movies.get_view_history, methods=['POST'])
     app.add_url_rule('/app/movies/view_history_add_or_delete', view_func=movies.view_history_add_or_delete, methods=['POST'])
     app.add_url_rule('/app/movies/clear_view_history', view_func=movies.clear_view_history, methods=['POST'])
+
+    # enter the keyword into the search bar
+    app.add_url_rule('/app/movies/search_by', view_func=movies.search_by, methods=['POST'])
+    # return result depends on the search keyword
+    app.add_url_rule('/app/movies/search_result', view_func=movies.search_result, methods=['POST'])

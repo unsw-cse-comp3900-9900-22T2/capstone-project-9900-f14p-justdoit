@@ -43,6 +43,7 @@ def register():
     username = data["username"]
     password = data["password"]
     email = data["email"]
+    # verifycode = data["verifycode"]
     username = username.strip()
     email = email.strip()
     # print(username, password, email)
@@ -52,7 +53,8 @@ def register():
     # username is too long
     if len(username) > 50:
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
-
+    if len(username) < 6:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
     # valid email
     if not validateEmail(email):
         return jsonify({'code': 400, 'msg': 'Please enter a right email'})
@@ -87,6 +89,38 @@ def register():
 @login_require
 def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
+
+
+def check_username():
+    username = request.json.get('username')
+    username = username.strip()
+    if not username:
+        return jsonify({'code': 400, 'msg': 'Please enter your username'})
+    # username is too long
+    if len(username) > 50:
+        return jsonify({'code': 400, 'msg': 'Your username is too long.'})
+    if len(username) < 6:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
+    check_name = db.session.query(exists().where(UserModel.username == username)).scalar()
+    if check_name:
+        return jsonify({'code': 400, 'msg': 'User name already exists'})
+    if not validateUsername(username):
+        return jsonify({'code': 400, 'msg': 'Username can only consist of numbers, letters, _ or -'})
+    return jsonify({'code': 200})
+
+
+def check_email():
+    email = request.json.get('email')
+    email = email.strip()
+    if not email:
+        return jsonify({'code': 400, 'msg': 'Please enter your email'})
+    check_email = db.session.query(exists().where(UserModel.email == email)).scalar()
+    if check_email:
+        return jsonify({'code': 400, 'msg': 'Email already exists'})
+    if not validateEmail(email):
+        return jsonify({'code': 400, 'msg': 'Please enter a right email'})
+    return jsonify({'code': 200})
+
 
 
 def get_user_detail():

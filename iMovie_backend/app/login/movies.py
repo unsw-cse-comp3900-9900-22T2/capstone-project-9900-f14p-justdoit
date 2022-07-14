@@ -2,7 +2,7 @@ from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists, func
 from app.login.utils import *
 from app.models import *
-
+from sqlalchemy import or_, and_, not_
 
 def res_movie_detail(uid, user, movie):
     result = {}
@@ -115,6 +115,31 @@ def res_movie_detail(uid, user, movie):
 
     return result
 
+# simplify the res_movie_detail
+# display the mid, cast, director,genre, & moviename
+def res_movie_detail_spf(uid, user, movie):
+    result = {}
+    mid = movie.mid
+    result["mid"] = mid
+    result["moviename"] = movie.moviename
+    # split string (去空格)
+    genre = movie.genre
+    genre.lower()
+    genre_list = genre.split(" ")
+    genre_cap = []
+    for i in genre_list:
+        genre_cap.append(i.capitalize())
+        # print(i.capitalize())
+    result["genre"] = genre_cap
+    cast_list = movie.cast.split(";")
+    result["cast"] = cast_list
+    # result["crew"] = movie.crew
+    result["director"] = movie.director
+    if movie.year:
+        result["year"] = movie.year
+    else:
+        result["year"] = 0
+    return result
 
 def get_movie_detail():
     data = request.get_json(force=True)
@@ -394,25 +419,44 @@ def browse_by():
     page_size = data["page_size"]
     rating = data["rating"]
     year = data["year"]
+    genre = data["genre"]
+    country  = data["country"]
     yearList = year_strToList(year)
+    genreList = strToList(genre)
+    countryList = strToList(country)
+    countryList2 = ["USA", "UK", "Australia", "France", "Germany", "Italy", "India", "China", "Korea", "Japan", "Thailand"]
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     try:
         res_list = []
         result = {}
+        # add genre_rule, country_rule
+        # if null, return all results
+        # else return the genre contains keyword
+
+        # movies include both keyword at same time
+        genre_rule = and_(*[MoviesModel.genre.ilike("%" +input+"%") for input in genreList])
+        # movies include either keyword
+
+        # if "others", display those not popular countries
+        if len(countryList) == 1 and countryList[0] == "Others":
+            country_rule = not_(MoviesModel.country.in_(countryList2))
+        else:
+            country_rule = or_(*[MoviesModel.country.ilike("%" +input+"%") for input in countryList])
+
         if rating is None and year is None:
-            movies = MoviesModel.query.filter(MoviesModel.active == 1).order_by("moviename").all()
-            for movie in movies:  # movies: [movies0, movies[1]....]
+            movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule, country_rule).order_by("moviename").all()
+            for movie in movies:            # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
                 res_list.append(movie_info)
                 count += 1
             result["count"] = count
         elif rating is None:
             if yearList[0] == -1:
-                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year <= 1997).order_by(
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year <= 1997,genre_rule, country_rule).order_by(
                     "moviename").all()
             else:
-                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList)).order_by(
+                movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.year.in_(yearList),genre_rule, country_rule).order_by(
                     "moviename").all()
             for movie in movies:  # movies: [movies0, movies[1]....]
                 movie_info = res_movie_detail(uid, user, movie)
@@ -422,47 +466,48 @@ def browse_by():
         else:
             if len(yearList) == 0:
                 unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
-                                                          MoviesModel.avg_rate is None).order_by("moviename").all()
+                                                          MoviesModel.avg_rate is None,genre_rule, country_rule).order_by("moviename").all()
             else:
                 if yearList[0] == -1:  # before 1997
                     unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is None,
-                                                              MoviesModel.year <= 1997).order_by("moviename").all()
+                                                              MoviesModel.year <= 1997, genre_rule, country_rule).order_by("moviename").all()
                 else:
                     unrated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is None,
-                                                              MoviesModel.year.in_(yearList)).order_by(
+                                                              MoviesModel.year.in_(yearList), genre_rule, country_rule).order_by(
                         "moviename").all()
             if rating == 0:
                 # from high to low depends on avg_rate
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
-                                                            MoviesModel.avg_rate is not None).order_by(
+                                                            MoviesModel.avg_rate is not None, genre_rule, country_rule).order_by(
                         MoviesModel.avg_rate.desc(), "moviename").all()
                 else:
                     if yearList[0] == -1:  # before 1997
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year <= 1997).order_by(
+                                                                MoviesModel.year <= 1997, genre_rule, country_rule).order_by(
                             MoviesModel.avg_rate.desc(), "moviename").all()
                     else:
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year.in_(yearList)).order_by(
+                                                                MoviesModel.year.in_(yearList),
+                                                                genre_rule, country_rule).order_by(
                             MoviesModel.avg_rate.desc(), "moviename").all()
                 # from low to high depends on avg_rate
             if rating == 1:
                 if len(yearList) == 0:
                     rated_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.avg_rate is not None,
-                                                            MoviesModel.year.in_(yearList)).order_by("avg_rate",
-                                                                                                     "moviename").all()
+                                                            MoviesModel.year.in_(yearList),
+                                                            genre_rule, country_rule).order_by("avg_rate","moviename").all()
 
                 else:
                     if yearList[0] == -1:  # before 1997
                         rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
                                                                 MoviesModel.avg_rate is not None,
-                                                                MoviesModel.year <= 1997).order_by("avg_rate",
+                                                                MoviesModel.year <= 1997,genre_rule, country_rule).order_by("avg_rate",
                                                                                                    "moviename").all()
                     else:
-                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,
+                        rated_movies = MoviesModel.query.filter(MoviesModel.active == 1,genre_rule, country_rule,
                                                                 MoviesModel.avg_rate is not None,
                                                                 MoviesModel.year.in_(yearList)).order_by("avg_rate",
                                                                                                          "moviename").all()
@@ -486,6 +531,81 @@ def browse_by():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Browseby failed.'})
 
+
+# search by
+def search_by():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    if uid:
+        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    else:
+        user = None
+    keyword = data["keyword"]
+    count = 0
+    try:
+        movie_list = []
+        result = {}
+        #search movies
+        movies = MoviesModel.query.filter(or_(
+            MoviesModel.moviename.ilike("%"+str(keyword)+'%'),
+            MoviesModel.director.ilike("%" + str(keyword) + '%'),
+            MoviesModel.cast.ilike("%" + str(keyword) + '%')
+            ),
+            MoviesModel.active == 1
+        ).order_by("moviename").all()
+        for movie in movies:  # movies: [movies0, movies[1]....]
+            movie_info = res_movie_detail_spf(uid, user, movie)
+            movie_list.append(movie_info)
+            count += 1
+        result["count"] = count
+        result["movies"] = movie_list
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'search failed.'})
+
+
+# search result
+def search_result():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    page_index = data["page_index"]
+    page_size = data["page_size"]
+    if uid:
+        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    else:
+        user = None
+    keyword = data["keyword"]
+    count = 0
+    try:
+        movie_list = []
+        result = {}
+        # search movies
+        movies = MoviesModel.query.filter(or_(
+            MoviesModel.moviename.ilike("%"+str(keyword)+"%"),
+            MoviesModel.director.ilike("%"+str(keyword)+"%"),
+            MoviesModel.cast.ilike("%"+str(keyword)+"%")
+        ),
+            MoviesModel.active == 1
+        ).order_by("moviename").all()
+
+        for movie in movies:  # movies: [movies0, movies[1]....]
+            movie_info = res_movie_detail(uid, user, movie)
+            movie_list.append(movie_info)
+            count += 1
+        result["count"] = count
+
+        # display movie nums per page
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["movies"] = movie_list[start:end]
+        else:
+            result["movies"] = movie_list[start:]
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'search result return failed.'})
 
 def get_watchlist():
     data = request.get_json(force=True)
@@ -820,9 +940,11 @@ def view_history_add_or_delete():
         viewed_movie = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.mid == mid,
                                                      viewhistoryModel.active == 1).first()
         if viewed_movie:
+            temp_f = viewed_movie.frequency
+            viewed_movie.frequency = temp_f + 1
             viewed_movie.utime = getTime()[0]
             db.session.commit()
-            return jsonify({'code': 200, 'msg': 'Viewed time update.'})
+            return jsonify({'code': 200, 'msg': 'Viewed time and frequency update.'})
         try:
             vid = getUniqueid()
             timeform = getTime()[0]

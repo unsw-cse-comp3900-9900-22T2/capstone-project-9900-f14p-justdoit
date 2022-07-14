@@ -66,6 +66,11 @@ def validateEmail(email):
             return 1
     return 0
 
+def validateUsername(username):
+    return (bool(re.match('^[A-Za-z0-9_-]*$', username)))
+
+
+
 # generate random String
 def randomString(num):
     a = random.sample('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', num)
@@ -131,3 +136,13 @@ def year_strToList(year):
                 tmp += i
     year_lst.append(int(tmp))
     return year_lst
+
+# "a,b, c"  =>  ['a','b','c']
+def strToList(string):
+    if string == None:
+        return list()
+    temp = "".join(string.split())
+    if len(string) == 0:
+        return list()
+    lst = temp.split(',')
+    return lst

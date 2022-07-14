@@ -58,3 +58,6 @@ def init_route(app: Flask):
 
     # display reviews under movie details
     app.add_url_rule('/app/movies/display_movieReview', view_func=movies.display_movieReview, methods=['POST'])
+
+    # display movie reviews user posted before
+    app.add_url_rule('/app/movies/display_usersMovieReview', view_func=movies.display_usersMovieReview, methods=['POST'])

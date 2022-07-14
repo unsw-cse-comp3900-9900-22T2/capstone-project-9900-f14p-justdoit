@@ -1146,3 +1146,38 @@ def display_movieReview():
     result["movieReview"] = movieReview_list
     result["movieReview_count"] = count
     return jsonify({'code': 200, 'result': result})
+
+# func for display all movie Reviews user post before
+def res_movieReview_detail_spf(movieReview):
+    result = {}
+    uid = movieReview.uid
+    mrid = movieReview.mrid
+    result["mrid"] = mrid
+    movie = MoviesModel.query.filter(MoviesModel.mid == movieReview.mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'movie does not exist'})
+
+    result["moviename"] = movie.moviename
+    result["mid"] = movieReview.mid
+    result["coverimage"] = movie.coverimage
+    result["review"] = movieReview.review
+    result["utime"] = movieReview.utime
+    return result
+# # display all movie Reviews user post before
+def display_usersMovieReview():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    movieReviews = movieReviewModel.query.filter(movieReviewModel.uid == uid, movieReviewModel.active == 1).all()
+
+    if not movieReviews:
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+
+    movieReviews_list = []
+    result = {}
+
+    for m in movieReviews:  # movies: [movies0, movies[1]....]
+        movieReview_info = res_movieReview_detail_spf(m)
+        movieReviews_list.append(movieReview_info)
+    result["movieReview_count"] = len(movieReviews_list)
+    result["movieReviews"] = movieReviews_list
+    return jsonify({'code': 200, 'result': result})

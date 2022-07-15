@@ -1013,27 +1013,19 @@ def create_review():
 
 
     movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
-
-    # add review before, update the review
-    if movieReview:
-        time_form = getTime()[0]
-        movieReview.review = review
-        movieReview.utime = getTime()[0]
-        db.session.commit()
-        return jsonify({'code': 400, 'msg': 'Your new review would cover the past review'})
+    time_form = getTime()[0]
 
     # have no review before, update the review
-    else:
-        try:
-            mrid = getUniqueid()
-            # rlid = getUniqueid()
-            time_form = getTime()[0]
-            movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
-            db.session.add(movieReview)
-            db.session.commit()
-            return jsonify({'code': 200, 'msg': 'create review successfully.'})
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'Invalid command.'})
+    try:
+        mrid = getUniqueid()
+        # rlid = getUniqueid()
+        time_form = getTime()[0]
+        movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+        db.session.add(movieReview)
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'create review successfully.'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
 # user review

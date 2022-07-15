@@ -292,15 +292,15 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
                     className={"swiper-component-operation-item padding1"}>
                     Rate
                   </div>
-                  {/*<div*/}
-                  {/*  onClick={()=>{*/}
-                  {/*    reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible*/}
-                  {/*    && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),*/}
-                  {/*      mid,uid);*/}
-                  {/*  }}*/}
-                  {/*  className={"swiper-component-operation-item"}>*/}
-                  {/*  Reviews and info*/}
-                  {/*</div>*/}
+                  <div
+                    onClick={()=>{
+                      reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                      && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
+                        mid,uid);
+                    }}
+                    className={"swiper-component-operation-item"}>
+                    Reviews and info
+                  </div>
                   <div
                     onClick={()=>{
                       changeOperation(3,index)

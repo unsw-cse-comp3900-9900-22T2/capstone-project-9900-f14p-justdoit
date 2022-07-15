@@ -135,3 +135,9 @@ export function searchBy(param) {
 export function searchResult(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/search_result', param);
 }
+export function createReview(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/create_review', param);
+}
+export function displayMovieReview(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/display_movieReview', param);
+}

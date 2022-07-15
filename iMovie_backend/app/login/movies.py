@@ -1096,7 +1096,7 @@ def like_review():
 
 
 # fucntion of display movie review details, includes the userReview for it
-def res_movieReview_detail(movieReview):
+def res_movieReview_detail(movieReview, mainUser):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
@@ -1116,6 +1116,16 @@ def res_movieReview_detail(movieReview):
         result["rate"] = check_rate.rate
     else:
         result["rate"] = -1
+
+    if mainUser:
+        movieReview_like = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,reviewlikeModel.uid == mainUser.uid,reviewlikeModel.active == 1).first()
+        # print(mrid)
+        # print(uid)
+        if movieReview_like:
+            result["is_user_likeReview"] = 1
+        else:
+            result["is_user_likeReview"] = 0
+
     result["utime"] = movieReview.utime
     userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).order_by(userReviewModel.utime.desc()).all()
     count = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).count()
@@ -1140,6 +1150,8 @@ def res_movieReview_detail(movieReview):
 # display movie Review
 def display_movieReview():
     data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     mid = data["mid"]
     movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).all()
     count = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).count()
@@ -1150,7 +1162,7 @@ def display_movieReview():
         result = {}
 
         for m in movieReview:  # movies: [movies0, movies[1]....]
-            movieReview_info = res_movieReview_detail(m)
+            movieReview_info = res_movieReview_detail(m,user)
             movieReview_list.append(movieReview_info)
         result["movieReview"] = movieReview_list
         result["movieReview_count"] = count

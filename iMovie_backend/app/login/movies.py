@@ -1079,13 +1079,13 @@ def like_review():
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
 
-    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.urid == mrid, reviewlikeModel.active == 1).first()
+    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.mrid == mrid, reviewlikeModel.active == 1).first()
 
     if not reviewLike:
         try:
             rlid = getUniqueid()
             time_form = getTime()[0]
-            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = mrid, ctime = time_form, utime = time_form)
+            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, mrid = mrid, ctime = time_form, utime = time_form)
             db.session.add(reviewlike)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'like review succeed.'})
@@ -1107,7 +1107,7 @@ def res_movieReview_detail(movieReview):
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
-    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.urid == mrid,
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,
                                                         reviewlikeModel.active == 1).count()
     check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
                                           RatingModel.active == 1).first()
@@ -1174,7 +1174,7 @@ def res_movieReview_detail_spf(movieReview):
     result["coverimage"] = movie.coverimage
     result["review"] = movieReview.review
     result["utime"] = movieReview.utime
-    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.urid == mrid,
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,
                                                         reviewlikeModel.active == 1).count()
     check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
                                           RatingModel.active == 1).first()

@@ -7,7 +7,7 @@ import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete} from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,displayMovieReview} from "../MockData";
 import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
@@ -15,19 +15,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
   const [movieDetail,changeMovieDetail]=useState(null);
   const [rateChange,changeRateChange] = useState(true)
-  const [reviewsList,changeReviewsList] = useState([{
-     userName : "amber",
-     rate: 3.6,
-     reviews : "kjshfjksdhajksdhahdjah ashdjahsjdkha ashdjkahsjkdqiuwyuqiwyruiwr ashdhajksdhajkd hquwyruqiwyruiw wiquyruiwqyr we",
-     likes : 2000,
-     userIsLike : false
-  },{
-    userName : "jerry",
-    rate: 3.6,
-    reviews : "kjshfjksdhajksdhahdjah ashdjahsjdkha ashdjkahsjkdqiuwyuqiwyruiwr ashdhajksdhajkd hquwyruqiwyruiw wiquyruiwqyr we",
-    likes : 1000,
-    userIsLike : true
-  }])
+  const [reviewsList,changeReviewsList] = useState([])
   const [recommendList,changeRecommendList] = useState([ [{
     movieId :123323,
     image : "https://swiperjs.com/demos/images/nature-1.jpg",
@@ -88,6 +76,16 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   }
   useEffect(()=>{
     if(initQuery && initQuery.movieId){
+      displayMovieReview({
+        mid : initQuery.movieId
+      }).then(res => {
+        debugger
+        if(res.code === 200){
+          changeReviewsList(res.result && res.result.movieReview || []);
+        }else{
+          changeReviewsList([])
+        }
+      })
       getMovieDetail({
         uid : USERMESSAGE && USERMESSAGE.uid || null,
         mid : initQuery.movieId
@@ -102,33 +100,6 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             add_or_del : "add" 
           })
         }
-      }).catch(err => {
-        const result = {
-          "avg_rate": null,
-          "cast": null,
-          "coverimage": "https://a.ltrbxd.com/resized/sm/upload/hf/o9/fn/p4/adogswill-ms-0-230-0-345-crop.jpg?k=c61671eb55",
-          "crew": null,
-          "description": "The (mis)adventures of João Grilo and Chicó in Brazil's Northeastern region. The four-chapter miniseries original version of O Auto da Compadecida.",
-          "director": "Guel Arraes",
-          "genre": [
-            "comedy",
-            "drama"
-          ],
-          "is_user_dislike": 0,
-          "is_user_like": 0,
-          "is_user_watch": 0,
-          "is_user_wish": 0,
-          "is_user_rate" : 2,
-          "language": "Portuguese",
-          "moviename": "A Dog's Will",
-          "num_like": 0,
-          "release_date": null,
-          "watchlist_num": 0,
-          "wishlist_num": 0,
-          "duration": 123,
-          "mid" : "adkjahdjkahdjkadsh"
-        }
-        changeMovieDetail(result)
       })
     }
 
@@ -544,62 +515,62 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           </div>
         </>
         }
-          {/*<div className={"reviews-list"}>*/}
-          {/*    <div className={"review-title"}>*/}
-          {/*      <p>Related Reviews{!!isLogin && <span  onClick={()=>{*/}
-          {/*                                    const _year = movieDetail.year;*/}
-          {/*                                    reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible*/}
-          {/*                                    && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",*/}
-          {/*                                      movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);*/}
-          {/*                                  }}*/}
-          {/*      >add review</span>}</p>*/}
-          {/*      <div className={"review-more"}>*/}
-          {/*        More >*/}
-          {/*      </div>*/}
-          {/*    </div>*/}
-          {/*    <div className={"review-box"}>*/}
-          {/*      {reviewsList && reviewsList.map((item,index)=>{*/}
-          {/*        return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}*/}
-          {/*                    key={"review-box-item-" + index}>*/}
-          {/*           <div className={"user-logo"}>*/}
-          {/*             <Avatar size={40}  icon={<UserOutlined />} />*/}
-          {/*           </div>*/}
-          {/*           <div className={"review-body"}>*/}
-          {/*              <div className={"user-name"}>*/}
-          {/*                <span className={"userName"}>Review By:<span>{item.userName}</span></span>*/}
-          {/*                  <div className={"rate"}>*/}
-          {/*                     <RateComponent  style={{*/}
-          {/*                        fontSize : "14px"*/}
-          {/*                     }} defaultValue={item.rate || 1} />*/}
-          {/*                      &nbsp;({item.rate || 1})*/}
-          {/*                  </div>*/}
-          {/*              </div>*/}
-          {/*              <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>*/}
-          {/*                {item.reviews}*/}
-          {/*              </div>*/}
-          {/*             {!!isLogin && <div className={"operation"}>*/}
-          {/*               <div className={"operation-like"}>*/}
-          {/*                 <div*/}
-          {/*                   onClick={()=>{*/}
-          {/*                     const _reviewsList = _.cloneDeep(reviewsList);*/}
-          {/*                     const isLike = _reviewsList[index].userIsLike;*/}
-          {/*                     _reviewsList[index].userIsLike = !isLike;*/}
-          {/*                     changeReviewsList(_reviewsList);*/}
-          {/*                   }}*/}
-          {/*                   className={"image-box"}>{svgGet(0,item.userIsLike)}</div>*/}
-          {/*                 <div className={"a-href"}>*/}
-          {/*                   {item.userIsLike &&  "Like review"}*/}
-          {/*                 </div>*/}
-          {/*               </div>*/}
-          {/*               <div className={"operation-like-number"}>*/}
-          {/*                 {getMsg(item.likes)} Likes*/}
-          {/*               </div>*/}
-          {/*             </div>}*/}
-          {/*           </div>*/}
-          {/*        </div>*/}
-          {/*      })}*/}
-          {/*    </div>*/}
-          {/*</div>*/}
+          <div className={"reviews-list"}>
+              <div className={"review-title"}>
+                <p>Related Reviews{!!isLogin && <span  onClick={()=>{
+                                              const _year = movieDetail.year;
+                                              reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",
+                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
+                                            }}
+                >add review</span>}</p>
+                <div className={"review-more"}>
+                  More >
+                </div>
+              </div>
+              <div className={"review-box"}>
+                {reviewsList && reviewsList.map((item,index)=>{
+                  return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}
+                              key={"review-box-item-" + index}>
+                     <div className={"user-logo"}>
+                       <Avatar size={40}  icon={<UserOutlined />} />
+                     </div>
+                     <div className={"review-body"}>
+                        <div className={"user-name"}>
+                          <span className={"userName"}>Review By:<span>{item.username}</span></span>
+                            <div className={"rate"}>
+                               <RateComponent  style={{
+                                  fontSize : "14px"
+                               }} defaultValue={item.rate || 1} />
+                                &nbsp;({item.rate || 1})
+                            </div>
+                        </div>
+                        <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                          {item.review}
+                        </div>
+                       {!!isLogin && <div className={"operation"}>
+                         <div className={"operation-like"}>
+                           <div
+                             onClick={()=>{
+                               const _reviewsList = _.cloneDeep(reviewsList);
+                               const isLike = _reviewsList[index].userIsLike;
+                               _reviewsList[index].userIsLike = !isLike;
+                               changeReviewsList(_reviewsList);
+                             }}
+                             className={"image-box"}>{svgGet(0,item.userIsLike)}</div>
+                           <div className={"a-href"}>
+                             {item.userIsLike &&  "Like review"}
+                           </div>
+                         </div>
+                         <div className={"operation-like-number"}>
+                           {getMsg(item.likes)} Likes
+                         </div>
+                       </div>}
+                     </div>
+                  </div>
+                })}
+              </div>
+          </div>
       </div>
       {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
       {/*                       isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>*/}

@@ -54,7 +54,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          modifyUserDetail({
            uid,
            username : username.trim(),
-           email : email.trim(),
+           // email : email.trim(),
            description :(description || "" ).trim()
          }).then(res => {
             if(res.code === 200){
@@ -175,7 +175,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                 Email
               </h6>
               <Input
-                disabled={isChangePassWord}
+                disabled={true}
                 value={msg.email}
                 placeholder="Please enter your email"
                 onChange={(e) => {

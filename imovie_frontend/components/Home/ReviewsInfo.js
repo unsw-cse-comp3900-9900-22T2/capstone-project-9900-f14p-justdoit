@@ -1,17 +1,21 @@
 
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
-
-import {Modal,Input} from "antd"
+import { Modal, Input, message } from "antd";
 import ReviewsInfoStyle from "./ReviewsInfo.less";
+import { createReview } from "../../pages/MockData";
 const { TextArea } = Input;
 const ReviewsInfo = ({reviewsInfoRef}) => {
    const [visible ,changeVisible] = useState(false);
    const [movieName , changeMovieName] = useState("");
    const [value,changeValue]=useState("");
+   const [mid,changeMid] = useState("");
+   const [uid,changeUid] = useState("");
     useImperativeHandle(reviewsInfoRef, () => ({
-      changeVisible: (vis,movieName) => {
+      changeVisible: (vis,movieName,_mid,_uid) => {
         changeMovieName(movieName);
         changeVisible(vis);
+        changeUid(_uid);
+        changeMid(_mid);
       },
     }));
     return (
@@ -24,10 +28,24 @@ const ReviewsInfo = ({reviewsInfoRef}) => {
         okText="SUBMIT"
         cancelText={"CANCEL"}
         onOk={() =>{
-          console.log("value",value)
-          changeVisible(false);
-          changeValue("");
-          changeMovieName("");
+          if(!value || !(value && value.trim())){
+            message.warn("Please write you comment");
+            return
+          }
+          createReview({
+            review : value && value.trim(),
+            uid,
+            mid
+          }).then(res => {
+            if(res.code === 200){
+              message.success("write comment success");
+              changeVisible(false);
+              changeValue("");
+              changeMovieName("");
+            }else{
+              message.error("write comment failed");
+            }
+          })
         }}
         onCancel={() => {
           changeVisible(false);

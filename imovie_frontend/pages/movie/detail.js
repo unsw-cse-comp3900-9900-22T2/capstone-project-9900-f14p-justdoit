@@ -520,7 +520,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           </div>
         </>
         }
-          <div className={"reviews-list"}>
+        {!!movieDetail && <div className={"reviews-list"}>
               <div className={"review-title"}>
                 <p>Related Reviews{!!isLogin && <span  onClick={()=>{
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
@@ -571,16 +571,21 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                            <div
                              onClick={()=>{
                                likeReview({
-                                 add_or_del : !item.userIsLike ? "add" : "del",
+                                 add_or_del : !item.is_user_likeReview ? "add" : "del",
                                  uid : USERMESSAGE && USERMESSAGE.uid || null,
                                  mrid : item.mrid
                                }).then(res => {
                                   if(res.code === 200){
                                     const _reviewsList = _.cloneDeep(reviewsList);
-                                    const isLike = _reviewsList[index].userIsLike;
+                                    const isLike = _reviewsList[index].is_user_likeReview;
                                     const like_count = _reviewsList[index].like_count;
-                                    _reviewsList[index].userIsLike = !isLike;
-                                    _reviewsList[index].like_count = (like_count || 0) + 1;
+                                    _reviewsList[index].is_user_likeReview = !isLike;
+                                    if(!item.is_user_likeReview ){
+                                      _reviewsList[index].like_count = (like_count || 0) + 1;
+                                    }else{
+                                      _reviewsList[index].like_count = (like_count || 0)  - 1;
+                                    }
+
                                     changeReviewsList(_reviewsList);
                                     message.success(res.msg);
                                   }else{
@@ -589,13 +594,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                })
 
                              }}
-                             className={"image-box"}>{svgGet(0,item.userIsLike)}</div>
+                             className={"image-box"}>{svgGet(0,item.is_user_likeReview)}</div>
                            <div className={"a-href"}>
-                             {item.userIsLike &&  "Like review"}
+                             {!!item.is_user_likeReview &&  "Like review"}
                            </div>
                          </div>
                          <div className={"operation-like-number"}>
-                           {getMsg(item.like_count)} Likes
+                           {getMsg(item.like_count)} {(item.like_count || 0) >= 2 ? "Likes" : "Like"}
                          </div>
                          <div
                              onClick={()=>{
@@ -652,7 +657,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                    There is no review
                 </h6>}
               </div>
-          </div>
+          </div>}
       </div>
       {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
       {/*                       isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>*/}

@@ -106,7 +106,7 @@ const WishListComponent = ({uid}) => {
                                     }}
                                          className={"operation"}>
                                         <div className={"operation-like-number"}>
-                                            {getMsg(item.like_count)} Likes
+                                            {getMsg(item.like_count)} {(item.like_count || 0) >= 2 ? "Likes" : "Like"}
                                         </div>
                                     </div>
                                 </div>

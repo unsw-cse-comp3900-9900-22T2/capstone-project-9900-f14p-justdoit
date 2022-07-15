@@ -4,10 +4,11 @@ import detailStyle from "./detail.less";
 import { Avatar, Popover, Rate ,message,Tooltip} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined,MessageOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
+import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,displayMovieReview} from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,displayMovieReview,likeReview} from "../MockData";
 import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
@@ -61,6 +62,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   }]])
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
+  const reviewsThisRef = useRef();
   function getMsg(number){
     if (!number && number !== 0) return number;
     var str_num
@@ -76,16 +78,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   }
   useEffect(()=>{
     if(initQuery && initQuery.movieId){
-      displayMovieReview({
-        mid : initQuery.movieId
-      }).then(res => {
-        debugger
-        if(res.code === 200){
-          changeReviewsList(res.result && res.result.movieReview || []);
-        }else{
-          changeReviewsList([])
-        }
-      })
+      displayMovieReviewService();
       getMovieDetail({
         uid : USERMESSAGE && USERMESSAGE.uid || null,
         mid : initQuery.movieId
@@ -325,6 +318,18 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   function setToolTitle(type,number){
     return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
   }
+  function displayMovieReviewService(){
+    displayMovieReview({
+      mid : initQuery.movieId,
+      uid : USERMESSAGE && USERMESSAGE.uid || null,
+    }).then(res => {
+      if(res.code === 200){
+        changeReviewsList(res.result && res.result.movieReview || []);
+      }else{
+        changeReviewsList([])
+      }
+    })
+  }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
@@ -518,19 +523,25 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           <div className={"reviews-list"}>
               <div className={"review-title"}>
                 <p>Related Reviews{!!isLogin && <span  onClick={()=>{
-                                              const _year = movieDetail.year;
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",
+                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
                                                 movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
                                             }}
                 >add review</span>}</p>
-                <div className={"review-more"}>
-                  More >
-                </div>
+                {reviewsList && reviewsList.length > 2 &&
+                    <div className={"review-more"}>
+                      More >
+                    </div>
+                }
               </div>
               <div className={"review-box"}>
                 {reviewsList && reviewsList.map((item,index)=>{
-                  return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}
+                  if(index >= 2){
+                    return null;
+                  }
+                  const userReview = item.userReview;
+                  return <div className={`review-box-item ${(index === reviewsList.length - 1 || index === 1)
+                  && "review-box-item-no-border" || ""}`}
                               key={"review-box-item-" + index}>
                      <div className={"user-logo"}>
                        <Avatar size={40}  icon={<UserOutlined />} />
@@ -538,24 +549,45 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                      <div className={"review-body"}>
                         <div className={"user-name"}>
                           <span className={"userName"}>Review By:<span>{item.username}</span></span>
-                            <div className={"rate"}>
+                          {(item.rate || 0) > 0 && <div className={"rate"}>
                                <RateComponent  style={{
                                   fontSize : "14px"
-                               }} defaultValue={item.rate || 1} />
-                                &nbsp;({item.rate || 1})
-                            </div>
+                               }} defaultValue={(item.rate || 0) <= 0 ? 0 : (item.rate)} />
+                                &nbsp;({(item.rate || 0) <= 0 ? 0 : (item.rate)})
+                            </div>}
                         </div>
                         <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
                           {item.review}
                         </div>
-                       {!!isLogin && <div className={"operation"}>
+                       <div style={{
+                           fontSize : "12px",
+                         marginTop: "5px",
+                         color : "#999"
+                       }} className={"userName"}>&nbsp;{item.utime}</div>
+                       {!!isLogin && <div style={{
+                          marginBottom : "15px"
+                       }} className={"operation"}>
                          <div className={"operation-like"}>
                            <div
                              onClick={()=>{
-                               const _reviewsList = _.cloneDeep(reviewsList);
-                               const isLike = _reviewsList[index].userIsLike;
-                               _reviewsList[index].userIsLike = !isLike;
-                               changeReviewsList(_reviewsList);
+                               likeReview({
+                                 add_or_del : !item.userIsLike ? "add" : "del",
+                                 uid : USERMESSAGE && USERMESSAGE.uid || null,
+                                 mrid : item.mrid
+                               }).then(res => {
+                                  if(res.code === 200){
+                                    const _reviewsList = _.cloneDeep(reviewsList);
+                                    const isLike = _reviewsList[index].userIsLike;
+                                    const like_count = _reviewsList[index].like_count;
+                                    _reviewsList[index].userIsLike = !isLike;
+                                    _reviewsList[index].like_count = (like_count || 0) + 1;
+                                    changeReviewsList(_reviewsList);
+                                    message.success(res.msg);
+                                  }else{
+                                    message.error(res.msg);
+                                  }
+                               })
+
                              }}
                              className={"image-box"}>{svgGet(0,item.userIsLike)}</div>
                            <div className={"a-href"}>
@@ -563,12 +595,62 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                            </div>
                          </div>
                          <div className={"operation-like-number"}>
-                           {getMsg(item.likes)} Likes
+                           {getMsg(item.like_count)} Likes
+                         </div>
+                         <div
+                             onClick={()=>{
+                               reviewsThisRef && reviewsThisRef.current && reviewsThisRef.current.changeVisible
+                               && reviewsThisRef.current.changeVisible(true,item.username,
+                                   item.mrid,USERMESSAGE && USERMESSAGE.uid || null);
+                             }}
+                             className={"operation-review-this"}>
+                           <MessageOutlined />
+                           &nbsp;&nbsp;Review this
                          </div>
                        </div>}
+                       {
+                         userReview && userReview.map((item2,index2)=>{
+                             if(index2 >= 2){
+                               return null;
+                             }
+                             return <div
+                                 style={{
+                                   marginLeft : 0,
+                                   width : "100%",
+                                   marginTop : "10px",
+                                   paddingBottom: "5px"
+                                 }}
+                                 className={`review-box-item ${(index2 === userReview.length - 1 || index2 === 1) && "review-box-item-no-border" || ""}`}
+                                         key={"review-box-item-user-review-" + index2}>
+                               <div className={"user-logo"}>
+                                 <Avatar size={40}  icon={<UserOutlined />} />
+                               </div>
+                               <div className={"review-body"}>
+                                 <div className={"user-name"}>
+                                   <span className={"userName"}>Review By:<span>{item2.username}</span></span>
+                                 </div>
+                                 <div
+                                     style={{marginTop : "5px"}}
+                                     className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                                   {item2.review}
+                                 </div>
+                                 <div style={{
+                                   fontSize : "12px",
+                                   marginTop: "5px",
+                                   color : "#999"
+                                 }} className={"userName"}>&nbsp;{item2.utime}</div>
+                               </div>
+                             </div>
+                           })
+                       }
+                       <div style={{width :"100%",height : "15px"}}/>
                      </div>
                   </div>
                 })}
+                {(!reviewsList || reviewsList.length === 0)&&
+                    <h6 className={"no-review-style"}>
+                   There is no review
+                </h6>}
               </div>
           </div>
       </div>
@@ -577,6 +659,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){
+            displayMovieReviewService();
             const _movieDetail = _.cloneDeep(movieDetail);
             _movieDetail.avg_rate = avg_rate;
             _movieDetail.is_user_rate = rate;
@@ -598,7 +681,16 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           }
         }}
         ratingRef={ratingRef}/>
-      <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsInfoComponent
+          changeReview={()=>{
+            displayMovieReviewService();
+          }}
+          reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsThisComponent
+          changeReview={()=>{
+            displayMovieReviewService();
+          }}
+          reviewsThisRef={reviewsThisRef}/>
     </PageBase>
   )
 }

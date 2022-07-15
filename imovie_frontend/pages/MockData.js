@@ -141,3 +141,9 @@ export function createReview(param) {
 export function displayMovieReview(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/display_movieReview', param);
 }
+export function likeReview(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/like_review', param);
+}
+export function replyReview(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/reply_review', param);
+}

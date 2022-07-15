@@ -1069,6 +1069,7 @@ def reply_review():
 # like other' review
 def like_review():
     data = request.get_json(force=True)
+    add_or_del = data["add_or_del"]
     uid = data["uid"]
     mrid = data["mrid"]
     # check uid and mid
@@ -1080,19 +1081,35 @@ def like_review():
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
 
     reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.mrid == mrid, reviewlikeModel.active == 1).first()
-
-    if not reviewLike:
-        try:
-            rlid = getUniqueid()
-            time_form = getTime()[0]
-            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, mrid = mrid, ctime = time_form, utime = time_form)
-            db.session.add(reviewlike)
-            db.session.commit()
-            return jsonify({'code': 200, 'msg': 'like review succeed.'})
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'like review  failed.', 'error_msg': str(e)})
+    if add_or_del == "add":
+        if not reviewLike:
+            try:
+                rlid = getUniqueid()
+                time_form = getTime()[0]
+                reviewlike = reviewlikeModel(rlid = rlid, uid = uid, mrid = mrid, ctime = time_form, utime = time_form)
+                db.session.add(reviewlike)
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'like review succeed.'})
+            except Exception as e:
+                return jsonify({'code': 400, 'msg': 'like review  failed.', 'error_msg': str(e)})
+        else:
+            return jsonify({'code': 400, 'msg': 'like failed.'})
     else:
-        return jsonify({'code': 400, 'msg': 'like failed.'})
+        if reviewLike:
+            try:
+                reviewLike.active = 0
+                reviewLike.utime = getTime()[0]
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'cancel like review succeed.'})
+            except Exception as e:
+                return jsonify({'code': 400, 'msg': 'cancel like review  failed.', 'error_msg': str(e)})
+        else:
+            return jsonify({'code': 400, 'msg': 'cancel like failed.'})
+
+
+
+
+
 
 
 # fucntion of display movie review details, includes the userReview for it

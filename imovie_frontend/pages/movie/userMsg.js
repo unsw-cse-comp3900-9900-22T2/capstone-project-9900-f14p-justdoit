@@ -46,11 +46,11 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     value : "History",
     icon : <HistoryOutlined />
   },
-  // {
-  //   key : 5,
-  //   value : "reviews",
-  //   icon :<HighlightOutlined />
-  // },
+  {
+    key : 5,
+    value : "reviews",
+    icon :<HighlightOutlined />
+  },
   {
     key : 6,
     value : "Like",

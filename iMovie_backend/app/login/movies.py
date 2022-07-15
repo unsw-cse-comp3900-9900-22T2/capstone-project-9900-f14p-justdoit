@@ -1012,7 +1012,7 @@ def create_review():
         return jsonify({'code': 400, 'msg': 'text is empty'})
 
 
-    movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid).first()
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
 
     # add review before, update the review
     if movieReview:
@@ -1070,22 +1070,22 @@ def reply_review():
 def like_review():
     data = request.get_json(force=True)
     uid = data["uid"]
-    urid = data["urid"]
+    mrid = data["mrid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
-    userReview = MoviesModel.query.filter(userReviewModel.urid == urid, userReviewModel.active == 1).first()
-    if not userReview:
-        return jsonify({'code': 400, 'msg': 'userReview does not exist'})
+    movieReview = MoviesModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.active == 1).first()
+    if not movieReview:
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
 
-    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.urid == urid, reviewlikeModel.active == 1).first()
+    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.mrid == mrid, reviewlikeModel.active == 1).first()
 
     if not reviewLike:
         try:
             rlid = getUniqueid()
             time_form = getTime()[0]
-            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
+            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, mrid = mrid, ctime = time_form, utime = time_form)
             db.session.add(reviewlike)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'like review succeed.'})
@@ -1100,15 +1100,25 @@ def res_movieReview_detail(movieReview):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
+    mid = movieReview.mid
     result["mrid"] = mrid
     result["uid"] = uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,
+                                                        reviewlikeModel.active == 1).count()
+    check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
+                                          RatingModel.active == 1).first()
+
+    if check_rate:
+        result["rate"] = check_rate.rate
+    else:
+        result["rate"] = -1
     result["utime"] = movieReview.utime
-    userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid).order_by(userReviewModel.utime.desc()).all()
-    count = userReviewModel.query.filter(userReviewModel.mrid == mrid).count()
+    userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).order_by(userReviewModel.utime.desc()).all()
+    count = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).count()
     userReview_lst = list()
     if userReview:
         for ur in userReview:
@@ -1118,7 +1128,6 @@ def res_movieReview_detail(movieReview):
             ur_dic["username"] = (UserModel.query.filter(UserModel.uid == ur.uid, UserModel.active == 1).first()).username
             ur_dic["review"] = ur.review
             ur_dic["utime"] = ur.utime
-            ur_dic["likeReview"] = reviewlikeModel.query.filter(reviewlikeModel.urid == ur.urid, reviewlikeModel.active == 1).count()
             userReview_lst.append(ur_dic)
     result["userReview"] = userReview_lst
     result["userReview_count"] = count
@@ -1136,22 +1145,25 @@ def display_movieReview():
     count = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).count()
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+    try:
+        movieReview_list = []
+        result = {}
 
-    movieReview_list = []
-    result = {}
-
-    for m in movieReview:  # movies: [movies0, movies[1]....]
-        movieReview_info = res_movieReview_detail(m)
-        movieReview_list.append(movieReview_info)
-    result["movieReview"] = movieReview_list
-    result["movieReview_count"] = count
-    return jsonify({'code': 200, 'result': result})
+        for m in movieReview:  # movies: [movies0, movies[1]....]
+            movieReview_info = res_movieReview_detail(m)
+            movieReview_list.append(movieReview_info)
+        result["movieReview"] = movieReview_list
+        result["movieReview_count"] = count
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
 
 # func for display all movie Reviews user post before
 def res_movieReview_detail_spf(movieReview):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
+    mid = movieReview.mid
     result["mrid"] = mrid
     movie = MoviesModel.query.filter(MoviesModel.mid == movieReview.mid, MoviesModel.active == 1).first()
     if not movie:
@@ -1162,6 +1174,17 @@ def res_movieReview_detail_spf(movieReview):
     result["coverimage"] = movie.coverimage
     result["review"] = movieReview.review
     result["utime"] = movieReview.utime
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,
+                                                        reviewlikeModel.active == 1).count()
+    check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
+                                          RatingModel.active == 1).first()
+
+    if check_rate:
+        result["rate"] = check_rate.rate
+    else:
+        result["rate"] = -1
+
+
     return result
 # # display all movie Reviews user post before
 def display_usersMovieReview():
@@ -1171,13 +1194,56 @@ def display_usersMovieReview():
 
     if not movieReviews:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+    try:
+        movieReviews_list = []
+        result = {}
 
-    movieReviews_list = []
-    result = {}
+        for m in movieReviews:  # movies: [movies0, movies[1]....]
+            movieReview_info = res_movieReview_detail_spf(m)
+            movieReviews_list.append(movieReview_info)
+        result["movieReview_count"] = len(movieReviews_list)
+        result["movieReviews"] = movieReviews_list
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'display usersMovieReview failure', 'error_msg': str(e)})
 
-    for m in movieReviews:  # movies: [movies0, movies[1]....]
-        movieReview_info = res_movieReview_detail_spf(m)
-        movieReviews_list.append(movieReview_info)
-    result["movieReview_count"] = len(movieReviews_list)
-    result["movieReviews"] = movieReviews_list
-    return jsonify({'code': 200, 'result': result})
+# delete the movieReview
+def delete_movieReview():
+    data = request.get_json(force=True)
+    mrid = data["mrid"]
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
+    if not movieReview:
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+    try:
+        movieReview.active = 0
+        movieReview.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Deletion movieReview succeed.'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'delete movieReview failure', 'error_msg': str(e)})
+
+# delete the userReview
+def delete_userReview():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    urid = data["urid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+    userReview = userReviewModel.query.filter(userReviewModel.urid == urid,userReviewModel.uid == uid, userReviewModel.active == 1).first()
+    if not userReview:
+        return jsonify({'code': 400, 'msg': 'userReview does not exist'})
+    try:
+        userReview.active = 0
+        userReview.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Deletion userReview succeed.'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})

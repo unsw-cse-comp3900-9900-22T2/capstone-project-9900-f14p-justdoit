@@ -10,7 +10,7 @@ import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
 // 下面这个watch是新加的
-const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,
+const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,liKeDo,
                     ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
   const [thisItem,changeThisItem] = useState(item);
   const ratingRef = useRef();
@@ -123,6 +123,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             }
           }else{
             message.success("Canceled the like successfully");
+            liKeDo && liKeDo();
             _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
           }
           changeThisItem(_thisItem);
@@ -152,6 +153,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             }
           }else{
             message.success("Canceled the dislike successfully");
+            disLikeDo && disLikeDo();
             // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
           }
           changeThisItem(_thisItem);

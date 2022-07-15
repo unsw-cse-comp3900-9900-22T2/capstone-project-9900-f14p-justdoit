@@ -151,7 +151,7 @@ class reviewlikeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rlid = db.Column(db.String(256), unique=True, nullable=False)
     uid = db.Column(db.String(256), nullable=False)  # users.uid
-    urid = db.Column(db.String(256), nullable=False)  # userreview.uid
+    mrid = db.Column(db.String(256), nullable=False)  # userreview.uid
     # type = db.Column(db.Integer, nullable=False, default=0)  # 0:like,  1:dislike
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     ctime = db.Column(db.DateTime, nullable=False)  # create time

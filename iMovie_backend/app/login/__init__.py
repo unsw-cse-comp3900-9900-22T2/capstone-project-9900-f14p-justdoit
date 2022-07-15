@@ -66,3 +66,6 @@ def init_route(app: Flask):
 
     # delete movie reviews user posted before
     app.add_url_rule('/app/movies/delete_movieReview', view_func=movies.delete_movieReview, methods=['POST'])
+
+    # delete user review
+    app.add_url_rule('/app/movies/delete_userReview', view_func=movies.delete_userReview, methods=['POST'])

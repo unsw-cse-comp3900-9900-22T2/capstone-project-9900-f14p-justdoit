@@ -1211,7 +1211,12 @@ def display_usersMovieReview():
 def delete_movieReview():
     data = request.get_json(force=True)
     mrid = data["mrid"]
-    movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.active == 1).first()
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+
+    movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
     try:
@@ -1223,3 +1228,22 @@ def delete_movieReview():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'delete movieReview failure', 'error_msg': str(e)})
 
+# delete the userReview
+def delete_userReview():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    urid = data["urid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+    userReview = userReviewModel.query.filter(userReviewModel.urid == urid,userReviewModel.uid == uid, userReviewModel.active == 1).first()
+    if not userReview:
+        return jsonify({'code': 400, 'msg': 'userReview does not exist'})
+    try:
+        userReview.active = 0
+        userReview.utime = getTime()[0]
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'Deletion userReview succeed.'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})

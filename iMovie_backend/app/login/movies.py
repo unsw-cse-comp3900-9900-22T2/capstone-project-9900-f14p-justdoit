@@ -1013,27 +1013,19 @@ def create_review():
 
 
     movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
-
-    # add review before, update the review
-    if movieReview:
-        time_form = getTime()[0]
-        movieReview.review = review
-        movieReview.utime = getTime()[0]
-        db.session.commit()
-        return jsonify({'code': 400, 'msg': 'Your new review would cover the past review'})
+    time_form = getTime()[0]
 
     # have no review before, update the review
-    else:
-        try:
-            mrid = getUniqueid()
-            # rlid = getUniqueid()
-            time_form = getTime()[0]
-            movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
-            db.session.add(movieReview)
-            db.session.commit()
-            return jsonify({'code': 200, 'msg': 'create review successfully.'})
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'Invalid command.'})
+    try:
+        mrid = getUniqueid()
+        # rlid = getUniqueid()
+        time_form = getTime()[0]
+        movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+        db.session.add(movieReview)
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': 'create review successfully.'})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
 # user review
@@ -1113,7 +1105,7 @@ def like_review():
 
 
 # fucntion of display movie review details, includes the userReview for it
-def res_movieReview_detail(movieReview):
+def res_movieReview_detail(movieReview, mainUser):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
@@ -1133,6 +1125,16 @@ def res_movieReview_detail(movieReview):
         result["rate"] = check_rate.rate
     else:
         result["rate"] = -1
+
+    if mainUser:
+        movieReview_like = reviewlikeModel.query.filter(reviewlikeModel.mrid == mrid,reviewlikeModel.uid == mainUser.uid,reviewlikeModel.active == 1).first()
+        # print(mrid)
+        # print(uid)
+        if movieReview_like:
+            result["is_user_likeReview"] = 1
+        else:
+            result["is_user_likeReview"] = 0
+
     result["utime"] = movieReview.utime
     userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).order_by(userReviewModel.utime.desc()).all()
     count = userReviewModel.query.filter(userReviewModel.mrid == mrid, userReviewModel.active == 1).count()
@@ -1157,6 +1159,8 @@ def res_movieReview_detail(movieReview):
 # display movie Review
 def display_movieReview():
     data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     mid = data["mid"]
     movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).all()
     count = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).count()
@@ -1167,7 +1171,7 @@ def display_movieReview():
         result = {}
 
         for m in movieReview:  # movies: [movies0, movies[1]....]
-            movieReview_info = res_movieReview_detail(m)
+            movieReview_info = res_movieReview_detail(m,user)
             movieReview_list.append(movieReview_info)
         result["movieReview"] = movieReview_list
         result["movieReview_count"] = count
@@ -1239,6 +1243,11 @@ def delete_movieReview():
     try:
         movieReview.active = 0
         movieReview.utime = getTime()[0]
+        userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid,userReviewModel.active == 1).all()
+
+        for u in userReview:
+            u.active = 0
+            u.utime = getTime()[0]
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'Deletion movieReview succeed.'})
 
@@ -1258,6 +1267,7 @@ def delete_userReview():
         return jsonify({'code': 400, 'msg': 'userReview does not exist'})
     try:
         userReview.active = 0
+
         userReview.utime = getTime()[0]
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'Deletion userReview succeed.'})

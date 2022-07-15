@@ -114,7 +114,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       // },
        {
        key : 8,
-       value : "Reviews",
+       value : "Review",
        hasBorder : false,
        href : "/movie/userMsg?activeKey=5&nouser=1"
       },

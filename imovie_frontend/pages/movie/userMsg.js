@@ -9,7 +9,7 @@ import { UserOutlined ,LikeOutlined ,DislikeOutlined,
 import { delCookie } from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
-import ReviewsComponent from "../../components/UserMsg/Reviews"
+import ReviewsComponent from "../../components/UserMsg/Review"
 import WatchListComponent from "../../components/UserMsg/WatchList"
 // 改了这
 import HisToryComponent from "../../components/UserMsg/HisTory"
@@ -49,7 +49,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
   },
   {
     key : 5,
-    value : "Reviews",
+    value : "Review",
     icon :<HighlightOutlined />
   },
   {

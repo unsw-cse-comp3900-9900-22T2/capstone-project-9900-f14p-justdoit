@@ -66,7 +66,7 @@ const WishListComponent = ({uid}) => {
          <div className="ReviewComponent">
               <div className={"title-box"}>
                   <p className="title">
-                    Reviews
+                    Review
                   </p>
               </div>
            <div>

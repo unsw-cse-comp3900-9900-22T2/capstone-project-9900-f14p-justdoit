@@ -230,8 +230,11 @@ def modify_user_detail():
         check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
         if check_username:
             return jsonify({'code' : 400, 'msg': 'User name already exists'})
+        # username is too long
         if len(username) > 50:
             return jsonify({'code': 400, 'msg': 'Your username is too long.'})
+        if len(username) < 6:
+            return jsonify({'code': 400, 'msg': 'Your username is too short.'})
         if not validateUsername(username):
             return jsonify({'code': 400, 'msg': 'Your username is not follow the rule.'})
     # # 给 backend

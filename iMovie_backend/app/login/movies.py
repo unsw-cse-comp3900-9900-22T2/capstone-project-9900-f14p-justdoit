@@ -1070,22 +1070,22 @@ def reply_review():
 def like_review():
     data = request.get_json(force=True)
     uid = data["uid"]
-    urid = data["urid"]
+    mrid = data["mrid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
-    userReview = MoviesModel.query.filter(userReviewModel.urid == urid, userReviewModel.active == 1).first()
-    if not userReview:
-        return jsonify({'code': 400, 'msg': 'userReview does not exist'})
+    movieReview = MoviesModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.active == 1).first()
+    if not movieReview:
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
 
-    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.urid == urid, reviewlikeModel.active == 1).first()
+    reviewLike = reviewlikeModel.query.filter(reviewlikeModel.uid == uid, reviewlikeModel.urid == mrid, reviewlikeModel.active == 1).first()
 
     if not reviewLike:
         try:
             rlid = getUniqueid()
             time_form = getTime()[0]
-            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = urid, ctime = time_form, utime = time_form)
+            reviewlike = reviewlikeModel(rlid = rlid, uid = uid, urid = mrid, ctime = time_form, utime = time_form)
             db.session.add(reviewlike)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'like review succeed.'})
@@ -1100,12 +1100,22 @@ def res_movieReview_detail(movieReview):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
+    mid = movieReview.mid
     result["mrid"] = mrid
     result["uid"] = uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.urid == mrid,
+                                                        reviewlikeModel.active == 1).count()
+    check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
+                                          RatingModel.active == 1).first()
+
+    if check_rate:
+        result["rate"] = check_rate.rate
+    else:
+        result["rate"] = -1
     result["utime"] = movieReview.utime
     userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid).order_by(userReviewModel.utime.desc()).all()
     count = userReviewModel.query.filter(userReviewModel.mrid == mrid).count()
@@ -1118,7 +1128,6 @@ def res_movieReview_detail(movieReview):
             ur_dic["username"] = (UserModel.query.filter(UserModel.uid == ur.uid, UserModel.active == 1).first()).username
             ur_dic["review"] = ur.review
             ur_dic["utime"] = ur.utime
-            ur_dic["likeReview"] = reviewlikeModel.query.filter(reviewlikeModel.urid == ur.urid, reviewlikeModel.active == 1).count()
             userReview_lst.append(ur_dic)
     result["userReview"] = userReview_lst
     result["userReview_count"] = count
@@ -1152,6 +1161,7 @@ def res_movieReview_detail_spf(movieReview):
     result = {}
     uid = movieReview.uid
     mrid = movieReview.mrid
+    mid = movieReview.mid
     result["mrid"] = mrid
     movie = MoviesModel.query.filter(MoviesModel.mid == movieReview.mid, MoviesModel.active == 1).first()
     if not movie:
@@ -1162,6 +1172,17 @@ def res_movieReview_detail_spf(movieReview):
     result["coverimage"] = movie.coverimage
     result["review"] = movieReview.review
     result["utime"] = movieReview.utime
+    result["like_count"] = reviewlikeModel.query.filter(reviewlikeModel.urid == mrid,
+                                                        reviewlikeModel.active == 1).count()
+    check_rate = RatingModel.query.filter(RatingModel.uid == uid, RatingModel.mid == mid,
+                                          RatingModel.active == 1).first()
+
+    if check_rate:
+        result["rate"] = check_rate.rate
+    else:
+        result["rate"] = -1
+
+
     return result
 # # display all movie Reviews user post before
 def display_usersMovieReview():

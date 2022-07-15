@@ -330,6 +330,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       }
     })
   }
+  function goUserDetail(uid){
+    if(!uid){
+       return null
+    }
+     window.location.href = "/movie/userMsg?uid=" + uid
+  }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
@@ -544,7 +550,11 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                   && "review-box-item-no-border" || ""}`}
                               key={"review-box-item-" + index}>
                      <div className={"user-logo"}>
-                       <Avatar size={40}  icon={<UserOutlined />} />
+                       <Avatar
+                           onClick={()=>{
+                             goUserDetail(item.uid);
+                           }}
+                           size={40}  icon={<UserOutlined />} />
                      </div>
                      <div className={"review-body"}>
                         <div className={"user-name"}>
@@ -628,7 +638,11 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                  className={`review-box-item ${(index2 === userReview.length - 1 || index2 === 1) && "review-box-item-no-border" || ""}`}
                                          key={"review-box-item-user-review-" + index2}>
                                <div className={"user-logo"}>
-                                 <Avatar size={40}  icon={<UserOutlined />} />
+                                 <Avatar
+                                     onClick={()=>{
+                                       goUserDetail(item2.uid);
+                                     }}
+                                     size={40}  icon={<UserOutlined />} />
                                </div>
                                <div className={"review-body"}>
                                  <div className={"user-name"}>

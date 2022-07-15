@@ -7,7 +7,7 @@ import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import {getLike,likeAddOrDelete} from "../../pages/MockData";
-const LiKeComponent = ({uid}) => {
+const LiKeComponent = ({uid,isMySelf}) => {
     // const [sortList] = useState([{
     //   key : 0,
     //   value : "Add Time"
@@ -150,6 +150,7 @@ const LiKeComponent = ({uid}) => {
                                              liKeDo={()=>{
                                                fetchData();
                                              }}
+                                             isNotMyself={!isMySelf}
                                              clearMovie={(index3)=>{
                                               // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
                                                console.log(index3)
@@ -166,7 +167,7 @@ const LiKeComponent = ({uid}) => {
                                              marginRight={{
                                                marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                                              }}
-                                            showClear={true}
+                                            showClear={isMySelf && true || false}
                                             item={item}
                                             index={index}
                                             isLogin={true}

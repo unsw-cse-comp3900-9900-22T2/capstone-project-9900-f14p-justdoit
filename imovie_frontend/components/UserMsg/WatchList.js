@@ -7,7 +7,7 @@ import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import {getWatchlist,watchlistAddOrDelete} from "../../pages/MockData";
-const WatchListComponent = ({uid}) => {
+const WatchListComponent = ({uid,isMySelf, loginUid}) => {
     const [sortList] = useState([{
       key : 0,
       value : "Add Time"
@@ -135,6 +135,7 @@ const WatchListComponent = ({uid}) => {
                                              watchListDo={()=>{
                                                fetchData();
                                              }}
+                                             isNotMyself={!isMySelf}
                                              clearMovie={(index3)=>{
                                                confirm({
                                                  title: 'Are you sure you want to remove this movie from your watchlist?',
@@ -149,7 +150,7 @@ const WatchListComponent = ({uid}) => {
                                              marginRight={{
                                                marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                                              }}
-                                            showClear={true}
+                                            showClear={isMySelf && true || false}
                                             item={item}
                                             index={index}
                                             isLogin={true}

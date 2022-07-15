@@ -18,6 +18,7 @@ import LiKeComponent from "../../components/UserMsg/LiKe"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
+  const [isMySelf] = useState(initQuery.uid ? initQuery.uid === USERMESSAGE.uid : true);
   const [uid,changeUid] = useState(null);
   const [edit,changeEdit] = useState(initQuery.profile);
   const [activeKey,changeActiveKey] = useState(initQuery.activeKey)
@@ -66,16 +67,18 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     if(!!USERMESSAGE){
        changeUid(USERMESSAGE.uid);
       getUserDetail({
-        uid : USERMESSAGE.uid
+        uid : isMySelf ? USERMESSAGE.uid : initQuery.uid
       }).then(res => {
           if(res.code === 200){
             const {result} = res;
             changeUserMsg(result);
             changeShowDom(true);
-            const {username,email} = result;
-            window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
-              email,username
-            })));
+            if(isMySelf){
+              const {username,email} = result;
+              window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
+                email,username
+              })));
+            }
           }else{
             message.error("get user message error")
           }
@@ -89,19 +92,20 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     }
   },[]);
   function getTabDom(item) {
+    const _uid = isMySelf ? USERMESSAGE.uid : initQuery.uid;
     switch (item.key) {
       case 1:
-        return <WishListComponent uid={uid}/>;
+        return <WishListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 2:
-        return <WatchListComponent uid={uid}/>;
+        return <WatchListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 4:
-        return <HisToryComponent uid={uid}/>;
+        return <HisToryComponent uid={_uid} isMySelf={isMySelf}/>;
       case 5:
-        return <ReviewsComponent uid={uid}/>;
+        return <ReviewsComponent uid={_uid} isMySelf={isMySelf}/>;
       case 6:
-        return <LiKeComponent uid={uid}/>;
+        return <LiKeComponent uid={_uid} isMySelf={isMySelf}/>;
       case 7:
-        return <DisLikeComponent uid={uid}/>;
+        return <DisLikeComponent uid={_uid} isMySelf={isMySelf}/>;
       default:
         return <div>{item.key}</div>
     }
@@ -130,13 +134,14 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                   <h6>
                     {userMsg.description}
                   </h6>
+                  {isMySelf &&
                   <div
                     onClick={()=>{
                       changeEdit(true)
                     }}
                     className={"edit"}>
                     EDIT PROFILE
-                  </div>
+                  </div>}
                 </div>
               </div>}
               <div className={"tab-pane-box"}>
@@ -190,12 +195,13 @@ UserMsg.getInitialProps = async (status) => {
   const activeKey = status && status.query && status.query.activeKey <= 7 &&
     status.query.activeKey || "1";
   const nouser = status && status.query && status.query.nouser || null
-  console.log("activeKey",activeKey)
+  const uid = status && status.query && status.query.uid || null
   return {
     initQuery: {
       profile,
       activeKey,
       nouser,
+      uid
     }
   }
 }

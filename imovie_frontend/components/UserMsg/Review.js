@@ -6,7 +6,7 @@ const { confirm } = Modal;
 import {DeleteOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 import {displayUsersMovieReview, deleteMovieReview} from "../../pages/MockData";
 import RateComponent from "../Rate/RateComponent";
-const WishListComponent = ({uid}) => {
+const WishListComponent = ({uid,isMySelf}) => {
     const [page,changePage] = useState({
        size : 10,
        number : 1,
@@ -110,31 +110,35 @@ const WishListComponent = ({uid}) => {
                                         </div>
                                     </div>
                                 </div>
-                                  <div
-                                      onClick={()=>{
-                                          confirm({
-                                              title: 'Are you sure you want to delete this review?',
-                                              icon: <ExclamationCircleOutlined/>,
-                                              okText: "YES",
-                                              cancelText: "NO",
-                                              onOk() {
-                                                  deleteMovieReview({
-                                                      mrid : item.mrid,
-                                                      uid
-                                                  }).then(res => {
-                                                      if(res.code === 200){
-                                                          message.success(res.msg);
-                                                          fetchData();
-                                                      }else{
-                                                          message.error(res.msg);
-                                                      }
-                                                  })
-                                              }
-                                          })
-                                      }}
-                                      className={"del"}>
-                                      <DeleteOutlined className={"del-icon"}/>
-                                  </div>
+                                  {
+                                      isMySelf &&
+                                      <div
+                                          onClick={()=>{
+                                              confirm({
+                                                  title: 'Are you sure you want to delete this review?',
+                                                  icon: <ExclamationCircleOutlined/>,
+                                                  okText: "YES",
+                                                  cancelText: "NO",
+                                                  onOk() {
+                                                      deleteMovieReview({
+                                                          mrid : item.mrid,
+                                                          uid
+                                                      }).then(res => {
+                                                          if(res.code === 200){
+                                                              message.success(res.msg);
+                                                              fetchData();
+                                                          }else{
+                                                              message.error(res.msg);
+                                                          }
+                                                      })
+                                                  }
+                                              })
+                                          }}
+                                          className={"del"}>
+                                          <DeleteOutlined className={"del-icon"}/>
+                                      </div>
+                                  }
+
 
                           </div>
                })}

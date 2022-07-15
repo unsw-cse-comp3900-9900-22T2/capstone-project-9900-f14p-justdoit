@@ -7,7 +7,7 @@ import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import {getWishlist,wishlistAddOrDelete,clearWishlist,wish_to_watch} from "../../pages/MockData";
-const WishListComponent = ({uid}) => {
+const WishListComponent = ({uid,isMySelf}) => {
     const [sortList] = useState([{
       key : 0,
       value : "Add Time"
@@ -131,23 +131,28 @@ const WishListComponent = ({uid}) => {
                   // 条件判断
                   page.total > 0 &&
                   <div className={"operation"}>
-                    <h6
-                      onClick={() => {
-                        wish_to_Watch();
-                      }}
-                      className={"operation-item"}>
-                      add all films to watchlist
-                    </h6>
-                    {/* 竖线 */}
-                    <div className={"line"}/>
-                    <h6
-                      onClick={() => {
-                        clearWishList();
-                      }}
-                      className={"operation-item"}>
-                      clear wishlist
-                    </h6>
-                    <div className={"line"}/>
+                      {
+                          isMySelf && <>
+                              <h6
+                                  onClick={() => {
+                                      wish_to_Watch();
+                                  }}
+                                  className={"operation-item"}>
+                                  add all films to watchlist
+                              </h6>
+                              {/* 竖线 */}
+                              <div className={"line"}/>
+                              <h6
+                                  onClick={() => {
+                                      clearWishList();
+                                  }}
+                                  className={"operation-item"}>
+                                  clear wishlist
+                              </h6>
+                              <div className={"line"}/>
+                          </>
+                      }
+
                     {/* 下拉框 */}
                     <Select
                     // 干嘛用的没看懂？？？？？？？？？？？？？？？？？？
@@ -177,6 +182,7 @@ const WishListComponent = ({uid}) => {
                                              wishListDo={()=>{
                                                fetchData();
                                              }}
+                                             isNotMyself={!isMySelf}
                                              clearMovie={(index3)=>{
                                               // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
                                                console.log(index3)
@@ -193,7 +199,7 @@ const WishListComponent = ({uid}) => {
                                              marginRight={{
                                                marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                                              }}
-                                            showClear={true}
+                                            showClear={isMySelf && true || false}
                                             item={item}
                                             index={index}
                                             isLogin={true}

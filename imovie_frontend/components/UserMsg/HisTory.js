@@ -7,7 +7,7 @@ import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import {clearHistory, getHistory,historyAddOrDelete} from "../../pages/MockData";
-const HisToryComponent = ({uid}) => {
+const HisToryComponent = ({uid,isMySelf,loginUid}) => {
     // const [sortList] = useState([{
     //   key : 0,
     //   value : "Add Time"
@@ -111,7 +111,7 @@ const HisToryComponent = ({uid}) => {
                   </p>
                 {
                   // 条件判断
-                  page.total > 0 &&
+                  page.total > 0 && isMySelf &&
                   <div className={"operation"}>
                     <h6
                       onClick={() => {
@@ -150,6 +150,7 @@ const HisToryComponent = ({uid}) => {
                                              hisToryDo={()=>{
                                                fetchData();
                                              }}
+                                             isNotMyself={!isMySelf}
                                              clearMovie={(index3)=>{
                                               // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
                                                console.log(index3)
@@ -166,7 +167,7 @@ const HisToryComponent = ({uid}) => {
                                              marginRight={{
                                                marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                                              }}
-                                            showClear={true}
+                                            showClear={isMySelf && true || false}
                                             item={item}
                                             index={index}
                                             isLogin={true}

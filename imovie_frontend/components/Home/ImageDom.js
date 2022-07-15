@@ -11,7 +11,7 @@ import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
 // 下面这个watch是新加的
 const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,liKeDo,
-                    ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid}) => {
+                    ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid,isNotMyself}) => {
   const [thisItem,changeThisItem] = useState(item);
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
@@ -258,7 +258,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
                 </div>
             }
           {
-            isLogin && <div className={"operation"}>
+            isLogin && !isNotMyself && <div className={"operation"}>
               <div
                 onClick={()=>{
                   changeOperation(1)

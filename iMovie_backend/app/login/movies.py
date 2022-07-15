@@ -1226,6 +1226,11 @@ def delete_movieReview():
     try:
         movieReview.active = 0
         movieReview.utime = getTime()[0]
+        userReview = userReviewModel.query.filter(userReviewModel.mrid == mrid,userReviewModel.active == 1).all()
+
+        for u in userReview:
+            u.active = 0
+            u.utime = getTime()[0]
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'Deletion movieReview succeed.'})
 
@@ -1245,6 +1250,7 @@ def delete_userReview():
         return jsonify({'code': 400, 'msg': 'userReview does not exist'})
     try:
         userReview.active = 0
+
         userReview.utime = getTime()[0]
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'Deletion userReview succeed.'})

@@ -1,5 +1,5 @@
 from flask import Flask
-from . import views, movies
+from . import views, movies, recommend
 
 
 def init_route(app: Flask):
@@ -69,3 +69,6 @@ def init_route(app: Flask):
 
     # delete user review
     app.add_url_rule('/app/movies/delete_userReview', view_func=movies.delete_userReview, methods=['POST'])
+
+    # similar movies
+    app.add_url_rule('/app/recommend/movie_similer_recommend', view_func=recommend.movie_similer_recommend, methods=['POST'])

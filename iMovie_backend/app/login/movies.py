@@ -1218,7 +1218,10 @@ def display_usersMovieReview():
     uid = data["uid"]
     page_index = data["page_index"]
     page_size = data["page_size"]
-    movieReviews = movieReviewModel.query.filter(movieReviewModel.uid == uid, movieReviewModel.active == 1).all()
+    movieReviews = movieReviewModel.query.filter(movieReviewModel.uid == uid, movieReviewModel.active == 1)\
+        .order_by(movieReviewModel.utime.desc())\
+        .all()
+
 
     if not movieReviews:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})

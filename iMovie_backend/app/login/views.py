@@ -93,7 +93,9 @@ def check_login():
 
 def check_username():
     username = request.json.get('username')
+    uid = request.json.get('uid')
     username = username.strip()
+
     if not username:
         return jsonify({'code': 400, 'msg': 'Please enter your username'})
     # username is too long
@@ -101,7 +103,10 @@ def check_username():
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
     if len(username) < 6:
         return jsonify({'code': 400, 'msg': 'Your username is too short.'})
-    check_name = db.session.query(exists().where(UserModel.username == username)).scalar()
+    if not uid:
+        check_name = db.session.query(exists().where(UserModel.username == username)).scalar()
+    else:
+        check_name = db.session.query(exists().where(UserModel.username == username, UserModel.uid != uid)).scalar()
     if check_name:
         return jsonify({'code': 400, 'msg': 'User name already exists'})
     if not validateUsername(username):

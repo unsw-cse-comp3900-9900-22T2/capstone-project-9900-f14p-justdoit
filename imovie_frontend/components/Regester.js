@@ -135,7 +135,8 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
                             return
                         }
                         checkUsername({
-                            username : (_value || "").trim()
+                            username : (_value || "").trim(),
+                            uid : null
                         }).then(res => {
                             const _userNameCheck = _.cloneDeep(userNameCheck);
                             _userNameCheck.code = res.code;

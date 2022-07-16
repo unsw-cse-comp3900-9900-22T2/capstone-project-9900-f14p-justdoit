@@ -184,7 +184,8 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                            return
                        }
                        checkUsername({
-                           username : (_value || "").trim()
+                           username : (_value || "").trim(),
+                           uid
                        }).then(res => {
                            const _userNameCheck = _.cloneDeep(userNameCheck);
                            _userNameCheck.code = res.code;

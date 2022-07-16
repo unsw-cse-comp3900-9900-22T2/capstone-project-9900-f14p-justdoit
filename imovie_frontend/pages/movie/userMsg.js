@@ -68,6 +68,9 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
       if(USERMESSAGE){
         changeUid(USERMESSAGE.uid);
       }
+      if(isMySelf){
+        addHref("uid","");
+      }
       getUserDetail({
         uid : isMySelf ? (USERMESSAGE && USERMESSAGE.uid) : initQuery.uid
       }).then(res => {

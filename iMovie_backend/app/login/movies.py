@@ -1162,22 +1162,33 @@ def display_movieReview():
     uid = data["uid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     mid = data["mid"]
-    movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).all()
-    count = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.active == 1).count()
+    # filter(movieReviewModel.mid == mid, movieReviewModel.active == 1)
+    # movieReview = db.session.query(movieReviewModel.mrid,movieReviewModel.uid,movieReviewModel.mid, movieReviewModel.review,movieReviewModel.utime, func.count(reviewlikeModel.mrid))\
+    #     .join(reviewlikeModel, movieReviewModel.mrid == reviewlikeModel.mrid)\
+    #     .group_by(movieReviewModel.mrid)\
+    #     .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
+    #     .order_by(func.count(reviewlikeModel.mrid).desc()).all()
+    movieReview = db.session.query(movieReviewModel.mrid,movieReviewModel.uid,movieReviewModel.mid, movieReviewModel.review,movieReviewModel.utime, func.count(reviewlikeModel.mrid))\
+        .outerjoin(reviewlikeModel, movieReviewModel.mrid == reviewlikeModel.mrid)\
+        .group_by(movieReviewModel.mrid)\
+        .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
+        .order_by(func.count(reviewlikeModel.mrid).desc()).all()
+    print(movieReview)
+    count = movieReviewModel.query.filter(movieReviewModel.mid == mid,movieReviewModel.active == 1).count()
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
-    try:
-        movieReview_list = []
-        result = {}
+    # try:
+    movieReview_list = []
+    result = {}
 
-        for m in movieReview:  # movies: [movies0, movies[1]....]
-            movieReview_info = res_movieReview_detail(m,user)
-            movieReview_list.append(movieReview_info)
-        result["movieReview"] = movieReview_list
-        result["movieReview_count"] = count
-        return jsonify({'code': 200, 'result': result})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
+    for m in movieReview:  # movies: [movies0, movies[1]....]
+        movieReview_info = res_movieReview_detail(m,user)
+        movieReview_list.append(movieReview_info)
+    result["movieReview_count"] = count
+    result["movieReview"] = movieReview_list
+    return jsonify({'code': 200, 'result': result})
+    # except Exception as e:
+    #     return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
 
 # func for display all movie Reviews user post before
 def res_movieReview_detail_spf(movieReview):
@@ -1239,7 +1250,7 @@ def delete_movieReview():
 
     movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
     if not movieReview:
-        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+        return jsonify({'code': 400, 'msg': 'movieReview does not exist or u do not have access'})
     try:
         movieReview.active = 0
         movieReview.utime = getTime()[0]

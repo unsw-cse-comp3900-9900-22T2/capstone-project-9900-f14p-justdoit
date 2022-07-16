@@ -2,13 +2,22 @@
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import { message, Modal, Input, Checkbox } from "antd";
 import { Base64 } from "js-base64";
-import { userLogin, userRegister } from "../pages/MockData";
+import {checkEmail, checkUsername, userLogin, userRegister} from "../pages/MockData";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import _ from 'lodash'
 import loginStyle from "./login.less";
 const md5 = require('js-md5')
 const Regester = ({regesterRef,changeLoginInVisible}) => {
     const [registerVisible, changeRegisterVisible] = useState(false);
+    const [userSetTime,changeUserSetTime] = useState(null)
+    const [userNameCheck,changeUserNameCheck] = useState({
+        code : "",
+        value : ""
+    })
+    const [userEmailCheck,changeEmailNameCheck] = useState({
+        code : "",
+        value : ""
+    })
     const [newUser,changeNewUser] = useState({
         userName : "",
         password : "",
@@ -37,6 +46,10 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             message.warn("Please enter your username");
             return
           }
+            if(userNameCheck && userNameCheck.code === 400){
+                message.warn(userNameCheck.value || "Please fill in the correct user name");
+                return;
+            }
           if(!email || !(email &&email.trim())){
             message.warn("Please enter your email");
             return
@@ -45,6 +58,10 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
               message.warn("Please enter your email in the correct format");
               return
             }
+          if(userEmailCheck && userEmailCheck.code === 400){
+              message.warn(userEmailCheck.value || "Please fill in the correct user name");
+              return;
+          }
           }
           if(!password || !(password &&password.trim())){
             message.warn("Please enter password");
@@ -105,12 +122,40 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
                 placeholder="Please enter your username"
                 prefix={<UserOutlined />}
                 onChange={(e) => {
-                  const _value = e.target.value;
-                  const _newPageMessage = _.clone(newUser);
-                  _newPageMessage.userName = _value;
-                  changeNewUser(_newPageMessage);
+                    const _value = e.target.value;
+                    const _newPageMessage = _.clone(newUser);
+                    _newPageMessage.userName = _value;
+                    changeNewUser(_newPageMessage);
+                    if(!!userSetTime){
+                        clearTimeout(userSetTime);
+                        changeUserSetTime(null);
+                    }
+                    const setTime = setTimeout(()=>{
+                        if(!((_value || "").trim())){
+                            return
+                        }
+                        checkUsername({
+                            username : (_value || "").trim()
+                        }).then(res => {
+                            const _userNameCheck = _.cloneDeep(userNameCheck);
+                            _userNameCheck.code = res.code;
+                            _userNameCheck.value = res.msg;
+                            changeUserNameCheck(_userNameCheck);
+                        })
+                        clearTimeout(userSetTime);
+                        changeUserSetTime(null);
+                    },500)
+                    changeUserSetTime(setTime)
                 }}
               />
+            {
+                !!userNameCheck.code && <h5 className={`errorMsgTip ${userNameCheck.code === 200 && "errorMsgTipSuccess" || ""}`}>
+                    {
+                        userNameCheck.code === 200 ? (userNameCheck.value || "ok") :
+                            (userNameCheck.value || "error")
+                    }
+                </h5>
+            }
             </div>
           </div>
           <div className="box">
@@ -123,10 +168,38 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
                 onChange={(e) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(newUser)
-                  _newPageMessage.email = _value
+                  _newPageMessage.email = _value;
+                    if(!!userSetTime){
+                        clearTimeout(userSetTime);
+                        changeUserSetTime(null);
+                    }
+                    const setTime = setTimeout(()=>{
+                        if(!((_value || "").trim())){
+                            return
+                        }
+                        checkEmail({
+                            email : (_value || "").trim()
+                        }).then(res => {
+                            const _userEmailCheck = _.cloneDeep(userEmailCheck);
+                            _userEmailCheck.code = res.code;
+                            _userEmailCheck.value = res.msg;
+                            changeEmailNameCheck(_userEmailCheck);
+                        })
+                        clearTimeout(userSetTime);
+                        changeUserSetTime(null);
+                    },500)
+                    changeUserSetTime(setTime)
                   changeNewUser(_newPageMessage)
                 }}
               />
+                {
+                    !!userEmailCheck.code && <h5 className={`errorMsgTip ${userEmailCheck.code === 200 && "errorMsgTipSuccess" || ""}`}>
+                        {
+                            userEmailCheck.code === 200 ? (userEmailCheck.value || "ok") :
+                                (userEmailCheck.value || "error")
+                        }
+                    </h5>
+                }
             </div>
           </div>
           <div className="box">

@@ -54,6 +54,12 @@ export function userRegister(param) {
 export function userLogin(param) {
     return fetchData('http://127.0.0.1:5000/login', param);
 }
+export function checkUsername(param) {
+    return fetchData('http://127.0.0.1:5000/app/views/check_username', param);
+}
+export function checkEmail(param) {
+    return fetchData('http://127.0.0.1:5000/app/views/check_email', param);
+}
 export function getUserDetail(param) {
     return fetchData('http://127.0.0.1:5000/app/views/get_user_detail', param);
 }

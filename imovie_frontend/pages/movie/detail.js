@@ -331,6 +331,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     })
   }
   function goUserDetail(uid){
+    if(!USERMESSAGE || !(USERMESSAGE.uid)){
+      return;
+    }
     if(!uid){
        return null
     }
@@ -535,7 +538,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                             }}
                 >add review</span>}</p>
                 {reviewsList && reviewsList.length > 2 &&
-                    <div className={"review-more"}>
+                    <div
+                        onClick={()=>{
+                          window.location.href = "/movie/reviewList?movieName=" + movieDetail.moviename + setYear(movieDetail.year)
+                              + "&movieId=" + initQuery.movieId
+                        }}
+                        className={"review-more"}>
                       More >
                     </div>
                 }

@@ -7,7 +7,7 @@ import _ from "lodash";
 import { Base64 } from "js-base64";
 const { TextArea } = Input;
 const md5 = require('js-md5');
-import {modifyUserDetail,changePasswordInDetial} from "../../pages/MockData";
+import {modifyUserDetail,changePasswordInDetial,checkUsername} from "../../pages/MockData";
 const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
     const [msg ,changeMsg] = useState({
        ...userMsg,
@@ -17,7 +17,11 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          checkNewPassWord : ""
       }
     });
-
+  const [userSetTime,changeUserSetTime] = useState(null)
+  const [userNameCheck,changeUserNameCheck] = useState({
+      code : "",
+      value : ""
+  })
   const [initMsg,changeInitMsg] = useState({
     ...userMsg,
     ...{
@@ -37,6 +41,10 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
           if(!username || !(username &&username.trim())){
             message.warn("Please enter your username");
             return;
+          }
+          if(userNameCheck && userNameCheck.code === 400){
+              message.warn(userNameCheck.value || "Please fill in the correct user name");
+              return;
           }
          if(!email || !(email &&email.trim())){
            message.warn("Please enter your email");
@@ -167,8 +175,36 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                    const _newPageMessage = _.clone(msg);
                    _newPageMessage.username = _value;
                    changeMsg(_newPageMessage);
+                   if(!!userSetTime){
+                       clearTimeout(userSetTime);
+                       changeUserSetTime(null);
+                   }
+                   const setTime = setTimeout(()=>{
+                       if(!((_value || "").trim())){
+                           return
+                       }
+                       checkUsername({
+                           username : (_value || "").trim()
+                       }).then(res => {
+                           const _userNameCheck = _.cloneDeep(userNameCheck);
+                           _userNameCheck.code = res.code;
+                           _userNameCheck.value = res.msg;
+                           changeUserNameCheck(_userNameCheck);
+                       })
+                       clearTimeout(userSetTime);
+                       changeUserSetTime(null);
+                   },500)
+                     changeUserSetTime(setTime)
                  }}
                />
+                 {
+                     !!userNameCheck.code && <h5 className={`errorMsgTip ${userNameCheck.code === 200 && "errorMsgTipSuccess" || ""}`}>
+                         {
+                             userNameCheck.code === 200 ? (userNameCheck.value || "") :
+                                 (userNameCheck.value || "error")
+                         }
+                     </h5>
+                 }
              </div>
             <div className={"profile-item"}>
               <h6>

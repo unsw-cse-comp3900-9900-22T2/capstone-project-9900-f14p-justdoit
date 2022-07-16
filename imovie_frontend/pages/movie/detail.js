@@ -331,9 +331,6 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     })
   }
   function goUserDetail(uid){
-    if(!USERMESSAGE || !(USERMESSAGE.uid)){
-      return;
-    }
     if(!uid){
        return null
     }

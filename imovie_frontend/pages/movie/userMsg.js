@@ -18,7 +18,7 @@ import LiKeComponent from "../../components/UserMsg/LiKe"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
-  const [isMySelf] = useState(initQuery.uid ? initQuery.uid === USERMESSAGE.uid : true);
+  const [isMySelf] = useState(initQuery.uid ? initQuery.uid === (USERMESSAGE && USERMESSAGE.uid) : true);
   const [uid,changeUid] = useState(null);
   const [edit,changeEdit] = useState(initQuery.profile);
   const [activeKey,changeActiveKey] = useState(initQuery.activeKey)
@@ -64,10 +64,12 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
   }
   ])
   useEffect(()=>{
-    if(!!USERMESSAGE){
-       changeUid(USERMESSAGE.uid);
+    if(!!USERMESSAGE || initQuery.uid){
+      if(USERMESSAGE){
+        changeUid(USERMESSAGE.uid);
+      }
       getUserDetail({
-        uid : isMySelf ? USERMESSAGE.uid : initQuery.uid
+        uid : isMySelf ? (USERMESSAGE && USERMESSAGE.uid) : initQuery.uid
       }).then(res => {
           if(res.code === 200){
             const {result} = res;

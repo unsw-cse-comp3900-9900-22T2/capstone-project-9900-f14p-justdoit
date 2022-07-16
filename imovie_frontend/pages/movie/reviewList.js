@@ -29,9 +29,9 @@ const ReviewList = ({USERMESSAGE,initQuery}) => {
         })
     }
     function goUserDetail(uid){
-        if(!USERMESSAGE || !(USERMESSAGE.uid)){
-            return;
-        }
+        // if(!USERMESSAGE || !(USERMESSAGE.uid)){
+        //     return;
+        // }
         if(!uid){
             return null
         }

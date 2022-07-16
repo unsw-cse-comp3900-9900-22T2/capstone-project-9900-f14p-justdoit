@@ -1162,12 +1162,6 @@ def display_movieReview():
     uid = data["uid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     mid = data["mid"]
-    # filter(movieReviewModel.mid == mid, movieReviewModel.active == 1)
-    # movieReview = db.session.query(movieReviewModel.mrid,movieReviewModel.uid,movieReviewModel.mid, movieReviewModel.review,movieReviewModel.utime, func.count(reviewlikeModel.mrid))\
-    #     .join(reviewlikeModel, movieReviewModel.mrid == reviewlikeModel.mrid)\
-    #     .group_by(movieReviewModel.mrid)\
-    #     .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
-    #     .order_by(func.count(reviewlikeModel.mrid).desc()).all()
     movieReview = db.session.query(movieReviewModel.mrid,movieReviewModel.uid,movieReviewModel.mid, movieReviewModel.review,movieReviewModel.utime, func.count(reviewlikeModel.mrid))\
         .outerjoin(reviewlikeModel, movieReviewModel.mrid == reviewlikeModel.mrid)\
         .group_by(movieReviewModel.mrid)\
@@ -1222,6 +1216,8 @@ def res_movieReview_detail_spf(movieReview):
 def display_usersMovieReview():
     data = request.get_json(force=True)
     uid = data["uid"]
+    page_index = data["page_index"]
+    page_size = data["page_size"]
     movieReviews = movieReviewModel.query.filter(movieReviewModel.uid == uid, movieReviewModel.active == 1).all()
 
     if not movieReviews:
@@ -1234,7 +1230,15 @@ def display_usersMovieReview():
             movieReview_info = res_movieReview_detail_spf(m)
             movieReviews_list.append(movieReview_info)
         result["movieReview_count"] = len(movieReviews_list)
-        result["movieReviews"] = movieReviews_list
+        # result["movieReviews"] = movieReviews_list
+
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["movieReview_count"]:
+            result["movieReviews"] = movieReviews_list[start:end]
+        else:
+            result["movieReviews"] = movieReviews_list[start:]
+
         return jsonify({'code': 200, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'display usersMovieReview failure', 'error_msg': str(e)})

@@ -667,7 +667,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
           }}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
-                             isLogin={isLogin} list={recommendList} title={"RECOMMEND FOR YOU SIMILAR"}/>}
+                             isLogin={isLogin} list={recommendList} title={isLogin ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){

@@ -51,7 +51,27 @@ def movie_similer_recommend():
     mlist = []
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-        return jsonify({'code': 200, 'result': result})
+        director = target_movie.director.replace(';', ' ')
+        cast = target_movie.cast.replace(';', ' ')
+        similer_result = similer(target_movie.genre, director, cast)
+        result["count"] = len(similer_result)
+        exceptList = []
+        dislike = movielikeModel.query.filter(movielikeModel.uid == user.uid, movielikeModel.active == 1,
+                                              movielikeModel.type == 1).all()
+        for d in dislike:
+            exceptList.append(d.mid)
+
+        lowRate = RatingModel.query.filter(RatingModel.uid == user.uid, RatingModel.active == 1,
+                                              RatingModel.rate <= 3.5).all()
+        for d in lowRate:
+            exceptList.append(d.mid)
+
+        for i in similer_result:
+            if i not in exceptList:
+                sim_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == i).first()
+
+                mdict = res_movie_detail(None, None, sim_movies)
+                mlist.append(mdict)
     else:
         director = target_movie.director.replace(';', ' ')
         cast = target_movie.cast.replace(';', ' ')
@@ -62,13 +82,13 @@ def movie_similer_recommend():
             mdict = res_movie_detail(None, None, sim_movies)
             mlist.append(mdict)
 
-        start = page_index * page_size
-        end = start + page_size
-        if end < result["count"]:
+    start = page_index * page_size
+    end = start + page_size
+    if end < result["count"]:
 
 
-            result["mlist"] = mlist[start:end]
-        else:
-            result["mlist"] = mlist[start:]
-        return jsonify({'code': 200, 'result': result})
+        result["mlist"] = mlist[start:end]
+    else:
+        result["mlist"] = mlist[start:]
+    return jsonify({'code': 200, 'result': result})
 

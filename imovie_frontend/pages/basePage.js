@@ -213,7 +213,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                              fetchOptions={async (keyword)=>{
                                                changeSearchValue(keyword);
                                               return  searchBy({
-                                                 uid : USERMESSAGE.uid,
+                                                 uid : USERMESSAGE && USERMESSAGE.uid || null,
                                                  keyword
                                                }).then(res => {
                                                   if(res.code === 200){

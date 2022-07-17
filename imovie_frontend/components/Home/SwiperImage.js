@@ -19,6 +19,7 @@ import _ from 'lodash'
 import { getMovieDetail } from "../../pages/MockData";
 const SwiperImage = ({list,isLogin,uid}) => {
     const [imgList,changeImgList] = useState(list);
+    console.log("list".list)
     const [visibility,changeVisibility] = useState(false)
   useEffect(()=>{
     setTimeout(()=>{

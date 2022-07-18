@@ -57,6 +57,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               childList = [];
             }
           }
+          if(childList.length > 0){
+            _list.push(childList);
+          }
           changeRecommendList(_list)
         }
       })

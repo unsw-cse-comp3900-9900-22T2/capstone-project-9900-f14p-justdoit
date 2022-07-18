@@ -43,11 +43,13 @@ def register():
     username = data["username"]
     password = data["password"]
     email = data["email"]
+    verifycode = data["verifycode"]
     # verifycode = data["verifycode"]
     username = username.strip()
     email = email.strip()
+    verifycode = verifycode.strip()
     # print(username, password, email)
-    if not username or not password or not email:
+    if not username or not password or not email or not verifycode:
         return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
 
     # username is too long
@@ -70,6 +72,11 @@ def register():
     ).scalar()
     if check_email:
         return jsonify({'code': 400, 'msg': 'Email already exists'})
+    check_vercode = verifycodeModel.query.filter(verifycodeModel.email == email, verifycodeModel.verifycode == verifycode).first()
+    if not check_vercode:
+        return jsonify({'code': 400, 'msg': 'Your verify code is wrong please try again'})
+
+
     try:
         en_pass = EnPassWord(password)
 

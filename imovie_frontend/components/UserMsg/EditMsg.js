@@ -46,15 +46,6 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
               message.warn(userNameCheck.value || "Please fill in the correct user name");
               return;
           }
-         if(!email || !(email &&email.trim())){
-           message.warn("Please enter your email");
-           return;
-         }else{
-           if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-             message.warn("Please enter your email in the correct format.");
-             return
-           }
-         }
         /* if(!description || !(description &&description.trim())){
            message.warn("please enter description");
            return;
@@ -65,6 +56,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            // email : email.trim(),
            description :(description || "" ).trim()
          }).then(res => {
+             debugger
             if(res.code === 200){
                message.success("Modified successfully");
               changeInitMsg({
@@ -87,8 +79,6 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
             }else{
               message.error(res.msg   || "Modified failed");
             }
-         }).catch(err =>{
-           message.error("Modified failed");
          })
        }else{
          const {password,newPassWord,checkNewPassWord} = msg;
@@ -99,6 +89,9 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          if(!newPassWord|| !(newPassWord &&newPassWord.trim())){
            message.warn("Please enter new password");
            return;
+         }else if((newPassWord &&newPassWord.trim()).length < 8){
+             message.warn("Please enter a password with more than 8 digits");
+             return
          }
          if(!checkNewPassWord || !(checkNewPassWord &&checkNewPassWord.trim())){
            message.warn("Please check new Password");
@@ -130,8 +123,6 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            }else{
              message.error(res.msg ||  "Password change failed")
            }
-         }).catch(err => {
-           message.error("Password change failed")
          })
        }
     }
@@ -248,7 +239,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                   <Input.Password
                     prefix={<LockOutlined />}
                     value={msg.newPassWord}
-                    placeholder="Please enter new password"
+                    placeholder="Please enter a password with more than 8 digits"
                     onChange={(e) => {
                       const _value = e.target.value;
                       const _newPageMessage = _.clone(msg);

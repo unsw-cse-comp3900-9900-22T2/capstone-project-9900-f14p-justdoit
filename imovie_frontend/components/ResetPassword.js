@@ -11,6 +11,7 @@ const md5 = require('js-md5');
 const { confirm } = Modal;
 const ResetPassword = ({resetPasswordRef}) => {
     const [registerVisible, changeRegisterVisible] = useState(false);
+    const [emailCheck,changeEmailCheck] = useState(true)
     const [newUser,changeNewUser] = useState({
         code : "",
         password : "",
@@ -28,7 +29,7 @@ const ResetPassword = ({resetPasswordRef}) => {
         message.warn("Please enter your email");
         return
       }else{
-        if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
+        if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
           message.warn("Please enter your email in the correct format");
           return
         }
@@ -59,6 +60,14 @@ const ResetPassword = ({resetPasswordRef}) => {
         visible={registerVisible}
         title={`Reset Password`}
         okText="RESET"
+        okButtonProps={{
+            disabled :
+                (!newUser.email || !(newUser.email && newUser.email.trim())) ||
+                (!newUser.code || !(newUser.code && newUser.code.trim())) ||
+                (!newUser.password || !(newUser.password && newUser.password.trim())) ||
+                ((newUser.password &&newUser.password.trim()).length < 8) ||
+                (!newUser.passwordSure || !(newUser.passwordSure && newUser.passwordSure.trim()))
+        }}
         zIndex={500}
         cancelText="CANCEL"
         onOk={() => {
@@ -67,7 +76,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             message.warn("Please enter your email");
             return
           }else{
-            if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
+            if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
               message.warn("Please enter your email in the correct format");
               return
             }
@@ -79,6 +88,9 @@ const ResetPassword = ({resetPasswordRef}) => {
           if(!password || !(password &&password.trim())){
             message.warn("Please enter password");
             return
+          }else if((password &&password.trim()).length < 8){
+              message.warn("Please enter a password with more than 8 digits");
+              return
           }
           if(password !== passwordSure){
             message.warn("Passwords must match!");
@@ -125,13 +137,23 @@ const ResetPassword = ({resetPasswordRef}) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(newUser)
                   _newPageMessage.email = _value
-                  changeNewUser(_newPageMessage)
+                  changeNewUser(_newPageMessage);
+                   let _check = false;
+                    if(!_value|| !(_value &&_value.trim())){
+                        _check =  true
+                    }else{
+                        if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((_value &&_value.trim())))){
+                            _check =  true
+                        }
+                    }
+                    changeEmailCheck(_check);
                 }}
               />
               <Button
                 style={{
                   marginLeft : "5px"
                 }}
+                disabled={emailCheck}
                 onClick={()=>{
                   sendButtonEmail()
                 }}
@@ -160,7 +182,7 @@ const ResetPassword = ({resetPasswordRef}) => {
               <Input.Password
                 prefix={<LockOutlined />}
                 value={newUser.password}
-                placeholder="Please enter password"
+                placeholder="Please enter a password with more than 8 digits"
                 onChange={(e) => {
                   const _value = e.target.value;
                   const _newPageMessage = _.clone(newUser);

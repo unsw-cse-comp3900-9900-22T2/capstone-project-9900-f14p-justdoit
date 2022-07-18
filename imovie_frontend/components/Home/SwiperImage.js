@@ -47,9 +47,16 @@ const SwiperImage = ({list,isLogin,uid}) => {
                     for(let i = 0 ; i < index ; i++){
                       beforeListLength += imgList[i].length
                     }
+                    const length = item.length;
+                    for(let x = 0 ; x < (4-length) ; x++){
+                        item.push(null)
+                    }
                     const imgDom = item && item.map((item2,index2) => {
                         const newRef = useRef();
                         refList.push(newRef);
+                        if(!item2){
+                            return <div className={"empty_box_for_image"}/>
+                        }
                         return <ImageDomComponent
                                                   imageDomRef={newRef}
                                                   uid={uid}

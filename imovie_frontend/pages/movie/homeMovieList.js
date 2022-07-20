@@ -97,6 +97,9 @@ const similarMovie = ({USERMESSAGE,queryForBrowseBy,listType}) => {
           changeLoading(false);
           changeInitLoading(false);
         }
+      }).catch(err => {
+        changeLoading(false);
+        changeInitLoading(false);
       })
     }
   }

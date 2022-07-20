@@ -14,6 +14,7 @@ import { Base64 } from "js-base64";
 import { searchBy } from "./MockData";
 const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
+  const [searchValueInit,changeSearchValueInit] = useState("");
   const [tabList] = useState([{
     value : 2,
     name : "LOGIN",
@@ -264,8 +265,11 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                                const code = theEvent.keyCode || theEvent.which || theEvent.charCode;
                                                if (code === 13) {
                                                  e.stopPropagation();
-                                                 window.location.href = "/movie/searchMovie?keyword=" + encodeURIComponent(searchValue);
+                                                 window.location.href = "/movie/searchMovie?keyword=" + encodeURIComponent(searchValueInit);
                                                }
+                                             }}
+                                             changeForSearchValueInit={(value)=>{
+                                                 changeSearchValueInit(value)
                                              }}
                                              nodeDom={(options,inputValue)=>{
                                                return options &&

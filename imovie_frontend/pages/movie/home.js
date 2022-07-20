@@ -2,9 +2,10 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import ScrollImageComponent from "../../components/Home/ScrollImage"
 import homeStyle from "./home.less";
-import {getMovies} from "../MockData";
+import {getMovies,movieRecommendUser} from "../MockData";
 const Home = ({USERMESSAGE}) => {
   const [list,changeList] = useState([])
+  const [recommendList,changeRecommendList] = useState([])
   useEffect(()=>{
     getMovies({
       uid : USERMESSAGE && USERMESSAGE.uid || null
@@ -22,18 +23,48 @@ const Home = ({USERMESSAGE}) => {
                  childList = [];
                }
           }
+           if(childList.length > 0){
+               _list.push(childList);
+           }
          changeList(_list)
        }
-    }).catch(err => {
     })
+      if(USERMESSAGE && USERMESSAGE.uid){
+          movieRecommendUser({
+              uid : USERMESSAGE && USERMESSAGE.uid || null,
+              page_index : 0,
+              page_size : 16
+          }).then(res => {
+              if(res.code === 200){
+                  const {result} = res;
+                  const {mlist} = result;
+                  const _list = [];
+                  let  childList = [];
+                  for(let i = 0 ; i < mlist.length ; i++){
+                      childList.push(mlist[i]);
+                      if(i % 4 === 3){
+                          _list.push(childList);
+                          childList = _.cloneDeep(childList);
+                          childList = [];
+                      }
+                  }
+                  if(childList.length > 0){
+                      _list.push(childList);
+                  }
+                  changeRecommendList(_list)
+              }
+          })
+      }
+
   },[]);
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
       <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
                             isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>
-      {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
-      {/*                       isLogin={!!USERMESSAGE} list={list} title={"RECENT RELESE"}/>*/}
+        {recommendList && recommendList.length > 0 &&
+            <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
+                             isLogin={!!USERMESSAGE} list={recommendList} title={"RECOMMENDATION FOR YOU"}/>}
       {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
       {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
     </PageBase>

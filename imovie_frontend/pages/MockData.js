@@ -162,3 +162,6 @@ export function deleteMovieReview(param) {
 export function movieSimilerRecommend(param) {
     return fetchData('http://127.0.0.1:5000/app/recommend/movie_similer_recommend', param);
 }
+export function movieRecommendUser(param) {
+    return fetchData('http://127.0.0.1:5000/app/recommend/movie_recommend_user', param);
+}

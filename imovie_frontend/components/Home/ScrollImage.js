@@ -11,7 +11,10 @@ const ScrollImage = ({list,title,more,isLogin,uid}) => {
           <div className={"scroll-image-component"}>
             <div className={"scroll-image-component-title"}>
               <p>{title}</p>
-              <h6>More</h6>
+              { list && list.length > 1 &&
+                  <h6 onClick={()=>{
+                      window.location.href = "/movie/homeMovieList?type=" + (title || "").replace(/\s*/g,"")
+                  }}>More ></h6>}
             </div>
             <SwiperImageComponent uid={uid} isLogin={isLogin} list={list}/>
           </div>

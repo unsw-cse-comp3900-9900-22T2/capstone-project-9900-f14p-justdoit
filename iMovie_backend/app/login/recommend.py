@@ -196,6 +196,11 @@ def except_list(uid):
     for r in check_review:
         if emotion_raview(r.review) == 0:
             exceptList.append(r.mid)
+
+    watch_wish_list = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.active == 1).all()
+    for i in watch_wish_list:
+        if i.mid not in exceptList:
+            exceptList.append(i.mid)
     return exceptList
 
 def get_user_like(uid):
@@ -278,14 +283,16 @@ def movie_recommend_user():
 
                 HighRate = RatingModel.query.filter(RatingModel.uid == most_similar_user, RatingModel.active == 1, RatingModel.rate >= 4).all()
                 for i in HighRate:
-                    if i.mid not in HighRate:
+                    if i.mid not in remList:
+
                         remList.append(i.mid)
 
                 check_review = movieReviewModel.query.filter(movieReviewModel.uid == user.uid,
                                                              movieReviewModel.active == 1).all()
                 for r in check_review:
                     if emotion_raview(r.review) == 1:
-                        remList.append(r.mid)
+                        if r.mid not in remList:
+                            remList.append(r.mid)
             else:
                 list_ = get_user_like(uid)
                 most_genre = count_genre(list_)
@@ -310,7 +317,7 @@ def movie_recommend_user():
                 if i not in exceptList:
                     sim_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == i).first()
 
-                    mdict = res_movie_detail(None, None, sim_movies)
+                    mdict = res_movie_detail(uid, user, sim_movies)
                     mlist.append(mdict)
             # print(remList)
 

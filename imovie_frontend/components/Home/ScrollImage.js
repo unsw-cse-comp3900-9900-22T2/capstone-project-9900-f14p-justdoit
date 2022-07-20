@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import SwiperImageComponent from "./SwiperImage"
 import ScrollImageStyle from "./ScrollImage.less";
-const ScrollImage = ({list,title,more,isLogin,uid}) => {
+const ScrollImage = ({list,title,more,isLogin,uid,listCount}) => {
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: ScrollImageStyle }} />
@@ -11,7 +11,7 @@ const ScrollImage = ({list,title,more,isLogin,uid}) => {
           <div className={"scroll-image-component"}>
             <div className={"scroll-image-component-title"}>
               <p>{title}</p>
-              { list && list.length > 1 &&
+              { !!listCount && listCount > 16 &&
                   <h6 onClick={()=>{
                       window.location.href = "/movie/homeMovieList?type=" + (title || "").replace(/\s*/g,"")
                   }}>More ></h6>}

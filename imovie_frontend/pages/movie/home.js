@@ -6,6 +6,7 @@ import {getMovies,movieRecommendUser} from "../MockData";
 const Home = ({USERMESSAGE}) => {
   const [list,changeList] = useState([])
   const [recommendList,changeRecommendList] = useState([])
+  const [recommendListCount,changeRecommendListCount] = useState(0)
   useEffect(()=>{
     getMovies({
       uid : USERMESSAGE && USERMESSAGE.uid || null
@@ -15,6 +16,7 @@ const Home = ({USERMESSAGE}) => {
           const {mlist} = result;
           const _list = [];
           let  childList = [];
+           changeRecommendListCount(result.count);
           for(let i = 0 ; i < mlist.length ; i++){
                childList.push(mlist[i]);
                if(i % 4 === 3){
@@ -61,9 +63,11 @@ const Home = ({USERMESSAGE}) => {
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
       <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
+                            listCount={200}
                             isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>
         {recommendList && recommendList.length > 0 &&
             <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
+                                   listCount={recommendListCount}
                              isLogin={!!USERMESSAGE} list={recommendList} title={"RECOMMENDATION FOR YOU"}/>}
       {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
       {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}

@@ -19,6 +19,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const [rateChange,changeRateChange] = useState(true)
   const [reviewsList,changeReviewsList] = useState([])
   const [recommendList,changeRecommendList] = useState([])
+  const [recommendListCount,changeRecommendListCount] = useState(0)
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
   const reviewsThisRef = useRef();
@@ -49,6 +50,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           const {mlist} = result;
           const _list = [];
           let  childList = [];
+          changeRecommendListCount(result.count);
           for(let i = 0 ; i < mlist.length ; i++){
             childList.push(mlist[i]);
             if(i % 4 === 3){
@@ -670,6 +672,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
           }}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
+                             listCount={recommendListCount}
                              isLogin={isLogin} list={recommendList} title={isLogin ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{

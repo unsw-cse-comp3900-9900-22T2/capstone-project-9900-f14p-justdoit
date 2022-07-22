@@ -7,7 +7,7 @@ import _ from "lodash";
 import { Base64 } from "js-base64";
 const { TextArea } = Input;
 const md5 = require('js-md5');
-import {modifyUserDetail,changePasswordInDetial} from "../../pages/MockData";
+import {modifyUserDetail,changePasswordInDetial,checkUsername} from "../../pages/MockData";
 const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
     const [msg ,changeMsg] = useState({
        ...userMsg,
@@ -17,7 +17,11 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          checkNewPassWord : ""
       }
     });
-
+  const [userSetTime,changeUserSetTime] = useState(null)
+  const [userNameCheck,changeUserNameCheck] = useState({
+      code : "",
+      value : ""
+  })
   const [initMsg,changeInitMsg] = useState({
     ...userMsg,
     ...{
@@ -38,15 +42,10 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
             message.warn("Please enter your username");
             return;
           }
-         if(!email || !(email &&email.trim())){
-           message.warn("Please enter your email");
-           return;
-         }else{
-           if(!((email &&email.trim()).match("^([\\w\\.-]+)@([a-zA-Z0-9-]+)(\\.[a-zA-Z\\.]+)$"))){
-             message.warn("Please enter your email in the correct format.");
-             return
-           }
-         }
+          if(userNameCheck && userNameCheck.code === 400){
+              message.warn(userNameCheck.value || "Please fill in the correct user name");
+              return;
+          }
         /* if(!description || !(description &&description.trim())){
            message.warn("please enter description");
            return;
@@ -54,9 +53,10 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          modifyUserDetail({
            uid,
            username : username.trim(),
-           email : email.trim(),
+           // email : email.trim(),
            description :(description || "" ).trim()
          }).then(res => {
+             debugger
             if(res.code === 200){
                message.success("Modified successfully");
               changeInitMsg({
@@ -79,8 +79,6 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
             }else{
               message.error(res.msg   || "Modified failed");
             }
-         }).catch(err =>{
-           message.error("Modified failed");
          })
        }else{
          const {password,newPassWord,checkNewPassWord} = msg;
@@ -91,6 +89,9 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
          if(!newPassWord|| !(newPassWord &&newPassWord.trim())){
            message.warn("Please enter new password");
            return;
+         }else if((newPassWord &&newPassWord.trim()).length < 8){
+             message.warn("Please enter a password with more than 8 digits");
+             return
          }
          if(!checkNewPassWord || !(checkNewPassWord &&checkNewPassWord.trim())){
            message.warn("Please check new Password");
@@ -122,8 +123,6 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
            }else{
              message.error(res.msg ||  "Password change failed")
            }
-         }).catch(err => {
-           message.error("Password change failed")
          })
        }
     }
@@ -167,15 +166,44 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                    const _newPageMessage = _.clone(msg);
                    _newPageMessage.username = _value;
                    changeMsg(_newPageMessage);
+                   if(!!userSetTime){
+                       clearTimeout(userSetTime);
+                       changeUserSetTime(null);
+                   }
+                   const setTime = setTimeout(()=>{
+                       if(!((_value || "").trim())){
+                           return
+                       }
+                       checkUsername({
+                           username : (_value || "").trim(),
+                           uid
+                       }).then(res => {
+                           const _userNameCheck = _.cloneDeep(userNameCheck);
+                           _userNameCheck.code = res.code;
+                           _userNameCheck.value = res.msg;
+                           changeUserNameCheck(_userNameCheck);
+                       })
+                       clearTimeout(userSetTime);
+                       changeUserSetTime(null);
+                   },500)
+                     changeUserSetTime(setTime)
                  }}
                />
+                 {
+                     !!userNameCheck.code && <h5 className={`errorMsgTip ${userNameCheck.code === 200 && "errorMsgTipSuccess" || ""}`}>
+                         {
+                             userNameCheck.code === 200 ? (userNameCheck.value || "") :
+                                 (userNameCheck.value || "error")
+                         }
+                     </h5>
+                 }
              </div>
             <div className={"profile-item"}>
               <h6>
                 Email
               </h6>
               <Input
-                disabled={isChangePassWord}
+                disabled={true}
                 value={msg.email}
                 placeholder="Please enter your email"
                 onChange={(e) => {
@@ -211,7 +239,7 @@ const EditMsgComponent = ({userMsg,EditMsgRef,changeEdit,uid,setUserMsg}) => {
                   <Input.Password
                     prefix={<LockOutlined />}
                     value={msg.newPassWord}
-                    placeholder="Please enter new password"
+                    placeholder="Please enter a password with more than 8 digits"
                     onChange={(e) => {
                       const _value = e.target.value;
                       const _newPageMessage = _.clone(msg);

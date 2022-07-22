@@ -127,9 +127,6 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
     },{
       key : "Western",
       value : "Western"
-    },{
-      key : "Others",
-      value : "Others"
     }]);
    const [yearList,changeYearList] = useState([]);
    const [rateList] = useState([{
@@ -181,7 +178,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
                return item.key === i;
             })
             if(indexFilter >= 0){
-              _heightOut[indexFilter].out = height >= 40;
+              _heightOut[indexFilter].out = !_selectOption[i] && height >= 40 || false;
             }
           }
         }
@@ -247,17 +244,36 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
     _yearList.push(nineObj);
     changeYearList(_yearList);
   }
-    function itemClick(value,type) {
+    function itemClick(value,type,isCheckMore) {
       const _selectOption = _.cloneDeep(selectOption);
       const _value =  _selectOption[type];
-      if(_value === value){
-        _selectOption[type] = null;
+      if(isCheckMore){
+         const isOthers = value === "Others";
+         const resList = _value && !isOthers ? ((_value || "").split(",")) : [];
+         const index = resList.indexOf(value);
+         if(index >= 0){
+           resList.splice(index,1);
+         }else{
+           resList.push(value);
+         }
+         if(!isOthers){
+           const otherIndex = resList.indexOf("Others");
+           if(otherIndex >= 0){
+             resList.splice(otherIndex,1);
+           }
+         }
+        _selectOption[type] = resList.join(",");
       }else{
-        _selectOption[type] = value;
+        if(_value === value){
+          _selectOption[type] = null;
+        }else{
+          _selectOption[type] = value;
+        }
       }
+
       changeSelectOption(_selectOption);
     }
-    function returnListDom(title,value,list) {
+    function returnListDom(title,value,list,isCheckMore) {
        const heightOutObj = heightOut && heightOut.filter((item)=>{
          return item.key === value;
        })
@@ -274,12 +290,20 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
          <div className={`home-search-component-item-select ${_out && "home-search-component-item-select-out" || ""}`}>
            {
              list && list.map((item,index) => {
+               let isCheck = false;
+               if(isCheckMore){
+                 const str = selectOption[value] || "";
+                 const strList = str.split(",");
+                 isCheck = strList.indexOf(item.key) >= 0;
+               }else{
+                 isCheck = (item.key === selectOption[value]);
+               }
                return <div
                  key={value + "list" + index}
                  onClick={()=>{
-                   itemClick(item.key,value);
+                   itemClick(item.key,value,isCheckMore);
                  }}
-                 className={`select-item ${item.key === selectOption[value] && "select-item-choose" || ""}`}>
+                 className={`select-item ${isCheck && "select-item-choose" || ""}`}>
                  {item.value}
                </div>
              })
@@ -313,7 +337,9 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
         page_size : _pageObj.size,
         rating : rate,
         year : year !== null && year !== undefined ? (year && year.toString() || "") : null,
-        uid
+        uid,
+        country : area,
+        genre
       }).then(res => {
         if(res.code === 200){
           const {result} = res;
@@ -433,8 +459,8 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
             visibility : !showDom ? "hidden" : "initial"
           }}
           className={`home-search-component ${ isSearch && "home-search-component-is-search" || ""}`}>
-          {/*{returnListDom("AREA","area",areaList)}*/}
-          {/*{returnListDom("GENRE","genre",genreList)}*/}
+          {returnListDom("AREA","area",areaList,true)}
+          {returnListDom("GENRE","genre",genreList,true)}
           {returnListDom("YEARS","year",yearList)}
           {returnListDom("RATING","rate",rateList)}
           {/*{returnListDom("SORT","sort",sortList)}*/}

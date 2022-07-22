@@ -43,16 +43,20 @@ def register():
     username = data["username"]
     password = data["password"]
     email = data["email"]
+    verifycode = data["verifycode"]
+    # verifycode = data["verifycode"]
     username = username.strip()
     email = email.strip()
+    verifycode = verifycode.strip()
     # print(username, password, email)
-    if not username or not password or not email:
+    if not username or not password or not email or not verifycode:
         return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
 
     # username is too long
     if len(username) > 50:
         return jsonify({'code': 400, 'msg': 'Your username is too long.'})
-
+    if len(username) < 6:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
     # valid email
     if not validateEmail(email):
         return jsonify({'code': 400, 'msg': 'Please enter a right email'})
@@ -68,6 +72,11 @@ def register():
     ).scalar()
     if check_email:
         return jsonify({'code': 400, 'msg': 'Email already exists'})
+    check_vercode = verifycodeModel.query.filter(verifycodeModel.email == email, verifycodeModel.verifycode == verifycode).first()
+    if not check_vercode:
+        return jsonify({'code': 400, 'msg': 'Your verify code is wrong please try again'})
+
+
     try:
         en_pass = EnPassWord(password)
 
@@ -87,6 +96,43 @@ def register():
 @login_require
 def check_login():
     return jsonify({'code': 200, 'msg': 'Already login', 'user': g.user})
+
+
+def check_username():
+    username = request.json.get('username')
+    uid = request.json.get('uid')
+    username = username.strip()
+
+    if not username:
+        return jsonify({'code': 400, 'msg': 'Please enter your username'})
+    # username is too long
+    if len(username) > 50:
+        return jsonify({'code': 400, 'msg': 'Your username is too long.'})
+    if len(username) < 6:
+        return jsonify({'code': 400, 'msg': 'Your username is too short.'})
+    if not uid:
+        check_name = db.session.query(exists().where(UserModel.username == username)).scalar()
+    else:
+        check_name = db.session.query(exists().where(UserModel.username == username, UserModel.uid != uid)).scalar()
+    if check_name:
+        return jsonify({'code': 400, 'msg': 'User name already exists'})
+    if not validateUsername(username):
+        return jsonify({'code': 400, 'msg': 'Username can only consist of numbers, letters, _ or -'})
+    return jsonify({'code': 200})
+
+
+def check_email():
+    email = request.json.get('email')
+    email = email.strip()
+    if not email:
+        return jsonify({'code': 400, 'msg': 'Please enter your email'})
+    check_email = db.session.query(exists().where(UserModel.email == email)).scalar()
+    if check_email:
+        return jsonify({'code': 400, 'msg': 'Email already exists'})
+    if not validateEmail(email):
+        return jsonify({'code': 400, 'msg': 'Please enter a right email'})
+    return jsonify({'code': 200})
+
 
 
 def get_user_detail():
@@ -179,7 +225,6 @@ def modify_user_detail():
     data = request.get_json(force=True)
     uid = data["uid"]
     username = data["username"]
-    email = data["email"]
     description = data["description"]
     #
     #数据库找判断
@@ -189,28 +234,25 @@ def modify_user_detail():
     if not user:
         return jsonify({'code': 400, 'msg': 'User is not defined'})
     username = username.strip()
-    email = email.strip()
     description = description.strip()
-    if not username or not email:
-        return jsonify({'code': 400, 'msg': 'Please enter the account, password and email'})
+    if not username:
+        return jsonify({'code': 400, 'msg': 'Please enter the account and password'})
 
     if user.username != username:
         check_username = db.session.query(exists().where(UserModel.username == username,UserModel.active == 1)).scalar()
         if check_username:
             return jsonify({'code' : 400, 'msg': 'User name already exists'})
+        # username is too long
         if len(username) > 50:
             return jsonify({'code': 400, 'msg': 'Your username is too long.'})
-    if user.email != email:
-        if not validateEmail(email):
-            return jsonify({'code': 400, 'msg': 'Please enter a right email'})
-        check_email = db.session.query(exists().where(UserModel.email == email, UserModel.active == 1)).scalar()
-        if check_email:
-            return jsonify({'code' : 400, 'msg': 'Email is already exists'})
+        if len(username) < 6:
+            return jsonify({'code': 400, 'msg': 'Your username is too short.'})
+        if not validateUsername(username):
+            return jsonify({'code': 400, 'msg': 'Your username is not follow the rule.'})
     # # 给 backend
     try:
         time_form = getTime()[0]
         user.username = username
-        user.email = email
         if description:
             user.description = description
         user.utime = time_form

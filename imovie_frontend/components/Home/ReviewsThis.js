@@ -2,27 +2,27 @@
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import { Modal, Input, message } from "antd";
 import ReviewsInfoStyle from "./ReviewsInfo.less";
-import { createReview } from "../../pages/MockData";
+import {replyReview} from "../../pages/MockData";
 const { TextArea } = Input;
-const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
+const ReviewsThis = ({reviewsThisRef,changeReview}) => {
    const [visible ,changeVisible] = useState(false);
    const [movieName , changeMovieName] = useState("");
    const [value,changeValue]=useState("");
-   const [mid,changeMid] = useState("");
+   const [mrid,changeMrid] = useState("");
    const [uid,changeUid] = useState("");
-    useImperativeHandle(reviewsInfoRef, () => ({
-      changeVisible: (vis,movieName,_mid,_uid) => {
+    useImperativeHandle(reviewsThisRef, () => ({
+      changeVisible: (vis,movieName,_mrid,_uid) => {
         changeMovieName(movieName);
         changeVisible(vis);
         changeUid(_uid);
-        changeMid(_mid);
+        changeMrid(_mrid);
       },
     }));
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: ReviewsInfoStyle }} />
       <Modal
-        title={"Reviews and Info"}
+        title={"Review to " + movieName}
         centered
         visible={visible}
         okText="SUBMIT"
@@ -32,10 +32,10 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
             message.warn("Please write you comment");
             return
           }
-          createReview({
+          replyReview({
             review : value && value.trim(),
             uid,
-            mid
+            mrid
           }).then(res => {
             if(res.code === 200){
               message.success("write comment success");
@@ -56,7 +56,6 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
         width={800}
       >
         <div className={"review-component"}>
-          <p>{movieName}</p>
           <div className={"review-box"}>
                 <TextArea
                   value={value}
@@ -77,4 +76,4 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
     )
 }
 
-export default ReviewsInfo
+export default ReviewsThis

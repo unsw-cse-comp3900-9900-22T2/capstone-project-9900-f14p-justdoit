@@ -28,6 +28,7 @@ const InputComponent = (props) => {
                     value = e
                 }
                 props.onSearch && props.onSearch(value || "");
+                props.changeForSearchValueInit && props.changeForSearchValueInit(value || "");
             }
 
         }
@@ -59,6 +60,9 @@ const InputComponent = (props) => {
                             onSearch={(value) => {
                                 console.log("value",value)
                                 onChange(value)
+                            }}
+                            onScroll={(event)=>{
+                                event.stopPropagation();
                             }}
                         />:
                         <div/>

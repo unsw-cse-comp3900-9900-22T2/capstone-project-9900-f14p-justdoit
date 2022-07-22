@@ -4,74 +4,25 @@ import detailStyle from "./detail.less";
 import { Avatar, Popover, Rate ,message,Tooltip} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined,MessageOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
+import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, getMovieDetail } from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,movieSimilerRecommend
+  ,displayMovieReview,likeReview} from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
   const [movieDetail,changeMovieDetail]=useState(null);
   const [rateChange,changeRateChange] = useState(true)
-  const [reviewsList,changeReviewsList] = useState([{
-     userName : "amber",
-     rate: 3.6,
-     reviews : "kjshfjksdhajksdhahdjah ashdjahsjdkha ashdjkahsjkdqiuwyuqiwyruiwr ashdhajksdhajkd hquwyruqiwyruiw wiquyruiwqyr we",
-     likes : 2000,
-     userIsLike : false
-  },{
-    userName : "jerry",
-    rate: 3.6,
-    reviews : "kjshfjksdhajksdhahdjah ashdjahsjdkha ashdjkahsjkdqiuwyuqiwyruiwr ashdhajksdhajkd hquwyruqiwyruiw wiquyruiwqyr we",
-    likes : 1000,
-    userIsLike : true
-  }])
-  const [recommendList,changeRecommendList] = useState([ [{
-    movieId :123323,
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :23000,
-    like :24,
-    isLike : false,
-    isLook : false,
-    isCollection : false,
-    collection : 256,
-    rate : 3,
-    year : "2022",
-    tags : [{
-      value : "Renre",
-      key : 1,
-    },{
-      value : "Renre1",
-      key : 2,
-    },{
-      value : "Renre2",
-      key : 3,
-    }],
-    movieName : "movie name",
-    director : ["jerry jackson"],
-    cast : ["Tom","Haidi"]
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :24,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :25,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :26,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  }]])
+  const [reviewsList,changeReviewsList] = useState([])
+  const [recommendList,changeRecommendList] = useState([])
+  const [recommendListCount,changeRecommendListCount] = useState(0)
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
+  const reviewsThisRef = useRef();
   function getMsg(number){
     if (!number && number !== 0) return number;
     var str_num
@@ -87,6 +38,33 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   }
   useEffect(()=>{
     if(initQuery && initQuery.movieId){
+      displayMovieReviewService();
+      movieSimilerRecommend({
+        uid : USERMESSAGE && USERMESSAGE.uid || null,
+        mid : initQuery.movieId,
+        page_index : 0,
+        page_size : 16
+      }).then(res => {
+        if(res.code === 200){
+          const {result} = res;
+          const {mlist} = result;
+          const _list = [];
+          let  childList = [];
+          changeRecommendListCount(result.count);
+          for(let i = 0 ; i < mlist.length ; i++){
+            childList.push(mlist[i]);
+            if(i % 4 === 3){
+              _list.push(childList);
+              childList = _.cloneDeep(childList);
+              childList = [];
+            }
+          }
+          if(childList.length > 0){
+            _list.push(childList);
+          }
+          changeRecommendList(_list)
+        }
+      })
       getMovieDetail({
         uid : USERMESSAGE && USERMESSAGE.uid || null,
         mid : initQuery.movieId
@@ -94,34 +72,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         if(res.code === 200){
            const {result} = res;
           changeMovieDetail(result || null);
+          // 改了这儿
+          historyAddOrDelete({
+            mid : initQuery.movieId,
+            uid : USERMESSAGE && USERMESSAGE.uid || null,
+            add_or_del : "add" 
+          })
         }
-      }).catch(err => {
-        const result = {
-          "avg_rate": null,
-          "cast": null,
-          "coverimage": "https://a.ltrbxd.com/resized/sm/upload/hf/o9/fn/p4/adogswill-ms-0-230-0-345-crop.jpg?k=c61671eb55",
-          "crew": null,
-          "description": "The (mis)adventures of João Grilo and Chicó in Brazil's Northeastern region. The four-chapter miniseries original version of O Auto da Compadecida.",
-          "director": "Guel Arraes",
-          "genre": [
-            "comedy",
-            "drama"
-          ],
-          "is_user_dislike": 0,
-          "is_user_like": 0,
-          "is_user_watch": 0,
-          "is_user_wish": 0,
-          "is_user_rate" : 2,
-          "language": "Portuguese",
-          "moviename": "A Dog's Will",
-          "num_like": 0,
-          "release_date": null,
-          "watchlist_num": 0,
-          "wishlist_num": 0,
-          "duration": 123,
-          "mid" : "adkjahdjkahdjkadsh"
-        }
-        changeMovieDetail(result)
       })
     }
 
@@ -136,7 +93,30 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         name.push(list[i]);
       }
     }
-    return name.join(" / ")
+    return name && name.map((item,index) => {
+       return <>
+             <span key={"href_broswe_by_gener_" + index}
+                        onClick={()=>{
+                          if(item){
+                            window.location.href = "/movie/browseBy?queryForBrowseBy="
+                              + encodeURIComponent(JSON.stringify({
+                                size : 16,
+                                number : 1,
+                                total : 0,
+                                area : null,
+                                genre : item,
+                                year : null,
+                                sort : null,
+                                rate : null,
+                              }))
+                          }
+                        }}
+                        className={"href_broswe_by"}>{item}</span>
+             {
+               index < name.length - 1 && " / " || ""
+             }
+         </>
+    })
   }
   function svgGet(type ,isGet){
 
@@ -171,7 +151,39 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     const _movieDetail = _.cloneDeep(movieDetail);
     const is = _movieDetail[_type];
     _movieDetail[_type] = !is;
-    if(type === 2){
+    if(type === 1){
+      // 提取互斥项
+      const iss = _movieDetail["is_user_wish"];
+      watchlistAddOrDelete({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Added successfully");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) + 1;
+            // 用于判断互斥项是否为true
+            if(iss) {
+              _movieDetail["is_user_wish"] = !iss;
+              _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+            }
+          }else{
+            message.success("Deleted successfully");
+            _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to add")
+          }else{
+            message.error("Failed to delete")
+          }
+        }
+      })
+    }
+    else if(type === 2){
+      const iss = _movieDetail["is_user_watch"];
         wishlistAddOrDelete({
           mid : movieDetail.mid,
           uid : USERMESSAGE && USERMESSAGE.uid,
@@ -179,22 +191,85 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }).then(res => {
           if(res.code === 200){
             if(!is){
-              message.success("add success");
+              message.success("Added successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) + 1;
+              if(iss) {
+                _movieDetail["is_user_watch"] = !iss;
+                _movieDetail["watchlist_num"] = (_movieDetail["watchlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["watchlist_num"] || 0) - 1;
+              }
             }else{
-              message.success("delete success");
+              message.success("Deleted successfully");
               _movieDetail["wishlist_num"] = (_movieDetail["wishlist_num"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
             }
             changeMovieDetail(_movieDetail);
           }else{
             if(!is) {
-              message.error("add fail")
+              message.error("Failed to add")
             }else{
-              message.error("delete fail")
+              message.error("Failed to delete")
             }
           }
         })
-    }else{
+    }
+    // 加了这个else才能实时改变detail页面的数字
+    else if(type === 0){
+      const iss = _movieDetail["is_user_dislike"];
+      likeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+        add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Liked successfully");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) + 1;
+            if(iss) {
+              _movieDetail["is_user_dislike"] = !iss;
+            }
+          }else{
+            message.success("Canceled the like successfully");
+            _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to like")
+          }else{
+            message.error("Failed to cancel the like")
+          }
+        }
+      })
+    }
+    else if(type === 3){
+      const iss = _movieDetail["is_user_like"];
+      dislikeAddOrDelete ({
+        mid : movieDetail.mid,
+        uid : USERMESSAGE && USERMESSAGE.uid,
+          add_or_del : !is ? "add" : "delete",
+      }).then(res => {
+        if(res.code === 200){
+          if(!is){
+            message.success("Disliked successfully");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) + 1;
+            if(iss) {
+              _movieDetail["is_user_like"] = !iss;
+              _movieDetail["num_like"] = (_movieDetail["num_like"] || 0) - 1 < 0 ? 0 : (_movieDetail["num_like"] || 0) - 1;
+            }
+          }else{
+            message.success("Canceled the dislike successfully");
+            // _movieDetail["num_dislike"] = (_movieDetail["num_dislike"] || 0) - 1 < 0 ? 0 : (_movieDetail["wishlist_num"] || 0) - 1;
+          }
+          changeMovieDetail(_movieDetail);
+        }else{
+          if(!is) {
+            message.error("Failed to dislike")
+          }else{
+            message.error("Failed to cancel the dislike")
+          }
+        }
+      })
+    }
+    else{
       changeMovieDetail(_movieDetail);
     }
   }
@@ -228,6 +303,27 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   }
   function setToolTitle(type,number){
     return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
+  }
+  function displayMovieReviewService(){
+    displayMovieReview({
+      mid : initQuery.movieId,
+      uid : USERMESSAGE && USERMESSAGE.uid || null,
+    }).then(res => {
+      if(res.code === 200){
+        changeReviewsList(res.result && res.result.movieReview || []);
+      }else{
+        changeReviewsList([])
+      }
+    })
+  }
+  function goUserDetail(uid){
+    if(!USERMESSAGE || !(USERMESSAGE.uid)){
+      return;
+    }
+    if(!uid){
+       return null
+    }
+     window.location.href = "/movie/userMsg?uid=" + uid
   }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
@@ -277,7 +373,14 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             <div className={"movie-msg-box-right"}>
               {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
                 <p>DIRECTOR: </p>
-                <h6>{movieDetail.director}</h6>
+                <h6
+                  onClick={()=>{
+                    if(movieDetail.director){
+                      window.location.href = "/movie/searchMovie?keyword=" + movieDetail.director
+                    }
+                  }}
+                  className={"href_broswe_by"}
+                >{movieDetail.director}</h6>
               </div>}
               {!!movieDetail.prodecers &&
               <div className={"movie-message-body"}>
@@ -292,7 +395,20 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               }
               {!!movieDetail.cast && <div className={"movie-message-body"}>
                 <p>CAST: </p>
-                <h6>{movieDetail.cast.join(",")}</h6>
+                <h6>{movieDetail.cast && movieDetail.cast.map((item,index) => {
+                return  <>
+                         <span key={"href_broswe_by_cast_" + index}
+                               onClick={()=>{
+                                 if(item){
+                                   window.location.href = "/movie/searchMovie?keyword=" + item
+                                 }
+                               }}
+                               className={"href_broswe_by"}>{item}</span>
+                          {
+                            index < movieDetail.cast.length - 1 && "," || ""
+                          }
+                        </>
+                })}</h6>
               </div>}
               {!!movieDetail.description && <div className={"movie-message-body"}>
                 <p>DETAILS: </p>
@@ -306,7 +422,23 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               {!!movieDetail.country &&
               <div className={"movie-message-body movie-message-body-flex"}>
                 <p>COUNTRY: </p>
-                <h6>{movieDetail.country}</h6>
+                <h6
+                  onClick={()=>{
+                    if(movieDetail.country){
+                      window.location.href = "/movie/browseBy?queryForBrowseBy="
+                        + encodeURIComponent(JSON.stringify({
+                          size : 16,
+                          number : 1,
+                          total : 0,
+                          area : movieDetail.country,
+                          genre : null,
+                          year : null,
+                          sort : null,
+                          rate : null,
+                        }))
+                    }
+                  }}
+                  className={"href_broswe_by"}>{movieDetail.country}</h6>
               </div>}
               {!!movieDetail.language &&
               <div className={"movie-message-body movie-message-body-flex"}>
@@ -383,73 +515,176 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           </div>
         </>
         }
-          {/*<div className={"reviews-list"}>*/}
-          {/*    <div className={"review-title"}>*/}
-          {/*      <p>Related Reviews{!!isLogin && <span  onClick={()=>{*/}
-          {/*                                    const _year = movieDetail.year;*/}
-          {/*                                    reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible*/}
-          {/*                                    && reviewsInfoRef.current.changeVisible(true,movieDetail.movieName + _year && ("(" + _year + ")") || "",*/}
-          {/*                                      movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);*/}
-          {/*                                  }}*/}
-          {/*      >add review</span>}</p>*/}
-          {/*      <div className={"review-more"}>*/}
-          {/*        More >*/}
-          {/*      </div>*/}
-          {/*    </div>*/}
-          {/*    <div className={"review-box"}>*/}
-          {/*      {reviewsList && reviewsList.map((item,index)=>{*/}
-          {/*        return <div className={`review-box-item ${index === reviewsList.length - 1 && "review-box-item-no-border" || ""}`}*/}
-          {/*                    key={"review-box-item-" + index}>*/}
-          {/*           <div className={"user-logo"}>*/}
-          {/*             <Avatar size={40}  icon={<UserOutlined />} />*/}
-          {/*           </div>*/}
-          {/*           <div className={"review-body"}>*/}
-          {/*              <div className={"user-name"}>*/}
-          {/*                <span className={"userName"}>Review By:<span>{item.userName}</span></span>*/}
-          {/*                  <div className={"rate"}>*/}
-          {/*                     <RateComponent  style={{*/}
-          {/*                        fontSize : "14px"*/}
-          {/*                     }} defaultValue={item.rate || 1} />*/}
-          {/*                      &nbsp;({item.rate || 1})*/}
-          {/*                  </div>*/}
-          {/*              </div>*/}
-          {/*              <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>*/}
-          {/*                {item.reviews}*/}
-          {/*              </div>*/}
-          {/*             {!!isLogin && <div className={"operation"}>*/}
-          {/*               <div className={"operation-like"}>*/}
-          {/*                 <div*/}
-          {/*                   onClick={()=>{*/}
-          {/*                     const _reviewsList = _.cloneDeep(reviewsList);*/}
-          {/*                     const isLike = _reviewsList[index].userIsLike;*/}
-          {/*                     _reviewsList[index].userIsLike = !isLike;*/}
-          {/*                     changeReviewsList(_reviewsList);*/}
-          {/*                   }}*/}
-          {/*                   className={"image-box"}>{svgGet(0,item.userIsLike)}</div>*/}
-          {/*                 <div className={"a-href"}>*/}
-          {/*                   {item.userIsLike &&  "Like review"}*/}
-          {/*                 </div>*/}
-          {/*               </div>*/}
-          {/*               <div className={"operation-like-number"}>*/}
-          {/*                 {getMsg(item.likes)} Likes*/}
-          {/*               </div>*/}
-          {/*             </div>}*/}
-          {/*           </div>*/}
-          {/*        </div>*/}
-          {/*      })}*/}
-          {/*    </div>*/}
-          {/*</div>*/}
+        {!!movieDetail && <div className={"reviews-list"}>
+              <div className={"review-title"}>
+                <p>Related Reviews{!!isLogin && <span  onClick={()=>{
+                                              reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                                              && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
+                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
+                                            }}
+                >add review</span>}</p>
+                {reviewsList && reviewsList.length > 2 &&
+                    <div
+                        onClick={()=>{
+                          window.location.href = "/movie/reviewList?movieName=" + movieDetail.moviename + setYear(movieDetail.year)
+                              + "&movieId=" + initQuery.movieId
+                        }}
+                        className={"review-more"}>
+                      More >
+                    </div>
+                }
+              </div>
+              <div className={"review-box"}>
+                {reviewsList && reviewsList.map((item,index)=>{
+                  if(index >= 2){
+                    return null;
+                  }
+                  const userReview = item.userReview;
+                  return <div className={`review-box-item ${(index === reviewsList.length - 1 || index === 1)
+                  && "review-box-item-no-border" || ""}`}
+                              key={"review-box-item-" + index}>
+                     <div className={"user-logo"}>
+                       <Avatar
+                           onClick={()=>{
+                             goUserDetail(item.uid);
+                           }}
+                           size={40}  icon={<UserOutlined />} />
+                     </div>
+                     <div className={"review-body"}>
+                        <div className={"user-name"}>
+                          <span className={"userName"}>Review By:<span>{item.username}</span></span>
+                          {(item.rate || 0) > 0 && <div className={"rate"}>
+                               <RateComponent  style={{
+                                  fontSize : "14px"
+                               }} defaultValue={(item.rate || 0) <= 0 ? 0 : (item.rate)} />
+                                &nbsp;({(item.rate || 0) <= 0 ? 0 : (item.rate)})
+                            </div>}
+                        </div>
+                        <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                          {item.review}
+                        </div>
+                       <div style={{
+                           fontSize : "12px",
+                         marginTop: "5px",
+                         color : "#999"
+                       }} className={"userName"}>&nbsp;{item.utime}</div>
+                       {!!isLogin && <div style={{
+                          marginBottom : "15px"
+                       }} className={"operation"}>
+                         <div className={"operation-like"}>
+                           <div
+                             onClick={()=>{
+                               likeReview({
+                                 add_or_del : !item.is_user_likeReview ? "add" : "del",
+                                 uid : USERMESSAGE && USERMESSAGE.uid || null,
+                                 mrid : item.mrid
+                               }).then(res => {
+                                  if(res.code === 200){
+                                    const _reviewsList = _.cloneDeep(reviewsList);
+                                    const isLike = _reviewsList[index].is_user_likeReview;
+                                    const like_count = _reviewsList[index].like_count;
+                                    _reviewsList[index].is_user_likeReview = !isLike;
+                                    if(!item.is_user_likeReview ){
+                                      _reviewsList[index].like_count = (like_count || 0) + 1;
+                                    }else{
+                                      _reviewsList[index].like_count = (like_count || 0)  - 1;
+                                    }
+
+                                    changeReviewsList(_reviewsList);
+                                    message.success(res.msg);
+                                  }else{
+                                    message.error(res.msg);
+                                  }
+                               })
+
+                             }}
+                             className={"image-box"}>{svgGet(0,item.is_user_likeReview)}</div>
+                           <div className={"a-href"}>
+                             {!!item.is_user_likeReview &&  "Like review"}
+                           </div>
+                         </div>
+                         <div className={"operation-like-number"}>
+                           {getMsg(item.like_count)} {(item.like_count || 0) >= 2 ? "Likes" : "Like"}
+                         </div>
+                         <div
+                             onClick={()=>{
+                               reviewsThisRef && reviewsThisRef.current && reviewsThisRef.current.changeVisible
+                               && reviewsThisRef.current.changeVisible(true,item.username,
+                                   item.mrid,USERMESSAGE && USERMESSAGE.uid || null);
+                             }}
+                             className={"operation-review-this"}>
+                           <MessageOutlined />
+                           &nbsp;&nbsp;Review this
+                         </div>
+                       </div>}
+                       {
+                         userReview && userReview.map((item2,index2)=>{
+                             if(index2 >= 2){
+                               return null;
+                             }
+                             return <div
+                                 style={{
+                                   marginLeft : 0,
+                                   width : "100%",
+                                   marginTop : "10px",
+                                   paddingBottom: "5px"
+                                 }}
+                                 className={`review-box-item ${(index2 === userReview.length - 1 || index2 === 1) && "review-box-item-no-border" || ""}`}
+                                         key={"review-box-item-user-review-" + index2}>
+                               <div className={"user-logo"}>
+                                 <Avatar
+                                     onClick={()=>{
+                                       goUserDetail(item2.uid);
+                                     }}
+                                     size={40}  icon={<UserOutlined />} />
+                               </div>
+                               <div className={"review-body"}>
+                                 <div className={"user-name"}>
+                                   <span className={"userName"}>Review By:<span>{item2.username}</span></span>
+                                 </div>
+                                 <div
+                                     style={{marginTop : "5px"}}
+                                     className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                                   {item2.review}
+                                 </div>
+                                 <div style={{
+                                   fontSize : "12px",
+                                   marginTop: "5px",
+                                   color : "#999"
+                                 }} className={"userName"}>&nbsp;{item2.utime}</div>
+                               </div>
+                             </div>
+                           })
+                       }
+                       <div style={{width :"100%",height : "15px"}}/>
+                     </div>
+                  </div>
+                })}
+                {(!reviewsList || reviewsList.length === 0)&&
+                    <h6 className={"no-review-style"}>
+                   There is no review
+                </h6>}
+              </div>
+          </div>}
       </div>
-      {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
-      {/*                       isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>*/}
+      {recommendList && recommendList.length > 0 && <ScrollImageComponent
+          goHrefMore={()=>{
+            window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
+          }}
+          uid={USERMESSAGE && USERMESSAGE.uid || null}
+                             listCount={recommendListCount}
+                             isLogin={isLogin} list={recommendList} title={isLogin ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){
+            displayMovieReviewService();
             const _movieDetail = _.cloneDeep(movieDetail);
             _movieDetail.avg_rate = avg_rate;
             _movieDetail.is_user_rate = rate;
             _movieDetail.is_user_wish = false;
+            _movieDetail.is_user_watch = false;
             _movieDetail.wishlist_num = (_movieDetail.wishlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+            _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
             const _is_user_watch = _movieDetail.is_user_watch;
             if(!_is_user_watch){
               _movieDetail.is_user_watch = true;
@@ -464,7 +699,16 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           }
         }}
         ratingRef={ratingRef}/>
-      <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsInfoComponent
+          changeReview={()=>{
+            displayMovieReviewService();
+          }}
+          reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsThisComponent
+          changeReview={()=>{
+            displayMovieReviewService();
+          }}
+          reviewsThisRef={reviewsThisRef}/>
     </PageBase>
   )
 }

@@ -1,8 +1,8 @@
 import { withRouter } from 'next/router'
-import { useState, useImperativeHandle, useEffect, useRef } from 'react'
+import { useState, useImperativeHandle, useEffect, useRef, useReducer } from 'react'
 import React from 'react'
 import basePageStyle from "./basePage.less"
-import {Select,Avatar,Popover} from "antd";
+import {Select,Avatar,Popover,message} from "antd";
 const { Option } = Select;
 import { SearchOutlined,UserOutlined} from "@ant-design/icons";
 import DocunceSelectComponent from "../components/DounceSelect"
@@ -11,8 +11,10 @@ import RegesterComponent from "../components/Regester"
 import ResetPasswordComponent from "../components/ResetPassword"
 import { delCookie } from "../util/common";
 import { Base64 } from "js-base64";
+import { searchBy } from "./MockData";
 const Page = ({ router, children,USERMESSAGE }) => {
   const [body, changeBody] = useState(children);
+  const [searchValueInit,changeSearchValueInit] = useState("");
   const [tabList] = useState([{
     value : 2,
     name : "LOGIN",
@@ -39,6 +41,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
     href : "/movie/browseBy",
     login : true,
   }]);
+// const reducer=useReducer()
   const [userTabList,changeUserTabList] = useState([])
   const [enterTab , changeEnterTab] = useState("");
   const [chooseTab,changeChooseTab] = useState("");
@@ -86,51 +89,54 @@ const Page = ({ router, children,USERMESSAGE }) => {
         hasBorder : false,
         href : "/movie/userMsg"
       },
-      //   {
-      //   key : 4,
-      //   value : "history",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=4&nouser=1"
-      // },
         {
         key : 5,
         value : "Wishlist",
         hasBorder : false,
         href : "/movie/userMsg?activeKey=1&nouser=1"
       },
-      //   {
-      //   key : 6,
-      //   value : "watched",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=2&nouser=1"
-      // },{
+        {
+        key : 6,
+        value : "Watchlist",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=2&nouser=1"
+      },
+      {
+        key : 4,
+        value : "History",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=4&nouser=1"
+      },
+      // {
       //   key : 7,
       //   value : "movie lists",
       //   hasBorder : false,
       //   href : "/movie/userMsg?activeKey=3&nouser=1"
-      // },{
-      //   key : 8,
-      //   value : "reviews",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=5&nouser=1"
-      // },{
-      //   key : 9,
-      //   value : "likes",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=6&nouser=1"
-      // },{
-      //   key : 10,
-      //   value : "disLikes",
-      //   hasBorder : true,
-      //   href : "/movie/userMsg?activeKey=7&nouser=1"
       // },
+       {
+       key : 8,
+       value : "Review",
+       hasBorder : false,
+       href : "/movie/userMsg?activeKey=5&nouser=1"
+      },
+      {
+        key : 9,
+        value : "Like",
+        hasBorder : false,
+        href : "/movie/userMsg?activeKey=6&nouser=1"
+      },{
+        key : 10,
+        value : "Dislike",
+        hasBorder : true,
+        href : "/movie/userMsg?activeKey=7&nouser=1"
+      },
         {
         key : 11,
-        value : "Sight Out",
+        value : "Sigh Out",
         hasBorder : false
       }]])
     }
-
+    
   },[]);
   function tabClick(item) {
     if(!!item.href){
@@ -154,6 +160,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
       window.location.reload();
     }
   }
+
   return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: basePageStyle }} />
@@ -197,45 +204,99 @@ const Page = ({ router, children,USERMESSAGE }) => {
                    }
                  </div>
                   <div className={"tab-search"}>
-                    {/*<div className={"tag-search-logo"}>*/}
-                    {/*  <SearchOutlined/>*/}
-                    {/*</div>*/}
-                    {/*<DocunceSelectComponent  value={searchValue || undefined}*/}
-                    {/*                         allowClear*/}
-                    {/*                         placeholder="Search Movie"*/}
-                    {/*                         size={'middle'}*/}
-                    {/*                         fetchOptions={null}*/}
-                    {/*                         onChange={(newValue) => {*/}
-                    {/*                           changeSearchValue(newValue);*/}
-                    {/*                         }}*/}
-                    {/*                         style={{*/}
-                    {/*                           width: '90%',*/}
-                    {/*                         }}*/}
-                    {/*                         defaultActiveFirstOption={false}*/}
-                    {/*                         showArrow={false}*/}
-                    {/*                         filterOption={false}*/}
-                    {/*                         bordered={false}*/}
-                    {/*                         nodeDom={(options)=>{*/}
-                    {/*                           return options &&*/}
-                    {/*                             options.map((item) => {*/}
-                    {/*                               return (*/}
-                    {/*                                 <Option key={'labelData_' + item.poiId + "_poiId"} value={item.poiId}>*/}
-                    {/*                                   <div*/}
-                    {/*                                     style={{*/}
-                    {/*                                       width: "100%",*/}
-                    {/*                                       wordWrap: 'break-word',*/}
-                    {/*                                       wordBreak: 'break-all',*/}
-                    {/*                                       whiteSpace: 'normal',*/}
-                    {/*                                     }}*/}
-                    {/*                                     dangerouslySetInnerHTML={{*/}
-                    {/*                                       __html: item.hierarchy*/}
-                    {/*                                     }}*/}
-                    {/*                                   />*/}
-                    {/*                                 </Option>*/}
-                    {/*                               );*/}
-                    {/*                             })*/}
-                    {/*                         }}*/}
-                    {/*                         showSearch />*/}
+                    <div className={"tag-search-logo"}>
+                      <SearchOutlined/>
+                    </div>
+                    <DocunceSelectComponent  value={searchValue || undefined}
+                                             allowClear
+                                             placeholder="Search Movie"
+                                             size={'middle'}
+                                             fetchOptions={async (keyword)=>{
+                                               changeSearchValue(keyword);
+                                              return  searchBy({
+                                                 uid : USERMESSAGE && USERMESSAGE.uid || null,
+                                                 keyword
+                                               }).then(res => {
+                                                  if(res.code === 200){
+                                                     const {result} = res;
+                                                     if(result){
+                                                       const {movies,count} = result;
+                                                       const _length = count > 50? 50 : count;
+                                                       const data = [];
+                                                       for(let i = 0 ; i < _length ; i++){
+                                                         data.push(movies[i]);
+                                                       }
+                                                       return {
+                                                         list : data,
+                                                         value : keyword
+                                                       }
+                                                     }else{
+                                                       return {
+                                                         list : [],
+                                                         value : keyword
+                                                       }
+                                                     }
+                                                  }else{
+                                                    return {
+                                                      list : [],
+                                                      value : keyword
+                                                    }
+                                                  }
+                                               }).catch(err => {
+                                                 message.error("search error");
+                                                 return {
+                                                   list : [],
+                                                   value : keyword
+                                                 }
+                                               })
+                                             }}
+                                             onChange={(newValue) => {
+                                               changeSearchValue(newValue);
+                                             }}
+                                             style={{
+                                               width: '90%',
+                                             }}
+                                             defaultActiveFirstOption={false}
+                                             showArrow={false}
+                                             filterOption={false}
+                                             bordered={false}
+                                             onInputKeyDown={(e)=>{
+                                               const theEvent = window.event || e;
+                                               const code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+                                               if (code === 13) {
+                                                 e.stopPropagation();
+                                                 window.location.href = "/movie/searchMovie?keyword=" + encodeURIComponent(searchValueInit);
+                                               }
+                                             }}
+                                             changeForSearchValueInit={(value)=>{
+                                                 changeSearchValueInit(value)
+                                             }}
+                                             nodeDom={(options,inputValue)=>{
+                                               return options &&
+                                                 options.map((item) => {
+                                                   const isInCast = ((item.cast || []).indexOf(inputValue || "")) >= 0
+                                                   return (
+                                                     <Option key={'labelData_' + item.mid + "_mid"} value={item.mid}>
+                                                       <div
+                                                         style={{
+                                                           width: "100%",
+                                                           wordWrap: 'break-word',
+                                                           wordBreak: 'break-all',
+                                                           whiteSpace: 'normal',
+                                                         }}
+                                                         className={"label_data_mid_search"}
+                                                         onClick={()=>{
+                                                           window.location.href = "/movie/detail?movieId=" + item.mid;
+                                                         }}
+                                                       >
+                                                         <h5>{item.moviename}{!!item.year && ("(" + item.year +")")}</h5>
+                                                         <h6>{(item.director || "")} {isInCast && <span>{inputValue}</span>}</h6>
+                                                       </div>
+                                                     </Option>
+                                                   );
+                                                 })
+                                             }}
+                                             showSearch />
                   </div>
                   {
                     !!USERMESSAGE && <div className="user-logo">

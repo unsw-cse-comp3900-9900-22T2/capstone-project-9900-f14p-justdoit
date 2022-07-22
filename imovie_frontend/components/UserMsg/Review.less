@@ -1,0 +1,112 @@
+.ReviewComponent{
+  width : 100%;
+  margin-top:20px;
+  padding-bottom: 20px;
+  .title-box{
+    display: flex;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 1px solid #ececec;
+    .title{
+      font-size : 16px;
+      color:#333;
+      font-weight: bold;
+      line-height: 60px;
+      margin: 0;
+    }
+  }
+  .list-detail-pagination{
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .imgBox{
+    position: relative;
+    width : 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 40px auto 20px auto;
+    .review-box{
+       display: flex;
+       width :100%;
+      box-sizing: border-box;
+      padding: 30px;
+      border-radius: 10px;
+       border: 1px solid #dcdcdc;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 10px;
+      .movie-box{
+         width : 150px;
+        .movie-logo{
+           width :100%;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: 50%;
+          display: flex;
+           &:after{
+             content: "";
+             padding-top: 150%;
+           }
+        }
+       }
+      .review-message{
+         width:calc(100% - 180px);
+        .movie-name{
+          font-size: 14px;
+          font-weight: bold;
+          margin:0 0 10px 0;
+          text-decoration: underline;
+          cursor:pointer;
+        }
+        .rate{
+           font-size : 17px;
+        }
+        .review-body-msg{
+           margin-top:10px;
+           font-size :16px;
+
+        }
+        .operation{
+          margin-top: 10px;
+          .operation-like-number{
+            color:#00e054
+          }
+        }
+      }
+      .del{
+        position: absolute;
+        right: -50px;
+        top: -50px;
+        z-index: 12;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        cursor: pointer;
+        border-radius: 50%;
+        background: rgba(0,0,0,.6);
+        .del-icon{
+          font-size: 20px;
+          color: #fff;
+          margin-top: 60px;
+          margin-left: 20px;
+        }
+      }
+    }
+  }
+  .empty{
+      width : 100%;
+      margin:  0 auto;
+     img {
+        display: block;
+       width: 15%;
+       margin: 10px auto 10px auto;
+     }
+    h5{
+      text-align: center;
+      font-size: 14px;
+      color:#cdcdcd;
+    }
+  }
+}

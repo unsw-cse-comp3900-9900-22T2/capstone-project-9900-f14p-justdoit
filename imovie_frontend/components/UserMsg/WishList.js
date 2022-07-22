@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import { Select, Pagination, Modal,message} from "antd";
 const {Option} = Select;
@@ -7,8 +6,8 @@ import _ from "lodash"
 import ImageDomComponent from "../Home/ImageDom"
 const { confirm } = Modal;
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {getWishlist,wishlistAddOrDelete,clearWishlist} from "../../pages/MockData";
-const WishListComponent = ({uid}) => {
+import {getWishlist,wishlistAddOrDelete,clearWishlist,wish_to_watch} from "../../pages/MockData";
+const WishListComponent = ({uid,isMySelf}) => {
     const [sortList] = useState([{
       key : 0,
       value : "Add Time"
@@ -66,14 +65,21 @@ const WishListComponent = ({uid}) => {
 
       })
     }
-  function addWatchList() {
+  function wish_to_Watch() {
     confirm({
-      title: 'Are you sure you want to turn all the movies on Wishlist into watched?',
+      title: 'Are you sure you want to turn all the movies on Wishlist into Watchlist?',
       icon: <ExclamationCircleOutlined />,
       okText : "YES",
       cancelText : "NO",
       onOk() {
-        console.log('OK');
+        wish_to_watch({uid}).then(res => {
+          if(res.code === 200){
+             message.success("Add successfully");
+             fetchData();
+          }else{
+            message.error("Add failed");
+          }
+        })
       }
     });
   }
@@ -84,9 +90,7 @@ const WishListComponent = ({uid}) => {
       okText : "YES",
       cancelText : "NO",
       onOk() {
-        clearWishlist({
-           uid
-        }).then(res => {
+        clearWishlist({uid}).then(res => {
            if(res.code === 200){
               message.success("Clear successfully");
               fetchData();
@@ -114,32 +118,44 @@ const WishListComponent = ({uid}) => {
   }
     return (
       <React.Fragment>
+        {/* 样式表 */}
         <style dangerouslySetInnerHTML={{ __html: WishListStyle }} />
+        {/* 整个组件 */}
          <div className="wishListComponent">
+              {/* 操作框 */}
               <div className={"title-box"}>
                   <p className="title">
                     You want to see
                   </p>
                 {
+                  // 条件判断
                   page.total > 0 &&
                   <div className={"operation"}>
-                    <h6
-                      onClick={() => {
-                        addWatchList();
-                      }}
-                      className={"operation-item"}>
-                      add films to watchlist
-                    </h6>
-                    <div className={"line"}/>
-                    <h6
-                      onClick={() => {
-                        clearWishList();
-                      }}
-                      className={"operation-item"}>
-                      clear wishlist
-                    </h6>
-                    <div className={"line"}/>
+                      {
+                          isMySelf && <>
+                              <h6
+                                  onClick={() => {
+                                      wish_to_Watch();
+                                  }}
+                                  className={"operation-item"}>
+                                  add all films to watchlist
+                              </h6>
+                              {/* 竖线 */}
+                              <div className={"line"}/>
+                              <h6
+                                  onClick={() => {
+                                      clearWishList();
+                                  }}
+                                  className={"operation-item"}>
+                                  clear wishlist
+                              </h6>
+                              <div className={"line"}/>
+                          </>
+                      }
+
+                    {/* 下拉框 */}
                     <Select
+                    // 干嘛用的没看懂？？？？？？？？？？？？？？？？？？
                       onChange={(value) => {
                         selectChange(value);
                       }}
@@ -149,6 +165,7 @@ const WishListComponent = ({uid}) => {
                       placeholder={"SORT BY"}
                       style={{ width: 150, textAlign : "center" }} bordered={false}>
                       {
+                        // 添加下拉框选项
                         sortList && sortList.map((item, index) => {
                           return <Option value={item.key}>{item.value}</Option>
                         })
@@ -165,7 +182,10 @@ const WishListComponent = ({uid}) => {
                                              wishListDo={()=>{
                                                fetchData();
                                              }}
+                                             isNotMyself={!isMySelf}
                                              clearMovie={(index3)=>{
+                                              // 这个index3是什么时候得到值的？？？？？？？？和下面那个index={index}不是一个？
+                                               console.log(index3)
                                                confirm({
                                                  title: 'Are you sure you want to remove this movie from your wishlist?',
                                                  icon: <ExclamationCircleOutlined />,
@@ -179,7 +199,7 @@ const WishListComponent = ({uid}) => {
                                              marginRight={{
                                                marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                                              }}
-                                            showClear={true}
+                                            showClear={isMySelf && true || false}
                                             item={item}
                                             index={index}
                                             isLogin={true}

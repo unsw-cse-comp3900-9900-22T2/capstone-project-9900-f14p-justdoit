@@ -5,6 +5,7 @@ ZID: z5304428
 
 -----------------------------------------------------------------------------------------
 Week1
+
 We set up a group and choose our team name. Next, we discussed the topic and needs we wanted to do. Then, I create a github account, a jira account 
 and then learn how to use jira software and connect it to github as well as how to upload and update files through terminal.
 In addition, I read the project 2 documents which is movie finder system carefully. Then, I start to search and read some related papers on our topic 
@@ -14,6 +15,7 @@ write date: 05/06/2022
 
 -----------------------------------------------------------------------------------------
 Week2
+
 I attended a meeting with other team members. We discussed about the design of the software requirements and architecture. 
 In addition, I wrote part of the user stories and came up with some novel ideas. I've been learning the fundamental algorithm knowledge 
 and learn how to use Jira software throughout the whole week. And we also plan to start writing our proposal.
@@ -22,6 +24,7 @@ write date: 12/06/2022
 
 -----------------------------------------------------------------------------------------
 week3
+
 Configuring the back-end and front-end environments and familiar with the database basic operations.
 Working on our proposal. And thinking about some novel features according different systems.
 
@@ -29,6 +32,7 @@ write date: 19/06/2022
 
 -----------------------------------------------------------------------------------------
 week4
+
 We had a meeting this week, assigned tasks and we are working on Sprint1. And we also updated the database 
 to make it more complete. We then discussed how to optimize the user interface for a better user experience.
 In addition, we also discussed some details about our demo in Week5 and prepared a presentation outline for the demo.
@@ -37,6 +41,7 @@ write date: 24/06/2022
 
 -----------------------------------------------------------------------------------------
 week5
+
 We imported the ready data into the database, tested the various features of the system we had built in Sprint1, reported bugs, fixed 
 them and then continued testing. In addition, we prepare the draft of Demo A, revised it and rehearsed several times during this week.
 This week, we met for an hour after the lab to talk about what went right and wrong in Sprint1 and how to improve the functionality of 
@@ -46,14 +51,29 @@ write data: 01/07/2022
 
 -----------------------------------------------------------------------------------------
 week6
+
 This is a flexible week. And I focused on revising the Retrospective A report.
 
 write data: 08/07/2022
 
 -----------------------------------------------------------------------------------------
+week7
 
+There is still some difficulties. Fortunately, we solved most of them. Now our web system can work very well on user registration and login and through send email to user's email address to ensure it belongs to the user when a user need to register a new account. 
+Make changes and continue to improve Retrospective A report. 
+Start to write the final repor
 
+write data: 15/07/2022
 
+-----------------------------------------------------------------------------------------
+week8
 
+In this week, I kept testing the system, fixing bugs and make it work as expected. Also I finished the background part, the majority parts of the Software Architecture in the final report, and the database construction part. 
+Moreover, we have a meeting to discuss some details to talk about our demo B in this week and then prepare the presentation outline. 
+On weekends, I finished the Retrospective B report.
+
+write data: 22/07/2022
+
+-----------------------------------------------------------------------------------------
 
 

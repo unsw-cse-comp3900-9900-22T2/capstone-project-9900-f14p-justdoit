@@ -1223,9 +1223,6 @@ def display_usersMovieReview():
         .order_by(movieReviewModel.utime.desc())\
         .all()
 
-
-    if not movieReviews:
-        return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
     try:
         movieReviews_list = []
         result = {}

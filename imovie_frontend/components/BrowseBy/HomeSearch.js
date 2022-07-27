@@ -5,8 +5,8 @@ import { Button, Pagination ,message} from "antd";
 import _ from "lodash"
 import ImageDomComponent from "../Home/ImageDom";
 import {browseBy} from "../../pages/MockData";
-import {tableGet, tableSet,tableGetValue} from "../../util/common";
-const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
+import {tableGet, tableSet, tableGetValue, isVisitor} from "../../util/common";
+const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy,USERMESSAGE}) => {
   const [isSearch,changeSearchIsSearch] = useState(!!queryForBrowseBy);
     const [selectOption,changeSelectOption] = useState({
       area : null,
@@ -499,7 +499,7 @@ const HomeSearch = ({changeIsSearch,uid,queryForBrowseBy}) => {
                   return <ImageDomComponent
                     item={item}
                     index={index}
-                    isLogin={!!uid}
+                    isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
                     marginRight={{
                       marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                     }}

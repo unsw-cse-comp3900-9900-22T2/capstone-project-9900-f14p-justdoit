@@ -5,7 +5,7 @@ import {movieSimilerRecommend, searchResult, movieRecommendUser, getMovies} from
 import ImageDomComponent from "../../components/Home/ImageDom";
 import { message, Pagination } from "antd";
 import _ from "lodash";
-import { tableGetValue, tableSet } from "../../util/common";
+import {isVisitor, tableGetValue, tableSet} from "../../util/common";
 import {LoadingOutlined} from "@ant-design/icons";
 const similarMovie = ({USERMESSAGE,queryForBrowseBy,listType}) => {
   const [imgList,changeImgList] = useState([]);
@@ -134,7 +134,7 @@ const similarMovie = ({USERMESSAGE,queryForBrowseBy,listType}) => {
                   return <ImageDomComponent
                     item={item}
                     index={index}
-                    isLogin={!!USERMESSAGE && !!USERMESSAGE.uid}
+                    isLogin={!!USERMESSAGE && !!USERMESSAGE.uid && !isVisitor(USERMESSAGE)}
                     marginRight={{
                       marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                     }}

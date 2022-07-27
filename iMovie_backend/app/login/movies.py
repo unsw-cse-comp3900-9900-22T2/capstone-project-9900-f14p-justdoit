@@ -157,6 +157,22 @@ def get_movie_detail():
     result = res_movie_detail(uid, user, movie)
 
     return jsonify({'code': 200, 'result': result})
+# def count_history():
+#     history_dict = {}
+#     history = viewhistoryModel.query.all()
+#     for i in history:
+#
+#         # print(i.uid, i.mid, i.rate)
+#         if history_dict.get(i.mid) == None:
+#
+#             history_dict.setdefault(i.mid, i.frequency)
+#         else:
+#             history_dict[i.mid] = history_dict[i.mid] + i.frequency
+#
+#     a1 = sorted(history_dict.items(), key=lambda x: x[1], reverse=True)
+#     for f in a1:
+#
+#     return history_dict
 
 
 def get_movies():
@@ -1275,6 +1291,5 @@ def delete_userReview():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})
-
 
 

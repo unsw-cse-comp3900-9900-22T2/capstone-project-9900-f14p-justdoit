@@ -1,5 +1,6 @@
 
 import { Base64 } from "js-base64"
+import {registerVisitor} from "../pages/MockData";
 export const ten = (str) => {
   return str * 1 < 10 ? '0' + str : str + ''
 }
@@ -102,6 +103,12 @@ export const getContentHrefForKnowledge = (content) => {
     )
   })
   return content
+}
+export const isVisitor = (cookie) => {
+   if(!cookie || !cookie.uid || cookie.role === 2){
+     return true
+   }
+   return false
 }
 export const addHref = (type, val) => {
   try {

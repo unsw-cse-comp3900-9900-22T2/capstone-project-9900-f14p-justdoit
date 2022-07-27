@@ -9,7 +9,7 @@ import DocunceSelectComponent from "../components/DounceSelect"
 import LoginComponent from "../components/Login"
 import RegesterComponent from "../components/Regester"
 import ResetPasswordComponent from "../components/ResetPassword"
-import { delCookie } from "../util/common";
+import { delCookie ,isVisitor} from "../util/common";
 import { Base64 } from "js-base64";
 import { searchBy } from "./MockData";
 const Page = ({ router, children,USERMESSAGE }) => {
@@ -75,6 +75,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
         MSGList = [{
           key : 1,
           value : msg.username,
+          hasBorder : !!isVisitor(USERMESSAGE),
           onHref : true
         },{
           key : 2,
@@ -83,54 +84,56 @@ const Page = ({ router, children,USERMESSAGE }) => {
           onHref : true
         }]
       }
+      if(!isVisitor(USERMESSAGE)){
+          MSGList = [...MSGList,...[{
+              key : 3,
+              value : "Profile",
+              hasBorder : false,
+              href : "/movie/userMsg"
+          },
+              {
+                  key : 5,
+                  value : "Wishlist",
+                  hasBorder : false,
+                  href : "/movie/userMsg?activeKey=1&nouser=1"
+              },
+              {
+                  key : 6,
+                  value : "Watchlist",
+                  hasBorder : false,
+                  href : "/movie/userMsg?activeKey=2&nouser=1"
+              },
+              {
+                  key : 4,
+                  value : "History",
+                  hasBorder : false,
+                  href : "/movie/userMsg?activeKey=4&nouser=1"
+              },
+              // {
+              //   key : 7,
+              //   value : "movie lists",
+              //   hasBorder : false,
+              //   href : "/movie/userMsg?activeKey=3&nouser=1"
+              // },
+              {
+                  key : 8,
+                  value : "Review",
+                  hasBorder : false,
+                  href : "/movie/userMsg?activeKey=5&nouser=1"
+              },
+              {
+                  key : 9,
+                  value : "Like",
+                  hasBorder : false,
+                  href : "/movie/userMsg?activeKey=6&nouser=1"
+              },{
+                  key : 10,
+                  value : "Dislike",
+                  hasBorder : true,
+                  href : "/movie/userMsg?activeKey=7&nouser=1"
+              }]]
+      }
       changeUserTabList([...MSGList,...[{
-        key : 3,
-        value : "Profile",
-        hasBorder : false,
-        href : "/movie/userMsg"
-      },
-        {
-        key : 5,
-        value : "Wishlist",
-        hasBorder : false,
-        href : "/movie/userMsg?activeKey=1&nouser=1"
-      },
-        {
-        key : 6,
-        value : "Watchlist",
-        hasBorder : false,
-        href : "/movie/userMsg?activeKey=2&nouser=1"
-      },
-      {
-        key : 4,
-        value : "History",
-        hasBorder : false,
-        href : "/movie/userMsg?activeKey=4&nouser=1"
-      },
-      // {
-      //   key : 7,
-      //   value : "movie lists",
-      //   hasBorder : false,
-      //   href : "/movie/userMsg?activeKey=3&nouser=1"
-      // },
-       {
-       key : 8,
-       value : "Review",
-       hasBorder : false,
-       href : "/movie/userMsg?activeKey=5&nouser=1"
-      },
-      {
-        key : 9,
-        value : "Like",
-        hasBorder : false,
-        href : "/movie/userMsg?activeKey=6&nouser=1"
-      },{
-        key : 10,
-        value : "Dislike",
-        hasBorder : true,
-        href : "/movie/userMsg?activeKey=7&nouser=1"
-      },
-        {
         key : 11,
         value : "Sigh Out",
         hasBorder : false
@@ -157,7 +160,11 @@ const Page = ({ router, children,USERMESSAGE }) => {
     if(key === 11){
       delCookie('USER_MESSAGE');
       window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
-      window.location.reload();
+      if((window.location.pathname || "").indexOf("/movie/userMsg") >= 0){
+        window.location.href = "/movie/home"
+      }else{
+          window.location.reload();
+      }
     }
   }
 
@@ -354,6 +361,9 @@ const Page = ({ router, children,USERMESSAGE }) => {
                                 border:"none"
                               }}>
                                 {userTabList && userTabList.map((item)=>{
+                                    if(!item.value){
+                                       return null
+                                    }
                                   return <li
                                     onClick={()=>{
                                       userTabClick(item)

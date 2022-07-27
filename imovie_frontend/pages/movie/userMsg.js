@@ -15,6 +15,7 @@ import WatchListComponent from "../../components/UserMsg/WatchList"
 import HisToryComponent from "../../components/UserMsg/HisTory"
 import DisLikeComponent from "../../components/UserMsg/DisLike"
 import LiKeComponent from "../../components/UserMsg/LiKe"
+import FollowComponent from "../../components/UserMsg/Follow"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
@@ -28,7 +29,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     username : ""
   });
   const [showDom,changeShowDom] = useState(false);
-  const [isFollow,changeIsFollow] = useState(false)
+  const [isFollow,changeIsFollow] = useState(true);
+  const followerRef = useRef();
   const [tabList] = useState([{
      key : 1,
      value : "Wishlist",
@@ -131,11 +133,27 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
               <div className={"following-box"}>
                  <div className={"following"}>
                     <h6>{userMsg.following_count || 0}</h6>
-                    <h5 className={"border-none"}>FOLLOWING</h5>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.following_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWING",1);
+                        }}
+                        className={"border-none"}>FOLLOWING</h5>
                  </div>
                   <div className={"following"}>
                     <h6>{userMsg.followers_count || 0}</h6>
-                    <h5>FOLLOWERS</h5>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.followers_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWERS",2);
+                        }}
+                    >FOLLOWERS</h5>
                   </div>
               </div>
               {!initQuery.nouser && <div className="user-message-title">
@@ -234,6 +252,9 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
               }}/>
           )
       }
+      <FollowComponent followRef={followerRef}
+                       isMySelf={isMySelf}
+                       USERMESSAGE={USERMESSAGE} initQuery={initQuery}/>
     </PageBase>
   )
 }

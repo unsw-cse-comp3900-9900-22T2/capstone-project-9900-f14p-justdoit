@@ -171,3 +171,6 @@ export function registerVisitor(param){
 export function followOrNot(param){
     return fetchData('http://127.0.0.1:5000/app/movies/follow_or_not', param);
 }
+export function getFollowers(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/get_followers', param);
+}

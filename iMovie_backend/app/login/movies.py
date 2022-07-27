@@ -1332,5 +1332,33 @@ def follow_or_not():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'follow or not others failed', 'error_msg': str(e)})
 
+def get_followers():
+    data = request.get_json(force=True)
+    uid = data["uid"]   # owner user
+    usr = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not usr:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+
+
+    follow_info = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).all()
+    try:
+        result = dict()
+        follow_lst = list()
+        for f in follow_info:
+            follow_dict = dict()
+            fuid = f.fuid
+            follow_dict["user_id"] = fuid
+            u = UserModel.query.filter(UserModel.uid == fuid, UserModel.active == 1).first()
+            if not u:
+                return jsonify({'code': 400, 'msg': 'following user does not exist'})
+            name = u.username
+            follow_dict["user_name"] = name
+            follow_lst.append(follow_dict)
+        result["follow_lst"] = follow_lst
+        result["count"] = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).count()
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'get followers failed', 'error_msg': str(e)})
 
 

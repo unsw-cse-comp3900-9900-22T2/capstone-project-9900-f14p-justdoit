@@ -6,7 +6,7 @@ import {getUserDetail} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
   HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
-import { delCookie } from "../../util/common";
+import {delCookie, isVisitor} from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
 import ReviewsComponent from "../../components/UserMsg/Review"
@@ -70,6 +70,9 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
       }
       if(isMySelf){
         addHref("uid","");
+        if(!USERMESSAGE || isVisitor(USERMESSAGE)){
+           window.location.href = "/movie/home"
+        }
       }
       getUserDetail({
         uid : isMySelf ? (USERMESSAGE && USERMESSAGE.uid) : initQuery.uid

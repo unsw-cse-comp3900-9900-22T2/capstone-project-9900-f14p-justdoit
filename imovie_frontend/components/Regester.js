@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import {message, Modal, Input, Checkbox, Button} from "antd";
 import { Base64 } from "js-base64";
-import {checkEmail, checkUsername, sendEmail, userLogin, userRegister} from "../pages/MockData";
+import {checkEmail, checkUsername, sendEmail, userLogin, userRegister,registerVisitor} from "../pages/MockData";
 import {KeyOutlined, LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
 import _ from 'lodash'
 import loginStyle from "./login.less";
+import {setCookie} from "../util/cookie";
 const md5 = require('js-md5')
 const Regester = ({regesterRef,changeLoginInVisible}) => {
     const [registerVisible, changeRegisterVisible] = useState(false);
@@ -346,6 +347,28 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             changeLoginInVisible && changeLoginInVisible(true)
           }}>LOGIN</span>
           </h6>
+            <h6 className={"register-to-login"}>
+                Don't want to register?<span onClick={()=>{
+                registerVisitor({}).then(res => {
+                    if(res.code === 200){
+                        message.success("Your registration was successful");
+                        const msg = res.result;
+                        const {uid,token,email,username,role} = msg;
+                        setCookie("USER_MESSAGE",JSON.stringify({
+                            uid,
+                            token,
+                            role
+                        }),30);
+                        window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
+                            email,username
+                        })));
+                        window.location.reload();
+                    }else{
+                        message.error(res.msg)
+                    }
+                })
+            }}>Create a visitor account</span>
+            </h6>
           <div className={"check-box"}>
             <Checkbox
               onChange={(e)=>{

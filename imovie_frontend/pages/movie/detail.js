@@ -12,6 +12,7 @@ import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrD
   ,displayMovieReview,likeReview} from "../MockData";
 import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
+import {isVisitor} from "../../util/common";
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -451,7 +452,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               </div>}
             </div>
             {
-              !!isLogin && <div className={"operation"}>
+              !!isLogin && !isVisitor(USERMESSAGE) &&
+                <div className={"operation"}>
                 <div className={"operation-image"}>
                   <div
                     onClick={() => {
@@ -517,7 +519,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }
         {!!movieDetail && <div className={"reviews-list"}>
               <div className={"review-title"}>
-                <p>Related Reviews{!!isLogin && <span  onClick={()=>{
+                <p>Related Reviews{!!isLogin && !isVisitor(USERMESSAGE)
+                    && <span  onClick={()=>{
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
                                               && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
                                                 movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
@@ -560,7 +563,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                 &nbsp;({(item.rate || 0) <= 0 ? 0 : (item.rate)})
                             </div>}
                         </div>
-                        <div className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                        <div className={`review-body-msg ${(!isLogin || isVisitor(USERMESSAGE)) && "review-body-msg-margin-bottom" || ""}`}>
                           {item.review}
                         </div>
                        <div style={{
@@ -568,7 +571,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                          marginTop: "5px",
                          color : "#999"
                        }} className={"userName"}>&nbsp;{item.utime}</div>
-                       {!!isLogin && <div style={{
+                       {!!isLogin && !isVisitor(USERMESSAGE) && <div style={{
                           marginBottom : "15px"
                        }} className={"operation"}>
                          <div className={"operation-like"}>
@@ -644,7 +647,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                  </div>
                                  <div
                                      style={{marginTop : "5px"}}
-                                     className={`review-body-msg ${!isLogin && "review-body-msg-margin-bottom" || ""}`}>
+                                     className={`review-body-msg ${(!isLogin || isVisitor(USERMESSAGE)) && "review-body-msg-margin-bottom" || ""}`}>
                                    {item2.review}
                                  </div>
                                  <div style={{
@@ -673,7 +676,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           }}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
                              listCount={recommendListCount}
-                             isLogin={isLogin} list={recommendList} title={isLogin ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
+                             isLogin={isLogin && !isVisitor(USERMESSAGE)} list={recommendList} title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){

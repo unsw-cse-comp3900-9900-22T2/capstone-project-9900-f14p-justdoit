@@ -4,6 +4,7 @@ import ScrollImageComponent from "../../components/Home/ScrollImage"
 import HomeSearchComponent from "../../components/BrowseBy/HomeSearch"
 import homeStyle from "./home.less";
 import {getMovies} from "../MockData";
+import {isVisitor} from "../../util/common";
 import UserMsg from "./userMsg";
 const BrowseBy = ({USERMESSAGE,queryForBrowseBy}) => {
   const [list,changeList] = useState([]);
@@ -413,13 +414,15 @@ const BrowseBy = ({USERMESSAGE,queryForBrowseBy}) => {
       <HomeSearchComponent
           queryForBrowseBy={queryForBrowseBy}
         uid={USERMESSAGE && USERMESSAGE.uid || null}
+          USERMESSAGE={USERMESSAGE}
         changeIsSearch={(isSear)=>{
         changeIsSearch(isSear)
       }}/>
       {!isSearch && <ScrollImageComponent
           listCount={200}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
-                            isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>}
+                            isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
+          list={list} title={"RECENT POPULAR FILMS"}/>}
     </PageBase>
   )
 }

@@ -17,7 +17,7 @@ def login():
     if not username or not password:
         return jsonify({'code': 400, 'msg': 'Please enter the account and password'})
 
-    user = UserModel.query.filter(UserModel.username == username, UserModel.active == 1).first()
+    user = UserModel.query.filter(UserModel.username == username, UserModel.active == 1, UserModel.role != 2).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
 
@@ -30,6 +30,7 @@ def login():
     result["token"] = GenToken(user)
     result["uid"] = user.uid
     result["email"] = user.email
+    result["role"] = user.role
     result["username"] = user.username
 
     return jsonify({'code': 200, 'msg': 'Login successful', 'result': result})
@@ -90,6 +91,24 @@ def register():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Registration failure', 'error_msg': str(e)})
+
+def register_visitor():
+    username = randomString(8)
+    email = randomString(8) + "visitor@mail.com"
+    password = "visitor123456"
+    result = {}
+
+    time_form = getTime()[0]
+    uid = getUniqueid()
+
+    user = UserModel(username=username,email = email,password=password, role=2, uid=uid, ctime=time_form, utime=time_form)
+    db.session.add(user)
+    db.session.commit()
+    result["uid"] = uid
+    result["role"] = 2
+    result["username"] = username
+    return jsonify({'code': 200, 'msg': 'Successful registration', 'result': result})
+
 
 
 

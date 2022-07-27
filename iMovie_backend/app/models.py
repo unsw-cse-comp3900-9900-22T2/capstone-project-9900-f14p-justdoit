@@ -20,7 +20,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
-    role = db.Column(db.Integer, nullable=False, default=0)   # 0:user,  1:admin
+    role = db.Column(db.Integer, nullable=False, default=0)   # 0:user,  1:admin, 2:visitor
     verifycode = db.Column(db.Integer, nullable=True)  # change password send verifycode to email
     active = db.Column(db.Integer, nullable=False, default=1)  # 0:delete,  1:not delete
     description = db.Column(db.TEXT)  # user description in user profile

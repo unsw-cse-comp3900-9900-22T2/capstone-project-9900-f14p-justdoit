@@ -165,3 +165,6 @@ export function movieSimilerRecommend(param) {
 export function movieRecommendUser(param) {
     return fetchData('http://127.0.0.1:5000/app/recommend/movie_recommend_user', param);
 }
+export function registerVisitor(param){
+    return fetchData('http://127.0.0.1:5000/app/views/register_visitor', param);
+}

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ScrollImageComponent from "../../components/Home/ScrollImage"
 import homeStyle from "./home.less";
 import {getMovies,movieRecommendUser} from "../MockData";
+import {isVisitor} from "../../util/common";
 const Home = ({USERMESSAGE}) => {
   const [list,changeList] = useState([])
   const [recommendList,changeRecommendList] = useState([])
@@ -31,7 +32,7 @@ const Home = ({USERMESSAGE}) => {
          changeList(_list)
        }
     })
-      if(USERMESSAGE && USERMESSAGE.uid){
+      if(USERMESSAGE && USERMESSAGE.uid && !isVisitor(USERMESSAGE)){
           movieRecommendUser({
               uid : USERMESSAGE && USERMESSAGE.uid || null,
               page_index : 0,
@@ -64,11 +65,13 @@ const Home = ({USERMESSAGE}) => {
       <style dangerouslySetInnerHTML={{ __html: homeStyle }} />
       <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
                             listCount={200}
-                            isLogin={!!USERMESSAGE} list={list} title={"RECENT POPULAR FILMS"}/>
+                            isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
+                            list={list} title={"RECENT POPULAR FILMS"}/>
         {recommendList && recommendList.length > 0 &&
             <ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}
                                    listCount={recommendListCount}
-                             isLogin={!!USERMESSAGE} list={recommendList} title={"RECOMMENDATION FOR YOU"}/>}
+                                   isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
+                                   list={recommendList} title={"RECOMMENDATION FOR YOU"}/>}
       {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
       {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
     </PageBase>

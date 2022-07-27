@@ -10,9 +10,22 @@
         width : 100%;
         .profile-item{
             margin-bottom: 20px;
+            position: relative;
             h6{
                 font-size: 16px;
                 color:#666;
+            }
+            .errorMsgTip{
+                position: absolute;
+                bottom: -17px;
+                left: 0;
+                font-size: 12px;
+                line-height: 12px;
+                margin-bottom: 0;
+                color: red;
+                &.errorMsgTipSuccess{
+                    color:#00e054;
+                }
             }
         }
     }

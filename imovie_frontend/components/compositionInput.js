@@ -28,6 +28,7 @@ const InputComponent = (props) => {
                     value = e
                 }
                 props.onSearch && props.onSearch(value || "");
+                props.changeForSearchValueInit && props.changeForSearchValueInit(value || "");
             }
 
         }

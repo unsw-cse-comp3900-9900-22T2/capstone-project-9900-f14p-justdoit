@@ -23,22 +23,51 @@ def init_app(app: Flask):
         sender = Mail(app)
         # mail ： https://temp-mail.org/en/
         user = UserModel.query.filter(UserModel.email == receiver, UserModel.active == 1).first()
-        msg = Message('Only Movie', recipients=[receiver])
-        msg.body = 'Dear ' +  user.username + ",\n"\
-                "Please use this verification code to reset your password. So we want to make sure it’s really you.\n"\
-                "The Verification code  ："+str(verifycode) + "\n"\
-                "Thanks for helping ups keep your account secure.\n"\
-                "The OnlyMovie Team.\n"
+        if user:
+            msg = Message('Only Movie', recipients=[receiver])
+            msg.body = 'Dear ' +  user.username + ",\n"\
+                    "Please use this verification code to reset your password. So we want to make sure it’s really you.\n"\
+                    "The Verification code  ："+str(verifycode) + "\n"\
+                    "Thanks for helping ups keep your account secure.\n"\
+                    "The OnlyMovie Team.\n"
 
-        try:
-            user.verifycode = verifycode
-            user.utime = getTime()[0]
-            db.session.commit()
-            sender.send(msg)
-            return jsonify({'code': 200, 'msg': 'sent email succesfully'})
+            try:
+                user.verifycode = verifycode
+                user.utime = getTime()[0]
+                db.session.commit()
+                sender.send(msg)
+                return jsonify({'code': 200, 'msg': 'sent email succesfully'})
 
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
+            except Exception as e:
+                return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
+        else:
+
+            msg = Message('Only Movie', recipients=[receiver])
+            msg.body = 'Dear User,\n'\
+                        "Please use this verification code to register your account. So we want to make sure it’s really you.\n" \
+                                                 "The Verification code  ：" + str(verifycode) + "\n" \
+                                                    "Thanks for helping ups keep your account secure.\n" \
+                                                                "The OnlyMovie Team.\n"
+
+            try:
+                email = verifycodeModel.query.filter(verifycodeModel.email == receiver).first()
+                if email:
+                    email.verifycode = verifycode
+                    email.utime = getTime()[0]
+                    db.session.commit()
+                else:
+                    time_form = getTime()[0]
+                    email_new = verifycodeModel(email = receiver,verifycode=verifycode, ctime=time_form,
+                                     utime=time_form)
+                    db.session.add(email_new)
+                    db.session.commit()
+
+                sender.send(msg)
+                return jsonify({'code': 200, 'msg': 'sent email succesfully'})
+
+            except Exception as e:
+                return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
+
     app.add_url_rule("/app/views/send_email", view_func=send_email, methods=['GET','POST'])
 
     #

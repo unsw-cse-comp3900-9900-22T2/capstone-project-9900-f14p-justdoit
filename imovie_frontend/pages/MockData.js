@@ -54,6 +54,12 @@ export function userRegister(param) {
 export function userLogin(param) {
     return fetchData('http://127.0.0.1:5000/login', param);
 }
+export function checkUsername(param) {
+    return fetchData('http://127.0.0.1:5000/app/views/check_username', param);
+}
+export function checkEmail(param) {
+    return fetchData('http://127.0.0.1:5000/app/views/check_email', param);
+}
 export function getUserDetail(param) {
     return fetchData('http://127.0.0.1:5000/app/views/get_user_detail', param);
 }
@@ -152,4 +158,10 @@ export function displayUsersMovieReview(param) {
 }
 export function deleteMovieReview(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/delete_movieReview', param);
+}
+export function movieSimilerRecommend(param) {
+    return fetchData('http://127.0.0.1:5000/app/recommend/movie_similer_recommend', param);
+}
+export function movieRecommendUser(param) {
+    return fetchData('http://127.0.0.1:5000/app/recommend/movie_recommend_user', param);
 }

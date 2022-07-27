@@ -41,7 +41,7 @@ const SearchMovie = ({USERMESSAGE,keywordForSearch,queryForBrowseBy}) => {
     searchResult({
       page_index : _pageObj.number - 1,
       page_size : _pageObj.size,
-      uid : USERMESSAGE.uid,
+      uid : USERMESSAGE && USERMESSAGE.uid || null,
       keyword
     }).then(res => {
       if(res.code === 200){
@@ -103,11 +103,11 @@ const SearchMovie = ({USERMESSAGE,keywordForSearch,queryForBrowseBy}) => {
                   return <ImageDomComponent
                     item={item}
                     index={index}
-                    isLogin={!!USERMESSAGE.uid}
+                    isLogin={!!USERMESSAGE && !!USERMESSAGE.uid}
                     marginRight={{
                       marginRight : index % 4 === 3 ? "0%" : "2.666666666%"
                     }}
-                    uid={USERMESSAGE.uid}
+                    uid={USERMESSAGE && USERMESSAGE.uid || null}
                   />
                 })}
                 {

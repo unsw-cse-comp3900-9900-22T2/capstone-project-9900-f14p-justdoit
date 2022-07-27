@@ -1,0 +1,117 @@
+
+.review-box-page-box{
+  .review-box-page{
+    width:80%;
+    margin-left: 10%;
+    .no-review-style{
+      text-align: center;
+      font-size: 20px;
+      color:#999;
+      margin : 30px 0
+    }
+    .review-box-item{
+      width:90%;
+      margin-left: 5%;
+      margin-top: 30px;
+      display: flex;
+      border-bottom: 1px solid #dfdfdf;
+      &.review-box-item-no-border{
+        border-bottom: none;
+      }
+      .user-logo{
+        height : 55px;
+        cursor:pointer;
+      }
+      .review-body{
+        margin-left: 30px;
+        .user-name{
+          display: flex;
+          .userName{
+            font-size: 14px;
+            color:#666;
+            span{
+              font-weight: bold;
+              color:#333;
+              margin-left: 5px;
+            }
+          }
+          .rate{
+            margin-left: 10px;
+          }
+        }
+        .review-body-msg{
+          margin-top: 10px;
+          font-size: 13px;
+          color:#333;
+          &.review-body-msg-margin-bottom{
+            margin-bottom: 30px;
+          }
+        }
+      }
+      .operation{
+        display: flex;
+        margin-top: 10px;
+        margin-bottom: 30px;
+        .operation-like{
+          display: flex;
+          margin-right: 10px;
+          .image-box{
+            img{
+              width : 20px;
+              cursor: pointer;
+              display: block;
+              margin:0 auto;
+            }
+          }
+          .a-href{
+            margin-left: 10px;
+            color: #40bcf4;
+            width:74px;
+          }
+        }
+        .operation-like-number{
+          margin-left: 30px;
+          color:#00e054
+        }
+        .operation-review-this{
+          margin-left: 30px;
+          color:#333;
+          cursor:pointer
+        }
+      }
+    }
+  }
+  .review-title-page{
+    display: flex;
+    width:80%;
+    margin-left: 10%;
+    justify-content:space-between;
+    border-bottom: 1px solid #d7d7d7;
+    height: 40px;
+    margin-top: 20px;
+    p{
+      font-size: 14px;
+      font-weight: 500;
+      margin:0;
+      span{
+        margin-left: 15px;
+        cursor: pointer;
+        color:#1d39c4;
+        text-decoration: underline;
+        font-size: 13px;
+        line-height: 22px;
+        font-weight: normal;
+      }
+    }
+    .review-more{
+      color:#333;
+      cursor:pointer;
+    }
+  }
+  .review-title-page-movie-name{
+    width:80%;
+    font-size: 16px;
+    font-weight: bold;
+    margin:30px 0 0 10%;
+  }
+}

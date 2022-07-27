@@ -1,6 +1,7 @@
 from flask import jsonify, Blueprint, request, g
 from sqlalchemy import exists, func
 from app.login.utils import *
+# from app.login.recommend import *
 from app.models import *
 from sqlalchemy import or_, and_, not_
 
@@ -1292,3 +1293,6 @@ def delete_userReview():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})
+
+
+

@@ -8,7 +8,8 @@ import { UserOutlined,MessageOutlined } from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
-import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,displayMovieReview,likeReview} from "../MockData";
+import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,movieSimilerRecommend
+  ,displayMovieReview,likeReview} from "../MockData";
 import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 const Detail = ({USERMESSAGE,initQuery}) => {
@@ -17,49 +18,8 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const [movieDetail,changeMovieDetail]=useState(null);
   const [rateChange,changeRateChange] = useState(true)
   const [reviewsList,changeReviewsList] = useState([])
-  const [recommendList,changeRecommendList] = useState([ [{
-    movieId :123323,
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :23000,
-    like :24,
-    isLike : false,
-    isLook : false,
-    isCollection : false,
-    collection : 256,
-    rate : 3,
-    year : "2022",
-    tags : [{
-      value : "Renre",
-      key : 1,
-    },{
-      value : "Renre1",
-      key : 2,
-    },{
-      value : "Renre2",
-      key : 3,
-    }],
-    movieName : "movie name",
-    director : ["jerry jackson"],
-    cast : ["Tom","Haidi"]
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :24,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :25,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  },{
-    image : "https://swiperjs.com/demos/images/nature-1.jpg",
-    look :26,
-    like :24,
-    collection : 256,
-    movieName : "movie name"
-  }]])
+  const [recommendList,changeRecommendList] = useState([])
+  const [recommendListCount,changeRecommendListCount] = useState(0)
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
   const reviewsThisRef = useRef();
@@ -79,6 +39,32 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   useEffect(()=>{
     if(initQuery && initQuery.movieId){
       displayMovieReviewService();
+      movieSimilerRecommend({
+        uid : USERMESSAGE && USERMESSAGE.uid || null,
+        mid : initQuery.movieId,
+        page_index : 0,
+        page_size : 16
+      }).then(res => {
+        if(res.code === 200){
+          const {result} = res;
+          const {mlist} = result;
+          const _list = [];
+          let  childList = [];
+          changeRecommendListCount(result.count);
+          for(let i = 0 ; i < mlist.length ; i++){
+            childList.push(mlist[i]);
+            if(i % 4 === 3){
+              _list.push(childList);
+              childList = _.cloneDeep(childList);
+              childList = [];
+            }
+          }
+          if(childList.length > 0){
+            _list.push(childList);
+          }
+          changeRecommendList(_list)
+        }
+      })
       getMovieDetail({
         uid : USERMESSAGE && USERMESSAGE.uid || null,
         mid : initQuery.movieId
@@ -331,6 +317,9 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     })
   }
   function goUserDetail(uid){
+    if(!USERMESSAGE || !(USERMESSAGE.uid)){
+      return;
+    }
     if(!uid){
        return null
     }
@@ -535,7 +524,12 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                                             }}
                 >add review</span>}</p>
                 {reviewsList && reviewsList.length > 2 &&
-                    <div className={"review-more"}>
+                    <div
+                        onClick={()=>{
+                          window.location.href = "/movie/reviewList?movieName=" + movieDetail.moviename + setYear(movieDetail.year)
+                              + "&movieId=" + initQuery.movieId
+                        }}
+                        className={"review-more"}>
                       More >
                     </div>
                 }
@@ -673,8 +667,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
               </div>
           </div>}
       </div>
-      {/*<ScrollImageComponent  uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
-      {/*                       isLogin={isLogin} list={recommendList} title={"RECOMMEND"}/>*/}
+      {recommendList && recommendList.length > 0 && <ScrollImageComponent
+          goHrefMore={()=>{
+            window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
+          }}
+          uid={USERMESSAGE && USERMESSAGE.uid || null}
+                             listCount={recommendListCount}
+                             isLogin={isLogin} list={recommendList} title={isLogin ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
       <RatingComponent
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){

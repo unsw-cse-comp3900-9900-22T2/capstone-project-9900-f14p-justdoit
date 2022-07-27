@@ -58,6 +58,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             // 用于判断互斥项是否为true
             if(iss) {
               _thisItem["is_user_wish"] = !iss;
+              wishListDo && wishListDo();
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["wishlist_num"] || 0) - 1;
             }
           }else{
@@ -88,6 +89,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
               _thisItem["wishlist_num"] = (_thisItem["wishlist_num"] || 0) + 1;
               if(iss) {
                 _thisItem["is_user_watch"] = !iss;
+                watchListDo && watchListDo();
                 _thisItem["watchlist_num"] = (_thisItem["watchlist_num"] || 0) - 1 < 0 ? 0 : (_thisItem["watchlist_num"] || 0) - 1;
               }
             }else{
@@ -119,6 +121,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             _thisItem["num_like"] = (_thisItem["num_like"] || 0) + 1;
             if(iss) {
               _thisItem["is_user_dislike"] = !iss;
+              disLikeDo && disLikeDo();
               // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) - 1 < 0 ? 0 : (_thisItem["num_dislike"] || 0) - 1;
             }
           }else{
@@ -149,6 +152,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             // _thisItem["num_dislike"] = (_thisItem["num_dislike"] || 0) + 1;
             if(iss) {
               _thisItem["is_user_like"] = !iss;
+              liKeDo && liKeDo();
               _thisItem["num_like"] = (_thisItem["num_like"] || 0) - 1 < 0 ? 0 : (_thisItem["num_like"] || 0) - 1;
             }
           }else{

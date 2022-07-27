@@ -7,6 +7,7 @@ import RateComponent from "../../components/Rate/RateComponent";
 import _ from "lodash";
 import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import reviewListStyle from "./reviewList.less"
+import {isVisitor} from "../../util/common";
 const ReviewList = ({USERMESSAGE,initQuery}) => {
     const [reviewsList,changeReviewsList] = useState([]);
     const reviewsThisRef = useRef();
@@ -119,7 +120,7 @@ const ReviewList = ({USERMESSAGE,initQuery}) => {
                                 marginTop: "5px",
                                 color : "#999"
                             }} className={"userName"}>&nbsp;{item.utime}</div>
-                            {!!isLogin && <div style={{
+                            {!!isLogin && !isVisitor(USERMESSAGE) && <div style={{
                                 marginBottom : "15px"
                             }} className={"operation"}>
                                 <div className={"operation-like"}>

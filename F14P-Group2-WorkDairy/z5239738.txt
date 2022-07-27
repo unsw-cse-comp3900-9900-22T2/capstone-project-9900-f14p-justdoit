@@ -99,3 +99,21 @@ Week5
 write date: 3/07/2022
 
 -----------------------------------------------------------------------------------------
+
+Week7
+
+* Week7 done work:
+1. movie recommendation algorithm backend (python)
+2. search movie function front-end
+3. browse by movie function front-end
+4. review movie related functions front-end
+
+* Week8 plan:
+1. test sprint2 function
+2. demoB
+
+write date: 17/07/2022
+
+-----------------------------------------------------------------------------------------
+
+

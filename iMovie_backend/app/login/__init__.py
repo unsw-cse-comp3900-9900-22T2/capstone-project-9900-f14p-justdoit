@@ -14,6 +14,7 @@ def init_route(app: Flask):
     app.add_url_rule('/app/views/modify_user_detail', view_func=views.modify_user_detail, methods=['POST'])
     app.add_url_rule('/app/views/check_username', view_func=views.check_username, methods=['POST'])
     app.add_url_rule('/app/views/check_email', view_func=views.check_email, methods=['POST'])
+    app.add_url_rule('/app/views/register_visitor', view_func=views.register_visitor, methods=['POST'])
 
     # for movies
     app.add_url_rule('/app/movies/get_movie_detail', view_func=movies.get_movie_detail, methods=['POST'])

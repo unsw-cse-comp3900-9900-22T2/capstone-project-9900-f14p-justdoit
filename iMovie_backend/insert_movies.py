@@ -52,6 +52,14 @@ for row in worksheet.rows:
     cur.execute("insert into movies(mid,id,moviename,year,director,description,duration,country,language,genre,cast,coverimage,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
 
 
+#
+# admin_uid = getUniqueid()
+# admin_name = "admin"
+# admin_email = [str(admin_uid),]
+
+
+admin = []
+
 cur.close()
 conn.commit()
 conn.close()

@@ -49,10 +49,11 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             if(res.code === 200){
               message.success("Your registration was successful");
               const msg = res.result;
-              const {uid,token,email,username} = msg;
+              const {uid,token,email,username,role} = msg;
               setCookie("USER_MESSAGE",JSON.stringify({
                 uid,
-                token
+                token,
+                role
               }),30);
               window.localStorage.setItem("USER_MESSAGE_FOR_USER",Base64.encode(JSON.stringify({
                 email,username

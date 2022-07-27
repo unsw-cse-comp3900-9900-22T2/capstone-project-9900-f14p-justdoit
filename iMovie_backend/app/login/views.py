@@ -4,7 +4,7 @@ from sqlalchemy import exists
 from app.login.utils import *
 
 from app.models import *
-
+from sqlalchemy import or_, and_, not_
 import time
 
 # movie = Blueprint('users', __name__)
@@ -149,7 +149,7 @@ def get_user_detail():
     result["username"] = user.username
     result["email"] = user.email
     result["description"] = user.description
-
+    result["following_count"] = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).count()
     return jsonify({'code': 200, "result": result})
 
 

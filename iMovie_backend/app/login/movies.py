@@ -1296,3 +1296,41 @@ def delete_userReview():
 
 
 
+def follow_or_not():
+    data = request.get_json(force=True)
+    o_uid = data["o_uid"]   # owner user
+    f_uid = data["f_uid"]   # follower user
+    follow_status = data["follow_status"]       # 0: cancel follow     1 : follow
+    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
+    if not o_usr:
+        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
+    f_usr = UserModel.query.filter(UserModel.uid == f_uid, UserModel.active == 1).first()
+    if not f_usr:
+        return jsonify({'code': 400, 'msg': 'follower user does not exist'})
+
+    follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid)).first()
+    try:
+        if not follow_info:
+            if follow_status == 0:
+                return jsonify({'code': 400, 'msg': 'You did not follow the user'})
+            else:
+                fid = getUniqueid()
+                time_form = getTime()[0]
+                follow_insert = followModel(fid = fid, uid = o_uid, fuid = f_uid, active = 1, ctime = time_form, utime = time_form)
+                db.session.add(follow_insert)
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'follow successfully'})
+
+        else:
+            if follow_info.active == follow_status:
+                return jsonify({'code': 400, 'msg': 'already on this status'})
+            else:
+                follow_info.active = follow_status
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'follow or cancel successfully'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'follow or not others failed', 'error_msg': str(e)})
+
+
+

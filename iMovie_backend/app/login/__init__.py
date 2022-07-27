@@ -74,3 +74,6 @@ def init_route(app: Flask):
     app.add_url_rule('/app/recommend/movie_similer_recommend', view_func=recommend.movie_similer_recommend, methods=['POST'])
     # similar user movies
     app.add_url_rule('/app/recommend/movie_recommend_user', view_func=recommend.movie_recommend_user, methods=['POST'])
+
+    #followe / not follow users
+    app.add_url_rule('/app/movies/follow_or_not', view_func=movies.follow_or_not, methods=['POST'])

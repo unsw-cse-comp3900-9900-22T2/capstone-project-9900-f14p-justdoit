@@ -1375,3 +1375,38 @@ def get_followers():
         return jsonify({'code': 400, 'msg': 'get followers failed', 'error_msg': str(e)})
 
 
+def block_user():
+    data = request.get_json(force=True)
+    o_uid = data["o_uid"]   # owner user
+    b_uid = data["f_uid"]   # blocker user
+    block_status = data["block_status"]       # 0: cancel block     1 : block
+    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
+    if not o_usr:
+        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
+    b_usr = UserModel.query.filter(UserModel.uid == b_uid, UserModel.active == 1).first()
+    if not b_usr:
+        return jsonify({'code': 400, 'msg': 'blocker user does not exist'})
+
+    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == o_uid, blocklistModel.bid == b_uid)).first()
+    try:
+        if not block_info:
+            if block_status == 0:
+                return jsonify({'code': 400, 'msg': 'You did not block the user'})
+            else:
+                bid = getUniqueid()
+                time_form = getTime()[0]
+                block_insert = blocklistModel(bid = bid, uid = o_uid, buid = b_uid, active = 1, ctime = time_form, utime = time_form)
+                db.session.add(block_insert)
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'block successfully'})
+
+        else:
+            if block_info.active == block_status:
+                return jsonify({'code': 400, 'msg': 'already on this status'})
+            else:
+                block_info.active = block_status
+                db.session.commit()
+                return jsonify({'code': 200, 'msg': 'block or cancel successfully'})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'block or not others failed', 'error_msg': str(e)})

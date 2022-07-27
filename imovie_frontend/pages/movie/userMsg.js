@@ -2,7 +2,7 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, message, Avatar } from "antd";
 const {TabPane} = Tabs;
-import {getUserDetail} from "../MockData";
+import {getUserDetail,followOrNot} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
   HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
@@ -28,6 +28,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     username : ""
   });
   const [showDom,changeShowDom] = useState(false);
+  const [isFollow,changeIsFollow] = useState(false)
   const [tabList] = useState([{
      key : 1,
      value : "Wishlist",
@@ -127,6 +128,16 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         !showDom ? null :
           (
             !edit ?  <div className={"user-message-box"}>
+              <div className={"following-box"}>
+                 <div className={"following"}>
+                    <h6>{userMsg.following_count || 0}</h6>
+                    <h5 className={"border-none"}>FOLLOWING</h5>
+                 </div>
+                  <div className={"following"}>
+                    <h6>{userMsg.followers_count || 0}</h6>
+                    <h5>FOLLOWERS</h5>
+                  </div>
+              </div>
               {!initQuery.nouser && <div className="user-message-title">
                 <div className="user-logo">
                   <Avatar size={60}
@@ -150,6 +161,35 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                     className={"edit"}>
                     EDIT PROFILE
                   </div>}
+                  {
+                    !isMySelf && !isVisitor(USERMESSAGE) &&
+                      <div
+                          onClick={()=>{
+                            followOrNot({
+                              o_uid : initQuery.uid,
+                              f_uid : USERMESSAGE && USERMESSAGE.uid || null,
+                              follow_status : !isFollow ? 1 : 0
+                            }).then(res => {
+                              if(res.code === 200){
+                                message.success((!isFollow ? "follow" : "cancel")
+                                    +" successfully")
+                                const _userMsg = _.cloneDeep(userMsg);
+                                if(!isFollow){
+                                  _userMsg.following_count =(_userMsg.following_count || 0) + 1;
+                                }else{
+                                  _userMsg.following_count =(_userMsg.following_count || 0) - 1;
+                                  _userMsg.following_count = _userMsg.following_count < 0 ? 0 : _userMsg.following_count;
+                                }
+                                changeUserMsg(_userMsg);
+                                changeIsFollow(!isFollow);
+                              }else{
+                                message.error((!isFollow ? "follow" : "cancel")
+                                    +" failed")
+                              }
+                            })
+                          }}
+                          className={!isFollow ? "follow-button" : "follow-button-cancel"}>{!isFollow ? "FOLLOW" : "CANCEL FOLLOW"}</div>
+                  }
                 </div>
               </div>}
               <div className={"tab-pane-box"}>

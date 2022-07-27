@@ -168,3 +168,6 @@ export function movieRecommendUser(param) {
 export function registerVisitor(param){
     return fetchData('http://127.0.0.1:5000/app/views/register_visitor', param);
 }
+export function followOrNot(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/follow_or_not', param);
+}

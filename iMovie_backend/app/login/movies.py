@@ -1387,7 +1387,7 @@ def block_user():
     if not b_usr:
         return jsonify({'code': 400, 'msg': 'blocker user does not exist'})
 
-    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == o_uid, blocklistModel.bid == b_uid)).first()
+    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == o_uid, blocklistModel.buid == b_uid)).first()
     try:
         if not block_info:
             if block_status == 0:
@@ -1410,3 +1410,35 @@ def block_user():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'block or not others failed', 'error_msg': str(e)})
+
+
+
+
+def get_blockers():
+    data = request.get_json(force=True)
+    uid = data["uid"]   # owner user
+    usr = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not usr:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+
+
+    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.active == 1)).all()
+    try:
+        result = dict()
+        block_lst = list()
+        for f in block_info:
+            block_dict = dict()
+            buid = f.buid
+            block_dict["user_id"] = buid
+            u = UserModel.query.filter(UserModel.uid == buid, UserModel.active == 1).first()
+            if not u:
+                return jsonify({'code': 400, 'msg': 'blocking user does not exist'})
+            name = u.username
+            block_dict["user_name"] = name
+            block_lst.append(block_dict)
+        result["block_lst"] = block_lst
+        result["count"] = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.active == 1)).count()
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'get blockers failed', 'error_msg': str(e)})

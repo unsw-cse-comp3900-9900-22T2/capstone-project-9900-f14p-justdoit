@@ -1510,13 +1510,13 @@ def insert_movie():
     country = data["country"].strip()
     language = data["language"].strip()
     release_date = data["release_date"].strip()
-    year = data["year"]
-
+    duration = data["duration"]
     mid = getUniqueid()
     time_form = getTime()[0]
+    year = int(release_date[0:4])
     movie = MoviesModel(mid = mid,moviename = moviename, coverimage = coverimage,description = description,
                         genre = genre, cast = cast, director = director, country = country, language = language,
-                        release_date = release_date, year = year,active = 1, ctime = time_form, utime = time_form)
+                        release_date = release_date,duration = duration, year = year, active = 1, ctime = time_form, utime = time_form)
     db.session.add(movie)
     db.session.commit()
     return jsonify({'code': 200, 'msg': "insert successfully "})

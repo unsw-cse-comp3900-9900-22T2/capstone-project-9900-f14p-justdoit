@@ -1185,21 +1185,26 @@ def display_movieReview():
         .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
         .order_by(func.count(reviewlikeModel.mrid).desc()).all()
     print(movieReview)
-    count = movieReviewModel.query.filter(movieReviewModel.mid == mid,movieReviewModel.active == 1).count()
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
-    # try:
-    movieReview_list = []
-    result = {}
+    try:
+        movieReview_list = []
+        result = {}
+        count = 0
+        for m in movieReview:  # movies: [movies0, movies[1]....]
+            is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
+            if is_block:
+                print("this has been blockedr")
+                continue
 
-    for m in movieReview:  # movies: [movies0, movies[1]....]
-        movieReview_info = res_movieReview_detail(m,user)
-        movieReview_list.append(movieReview_info)
-    result["movieReview_count"] = count
-    result["movieReview"] = movieReview_list
-    return jsonify({'code': 200, 'result': result})
-    # except Exception as e:
-    #     return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
+            movieReview_info = res_movieReview_detail(m,user)
+            movieReview_list.append(movieReview_info)
+            count += 1
+        result["movieReview_count"] = count
+        result["movieReview"] = movieReview_list
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
 
 # func for display all movie Reviews user post before
 def res_movieReview_detail_spf(movieReview):
@@ -1378,7 +1383,7 @@ def get_followers():
 def block_user():
     data = request.get_json(force=True)
     o_uid = data["o_uid"]   # owner user
-    b_uid = data["f_uid"]   # blocker user
+    b_uid = data["b_uid"]   # blocker user
     block_status = data["block_status"]       # 0: cancel block     1 : block
     o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
     if not o_usr:

@@ -79,5 +79,6 @@ def init_route(app: Flask):
     #followe / not follow users
     app.add_url_rule('/app/movies/follow_or_not', view_func=movies.follow_or_not, methods=['POST'])
     app.add_url_rule('/app/movies/get_followers', view_func=movies.get_followers, methods=['POST'])
+    app.add_url_rule('/app/movies/check_follow', view_func=movies.check_follow, methods=['POST'])
     app.add_url_rule('/app/movies/block_user', view_func=movies.block_user, methods=['POST'])
     app.add_url_rule('/app/movies/get_blockers', view_func=movies.get_blockers, methods=['POST'])

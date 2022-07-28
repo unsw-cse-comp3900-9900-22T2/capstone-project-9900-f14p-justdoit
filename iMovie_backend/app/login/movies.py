@@ -1379,6 +1379,28 @@ def get_followers():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'get followers failed', 'error_msg': str(e)})
 
+def check_follow():
+    data = request.get_json(force=True)
+    o_uid = data["o_uid"]   # owner user
+    f_uid = data["f_uid"]   # follower user
+    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
+    if not o_usr:
+        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
+    f_usr = UserModel.query.filter(UserModel.uid == f_uid, UserModel.active == 1).first()
+    if not f_usr:
+        return jsonify({'code': 400, 'msg': 'follower user does not exist'})
+    follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid,)).first()
+    print(follow_info.active)
+    if not follow_info:
+        return jsonify({'code': 200, 'result': 0})
+    else:
+        if follow_info.active == 1:
+            return jsonify({'code': 200, 'result': 1})
+        else:
+            return jsonify({'code': 200, 'result': 0})
+
+
+
 
 def block_user():
     data = request.get_json(force=True)

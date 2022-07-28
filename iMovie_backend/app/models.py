@@ -11,6 +11,7 @@ def init_db(app):
     migrate.init_app(app, db)
     return db
 
+
 # users
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -30,6 +31,7 @@ class UserModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 # movies
 class MoviesModel(db.Model):
@@ -127,7 +129,6 @@ class userReviewModel(db.Model):
         db.session.commit()
 
 
-
 class movielikeModel(db.Model):
     __tablename__ = 'movielike'
 
@@ -161,6 +162,7 @@ class reviewlikeModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class wishWatchModel(db.Model):
     __tablename__ = 'wishWatch'
 
@@ -176,6 +178,7 @@ class wishWatchModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 class movielistModel(db.Model):
     __tablename__ = 'movielist'
@@ -194,6 +197,7 @@ class movielistModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 class viewhistoryModel(db.Model):
     __tablename__ = 'viewHistory'
@@ -226,7 +230,6 @@ class blocklistModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
-
 
 
 class followModel(db.Model):

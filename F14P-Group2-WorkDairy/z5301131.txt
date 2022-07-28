@@ -38,3 +38,13 @@ Finished and tested the functions of get, add and delete movies in like and disl
 Finished and tested the functions of get and add movie view history.
 Tested these functions between frontend and backend with Xin Qiu.
 ----------------------------------------------------------------------------------------------------
+Week 8
+
+Finished the the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+----------------------------------------------------------------------------------------------------
+Week 9
+
+Wrote the functions of movie lists in sprint3.
+ 

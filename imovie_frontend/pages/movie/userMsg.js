@@ -143,18 +143,6 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
             !edit ?  <div className={"user-message-box"}>
               <div className={"following-box"}>
                  <div className={"following"}>
-                    <h6>{userMsg.following_count || 0}</h6>
-                    <h5
-                        onClick={()=>{
-                          if((userMsg.following_count || 0) === 0){
-                            return;
-                          }
-                          followerRef && followerRef.current && followerRef.current.changeVisible &&
-                          followerRef.current.changeVisible(true,"FOLLOWING",1);
-                        }}
-                        className={"border-none"}>FOLLOWING</h5>
-                 </div>
-                  <div className={"following"}>
                     <h6>{userMsg.followers_count || 0}</h6>
                     <h5
                         onClick={()=>{
@@ -162,7 +150,19 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                             return;
                           }
                           followerRef && followerRef.current && followerRef.current.changeVisible &&
-                          followerRef.current.changeVisible(true,"FOLLOWERS",0);
+                          followerRef.current.changeVisible(true,"FOLLOWING",0);
+                        }}
+                        className={"border-none"}>FOLLOWING</h5>
+                 </div>
+                  <div className={"following"}>
+                    <h6>{userMsg.following_count || 0}</h6>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.following_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWERS",1);
                         }}
                     >FOLLOWERS</h5>
                   </div>

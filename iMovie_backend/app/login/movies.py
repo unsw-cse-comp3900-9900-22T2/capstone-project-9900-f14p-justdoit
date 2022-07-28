@@ -1491,3 +1491,32 @@ def get_blockers():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'get blockers failed', 'error_msg': str(e)})
+
+# admin access only
+def insert_movie():
+    data = request.get_json(force=True)
+    uid = data["uid"]   # admin user
+    usr = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not usr:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+    if usr.role != 1:
+        return jsonify({'code': 400, 'msg': 'user has no access'})
+    moviename = data["moviename"].strip()
+    coverimage = data["coverimage"].strip()
+    description = data["description"].strip()
+    genre = data["genre"].strip()
+    cast = data["cast"].strip()
+    director = data["director"].strip()
+    country = data["country"].strip()
+    language = data["language"].strip()
+    release_date = data["release_date"].strip()
+    year = data["year"]
+
+    mid = getUniqueid()
+    time_form = getTime()[0]
+    movie = MoviesModel(mid = mid,moviename = moviename, coverimage = coverimage,description = description,
+                        genre = genre, cast = cast, director = director, country = country, language = language,
+                        release_date = release_date, year = year,active = 1, ctime = time_form, utime = time_form)
+    db.session.add(movie)
+    db.session.commit()
+    return jsonify({'code': 200, 'msg': "insert successfully "})

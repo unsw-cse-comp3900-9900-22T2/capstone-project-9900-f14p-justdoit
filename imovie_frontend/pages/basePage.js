@@ -4,7 +4,7 @@ import React from 'react'
 import basePageStyle from "./basePage.less"
 import {Select,Avatar,Popover,message} from "antd";
 const { Option } = Select;
-import { SearchOutlined,UserOutlined} from "@ant-design/icons";
+import { SearchOutlined,UserOutlined,PlusOutlined} from "@ant-design/icons";
 import DocunceSelectComponent from "../components/DounceSelect"
 import LoginComponent from "../components/Login"
 import RegesterComponent from "../components/Regester"
@@ -23,6 +23,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
     value : 3,
     name : "REGISTER",
     login : false,
+  },{
+      value : 6,
+      name : "ADD MOVIE",
+      href : "/movie/addMovie",
+      login : true,
+      icon : <PlusOutlined style={{marginRight : "5px"}}/>
   },{
     value : 1,
     name : "HOME",
@@ -204,6 +210,9 @@ const Page = ({ router, children,USERMESSAGE }) => {
                              (chooseTab === item.value ||
                              enterTab === item.value )&&
                              <div className={"tab-select-item-top-line"}/>
+                           }
+                           {
+                               item.icon
                            }
                          {item.name}
                        </div>

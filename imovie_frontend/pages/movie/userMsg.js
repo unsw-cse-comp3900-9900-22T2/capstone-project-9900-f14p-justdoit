@@ -2,7 +2,7 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, message, Avatar } from "antd";
 const {TabPane} = Tabs;
-import {getUserDetail,followOrNot} from "../MockData";
+import {getUserDetail,followOrNot,checkFollow} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
   HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
@@ -29,7 +29,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     username : ""
   });
   const [showDom,changeShowDom] = useState(false);
-  const [isFollow,changeIsFollow] = useState(true);
+  const [isFollow,changeIsFollow] = useState(false);
   const followerRef = useRef();
   const [tabList] = useState([{
      key : 1,
@@ -75,6 +75,17 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         addHref("uid","");
         if(!USERMESSAGE || isVisitor(USERMESSAGE)){
            window.location.href = "/movie/home"
+        }
+      }else{
+        if(!isVisitor(USERMESSAGE)){
+          checkFollow({
+              o_uid :initQuery.uid,
+              f_uid : (USERMESSAGE && USERMESSAGE.uid) || null
+          }).then(res => {
+            if(res.code === 200){
+              changeIsFollow(!!res.result);
+            }
+          })
         }
       }
       getUserDetail({
@@ -151,7 +162,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                             return;
                           }
                           followerRef && followerRef.current && followerRef.current.changeVisible &&
-                          followerRef.current.changeVisible(true,"FOLLOWERS",2);
+                          followerRef.current.changeVisible(true,"FOLLOWERS",0);
                         }}
                     >FOLLOWERS</h5>
                   </div>

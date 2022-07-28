@@ -18,9 +18,9 @@ const Follow = ({followRef,USERMESSAGE,initQuery,isMySelf}) => {
       },
     }));
     function getFollowList(type){
-       if(type === 1){
            getFollowers({
-               uid : isMySelf ? (USERMESSAGE && USERMESSAGE.uid) : initQuery.uid
+               uid : isMySelf ? (USERMESSAGE && USERMESSAGE.uid) : initQuery.uid,
+               target : type
            }).then(res => {
                if(res.code === 200){
                    const {result} = res;
@@ -33,7 +33,6 @@ const Follow = ({followRef,USERMESSAGE,initQuery,isMySelf}) => {
                    changeList([])
                }
            })
-       }
     }
     function goUserDetail(uid){
         if(!USERMESSAGE || !(USERMESSAGE.uid)){

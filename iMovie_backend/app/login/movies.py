@@ -5,6 +5,7 @@ from app.login.utils import *
 from app.models import *
 from sqlalchemy import or_, and_, not_
 
+
 def res_movie_detail(uid, user, movie):
     result = {}
     mid = movie.mid
@@ -116,6 +117,7 @@ def res_movie_detail(uid, user, movie):
 
     return result
 
+
 # simplify the res_movie_detail
 # display the mid, cast, director,genre, & moviename
 def res_movie_detail_spf(uid, user, movie):
@@ -141,6 +143,7 @@ def res_movie_detail_spf(uid, user, movie):
     else:
         result["year"] = 0
     return result
+
 
 def get_movie_detail():
     data = request.get_json(force=True)
@@ -624,6 +627,7 @@ def search_result():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'search result return failed.'})
 
+
 def get_watchlist():
     data = request.get_json(force=True)
     # print(data)
@@ -1009,6 +1013,7 @@ def clear_view_history():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Clear View history failed.', 'error_msg': str(e)})
 
+
 #  create review into movieReview, reviewReview, reviewLike
 def create_review():
     data = request.get_json(force=True)
@@ -1025,9 +1030,8 @@ def create_review():
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
 
-    if review == None or len(review) == 0 or review.isspace():
+    if review is None or len(review) == 0 or review.isspace():
         return jsonify({'code': 400, 'msg': 'text is empty'})
-
 
     movieReview = movieReviewModel.query.filter(movieReviewModel.mid == mid, movieReviewModel.uid == uid, movieReviewModel.active == 1).first()
     time_form = getTime()[0]
@@ -1037,7 +1041,7 @@ def create_review():
         mrid = getUniqueid()
         # rlid = getUniqueid()
         time_form = getTime()[0]
-        movieReview = movieReviewModel(mrid = mrid, uid = uid, mid = mid, review = review, ctime = time_form, utime = time_form)
+        movieReview = movieReviewModel(mrid=mrid, uid=uid, mid=mid, review=review, ctime=time_form, utime=time_form)
         db.session.add(movieReview)
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'create review successfully.'})
@@ -1052,11 +1056,9 @@ def reply_review():
     mrid = data["mrid"]
     review = data["review"]
 
-
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
-
 
     movieReview = movieReviewModel.query.filter(movieReviewModel.mrid == mrid, movieReviewModel.active == 1).first()
 
@@ -1071,9 +1073,9 @@ def reply_review():
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'reply review successfully.'})
 
-
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'reply failed.'})
+
 
 # like other' review
 def like_review():
@@ -1114,11 +1116,6 @@ def like_review():
                 return jsonify({'code': 400, 'msg': 'cancel like review  failed.', 'error_msg': str(e)})
         else:
             return jsonify({'code': 400, 'msg': 'cancel like failed.'})
-
-
-
-
-
 
 
 # fucntion of display movie review details, includes the userReview for it
@@ -1170,9 +1167,6 @@ def res_movieReview_detail(movieReview, mainUser):
     return result
 
 
-
-
-
 # display movie Review
 def display_movieReview():
     data = request.get_json(force=True)
@@ -1195,6 +1189,7 @@ def display_movieReview():
         return jsonify({'code': 200, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
+
 
 # func for display all movie Reviews user post before
 def res_movieReview_detail_spf(movieReview):
@@ -1222,8 +1217,9 @@ def res_movieReview_detail_spf(movieReview):
     else:
         result["rate"] = -1
 
-
     return result
+
+
 # # display all movie Reviews user post before
 def display_usersMovieReview():
     data = request.get_json(force=True)
@@ -1244,6 +1240,7 @@ def display_usersMovieReview():
         return jsonify({'code': 200, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'display usersMovieReview failure', 'error_msg': str(e)})
+
 
 # delete the movieReview
 def delete_movieReview():
@@ -1270,6 +1267,7 @@ def delete_movieReview():
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'delete movieReview failure', 'error_msg': str(e)})
+
 
 # delete the userReview
 def delete_userReview():

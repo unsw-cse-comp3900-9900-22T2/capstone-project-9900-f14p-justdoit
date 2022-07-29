@@ -80,3 +80,20 @@ write date: 27/06/2022
 1. done the comment api
 2. display comments on user profile
 -----------------------------------------------------------------------------------------
+
+Week 8 plan:
+
+Finished all the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+
+Week 8 done:
+
+Finished all the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+-------------------------------------------------------------
+Week 9 plan:
+
+start the sprint3. finish the api for insert_movie,  block, unblock,follow and unfollow
+------------------------------------------------------------------

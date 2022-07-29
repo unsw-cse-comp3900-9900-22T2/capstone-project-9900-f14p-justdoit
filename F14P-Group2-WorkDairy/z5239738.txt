@@ -116,4 +116,20 @@ write date: 17/07/2022
 
 -----------------------------------------------------------------------------------------
 
+Week8
 
+* Week8 done work:
+1. test sprint2 function
+2. demoB
+
+* Week9 plan:
+1.create visitor account limit some functions. backend and frontend
+2.insert movie (admin user) frontend
+3.popular movies backend and frontend
+4. following user frontend
+5. recent movie notice to users backend and frontend
+
+
+write date: 25/07/2022
+
+-----------------------------------------------------------------------------------------

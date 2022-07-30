@@ -157,41 +157,45 @@ def get_movie_detail():
     result = res_movie_detail(uid, user, movie)
 
     return jsonify({'code': 200, 'result': result})
-# def count_history():
-#     history_dict = {}
-#     history = viewhistoryModel.query.all()
-#     for i in history:
-#
-#         # print(i.uid, i.mid, i.rate)
-#         if history_dict.get(i.mid) == None:
-#
-#             history_dict.setdefault(i.mid, i.frequency)
-#         else:
-#             history_dict[i.mid] = history_dict[i.mid] + i.frequency
-#
-#     a1 = sorted(history_dict.items(), key=lambda x: x[1], reverse=True)
-#     for f in a1:
-#
-#     return history_dict
+
+def count_history():
+    history_dict = {}
+    history = viewhistoryModel.query.all()
+    for i in history:
+
+        # print(i.uid, i.mid, i.rate)
+        if history_dict.get(i.mid) == None:
+
+            history_dict.setdefault(i.mid, i.frequency)
+        else:
+            history_dict[i.mid] = history_dict[i.mid] + i.frequency
+
+    a1 = sorted(history_dict.items(), key=lambda x: x[1], reverse=True)
+    # print(a1)
+    # for f in a1:
+    #     print(f[1])
+
+    return a1
 
 
 def get_movies():
     uid = request.json.get('uid')
     user = None
+    popular_movie = count_history()
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-
-    num = 0
-    movie = MoviesModel.query.filter(MoviesModel.active == 1).all()
     result = {}
     mlist = []
-    for i in movie:
+    num = 0
+    for i in popular_movie:
         if num >= 16:
             break
-        mdict = res_movie_detail(uid, user, i)
-        if "Music" not in mdict["genre"]:
-            num = num + 1
-            mlist.append(mdict)
+        movie = MoviesModel.query.filter(MoviesModel.mid == i[0], MoviesModel.active == 1).first()
+        if movie:
+            mdict = res_movie_detail(uid, user, movie)
+            if "Music" not in mdict["genre"]:
+                num = num + 1
+                mlist.append(mdict)
     result["count"] = num
     result["mlist"] = mlist
     return jsonify({'code': 200, 'result': result})

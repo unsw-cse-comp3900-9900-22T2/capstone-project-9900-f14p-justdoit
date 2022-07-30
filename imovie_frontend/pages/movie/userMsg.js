@@ -2,7 +2,7 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, message, Avatar } from "antd";
 const {TabPane} = Tabs;
-import {getUserDetail,followOrNot} from "../MockData";
+import {getUserDetail,followOrNot,checkFollow} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
   HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
@@ -29,7 +29,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     username : ""
   });
   const [showDom,changeShowDom] = useState(false);
-  const [isFollow,changeIsFollow] = useState(true);
+  const [isFollow,changeIsFollow] = useState(false);
   const followerRef = useRef();
   const [tabList] = useState([{
      key : 1,
@@ -75,6 +75,17 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         addHref("uid","");
         if(!USERMESSAGE || isVisitor(USERMESSAGE)){
            window.location.href = "/movie/home"
+        }
+      }else{
+        if(!isVisitor(USERMESSAGE)){
+          checkFollow({
+              o_uid :initQuery.uid,
+              f_uid : (USERMESSAGE && USERMESSAGE.uid) || null
+          }).then(res => {
+            if(res.code === 200){
+              changeIsFollow(!!res.result);
+            }
+          })
         }
       }
       getUserDetail({
@@ -132,18 +143,6 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
             !edit ?  <div className={"user-message-box"}>
               <div className={"following-box"}>
                  <div className={"following"}>
-                    <h6>{userMsg.following_count || 0}</h6>
-                    <h5
-                        onClick={()=>{
-                          if((userMsg.following_count || 0) === 0){
-                            return;
-                          }
-                          followerRef && followerRef.current && followerRef.current.changeVisible &&
-                          followerRef.current.changeVisible(true,"FOLLOWING",1);
-                        }}
-                        className={"border-none"}>FOLLOWING</h5>
-                 </div>
-                  <div className={"following"}>
                     <h6>{userMsg.followers_count || 0}</h6>
                     <h5
                         onClick={()=>{
@@ -151,7 +150,19 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                             return;
                           }
                           followerRef && followerRef.current && followerRef.current.changeVisible &&
-                          followerRef.current.changeVisible(true,"FOLLOWERS",2);
+                          followerRef.current.changeVisible(true,"FOLLOWING",0);
+                        }}
+                        className={"border-none"}>FOLLOWING</h5>
+                 </div>
+                  <div className={"following"}>
+                    <h6>{userMsg.following_count || 0}</h6>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.following_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWERS",1);
                         }}
                     >FOLLOWERS</h5>
                   </div>
@@ -171,7 +182,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                   <h6>
                     {userMsg.description}
                   </h6>
-                  {isMySelf &&
+                  {isMySelf && USERMESSAGE.role !== 1 &&
                   <div
                     onClick={()=>{
                       changeEdit(true)

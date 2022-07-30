@@ -298,8 +298,12 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
                             _msg.genres = newValue || [];
                             changeMsg(_msg)
                         },
-                        placeholder: 'Please select Genres',
-                    }} />
+                        placeholder: 'Please select Genres'
+                    }}
+                        onScroll={(event)=>{
+                            event.stopPropagation();
+                        }}
+                    />
                 </div>
                 <div className={"add-movie-item-flex"}>
                     <p>Release Date</p>
@@ -365,7 +369,11 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
                             changeMsg(_msg)
                         },
                         placeholder: 'Please select country',
-                    }} />
+                    }}
+                        onScroll={(event)=>{
+                            event.stopPropagation();
+                        }}
+                    />
                 </div>
                 <div className={"add-movie-item-flex"}>
                     <p>Language</p>

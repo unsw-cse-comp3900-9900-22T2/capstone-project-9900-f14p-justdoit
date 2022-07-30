@@ -94,33 +94,34 @@ def movie_similer_recommend():
     mlist = []
     if uid:
         user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-        director = target_movie.director.replace(';', ' ')
-        cast = target_movie.cast.replace(';', ' ')
-        # print(target_movie.genre)
-        similer_result = similer(target_movie.genre, director, cast)
-        result["count"] = len(similer_result)
-        exceptList = [mid]
-        dislike = movielikeModel.query.filter(movielikeModel.uid == user.uid, movielikeModel.active == 1,
-                                              movielikeModel.type == 1).all()
-        for d in dislike:
-            exceptList.append(d.mid)
+        if user:
+            director = target_movie.director.replace(';', ' ')
+            cast = target_movie.cast.replace(';', ' ')
+            # print(target_movie.genre)
+            similer_result = similer(target_movie.genre, director, cast)
+            result["count"] = len(similer_result)
+            exceptList = [mid]
+            dislike = movielikeModel.query.filter(movielikeModel.uid == user.uid, movielikeModel.active == 1,
+                                                  movielikeModel.type == 1).all()
+            for d in dislike:
+                exceptList.append(d.mid)
 
-        lowRate = RatingModel.query.filter(RatingModel.uid == user.uid, RatingModel.active == 1,
-                                              RatingModel.rate <= 3.5).all()
-        for l in lowRate:
-            exceptList.append(l.mid)
+            lowRate = RatingModel.query.filter(RatingModel.uid == user.uid, RatingModel.active == 1,
+                                                  RatingModel.rate <= 3.5).all()
+            for l in lowRate:
+                exceptList.append(l.mid)
 
-        check_review = movieReviewModel.query.filter(movieReviewModel.uid == user.uid, movieReviewModel.active == 1).all()
-        for r in check_review:
-            if emotion_raview(r.review) == 0:
-                exceptList.append(r.mid)
+            check_review = movieReviewModel.query.filter(movieReviewModel.uid == user.uid, movieReviewModel.active == 1).all()
+            for r in check_review:
+                if emotion_raview(r.review) == 0:
+                    exceptList.append(r.mid)
 
-        for i in similer_result:
-            if i not in exceptList:
-                sim_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == i).first()
+            for i in similer_result:
+                if i not in exceptList:
+                    sim_movies = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == i).first()
 
-                mdict = res_movie_detail(uid, user, sim_movies)
-                mlist.append(mdict)
+                    mdict = res_movie_detail(uid, user, sim_movies)
+                    mlist.append(mdict)
     else:
         director = target_movie.director.replace(';', ' ')
         cast = target_movie.cast.replace(';', ' ')

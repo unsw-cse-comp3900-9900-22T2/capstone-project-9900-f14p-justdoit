@@ -1320,3 +1320,200 @@ def create_movielist():
         
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Create movie list failed', 'error_msg': str(e)})
+
+
+def edit_movielist():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    molid = data["molid"]
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid, movielistModel.active == 1).first()
+    if not movie_list:
+        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+
+    title = data["title"]
+    description = data["description"]
+    if not title and not description:
+        return jsonify({'code': 400, 'msg': 'Please enter a content.'})
+    
+    try:
+        date_time = getTime()[0]
+        if title:
+            movie_list.title = title
+            movie_list.utime = date_time
+        if description:
+            movie_list.description = description
+            movie_list.utime = date_time
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Edit movie list successfully."})
+    
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Edit movie list failed', 'error_msg': str(e)})
+
+
+def delete_movielist():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    molid = data["molid"]
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
+                                             movielistModel.active == 1).first()
+    if not movie_list:
+        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+
+    try:
+        date_time = getTime()[0]
+        movie_list.active = 0
+        movie_list.utime = date_time
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Delete movie list successfully."})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Delete movie list failed', 'error_msg': str(e)})
+
+
+def add_movie_to_movielist():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    molid = data["molid"]
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
+                                             movielistModel.active == 1).first()
+    if not movie_list:
+        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+    
+    mid = data["mid"]
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
+    
+    try:
+        date_time = getTime()[0]
+        print(movie_list.mid)
+        if not movie_list.mid:
+            movie_list.mid = mid
+            movie_list.utime = date_time
+        
+        elif mid in movie_list.mid:
+            return jsonify({'code': 400, 'msg': 'Movie has been in this movie list already.'})
+        
+        else:
+            mid_temp = movie_list.mid + ";" + mid
+            print(mid_temp)
+            movie_list.mid = mid_temp
+            movie_list.utime = date_time
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Add movie to movie list successfully."})
+        
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Add movie failed', 'error_msg': str(e)})
+        
+
+def delete_movie_from_movielist():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    molid = data["molid"]
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
+                                             movielistModel.active == 1).first()
+    if not movie_list:
+        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+
+    mid = data["mid"]
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
+
+    if not movie_list.mid or mid not in movie_list.mid:
+        return jsonify({'code': 400, 'msg': 'Movie is not in this movie list.'})
+
+    try:
+        date_time = getTime()[0]
+        old_str = mid
+        if mid + ';' in movie_list.mid:
+            old_str = mid + ';'
+        mid_temp = movie_list.mid.replace(old_str, "")
+        movie_list.mid = mid_temp
+        movie_list.utime = date_time
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': "Delete movie from movie list successfully."})
+    
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
+
+
+def get_movielists():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    movie_lists = movielistModel.query.filter(movielistModel.uid == uid, movielistModel.active == 1).all()
+    if not movie_lists:
+        return jsonify({'code': 200, 'msg': "User has no movie_list."})
+
+    try:
+        result_list = []
+        for ml in movie_lists:
+            ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description}
+            result_list.append(ml_dict)
+        result = {"count": len(result_list), "result_list": result_list}
+        return jsonify({'code': 200, 'result': result})
+    
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
+
+
+def get_movies_in_movielist():
+    data = request.get_json(force=True)
+    page_index = data["page_index"]
+    page_size = data["page_size"]
+    
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    molid = data["molid"]
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
+                                             movielistModel.active == 1).first()
+    if not movie_list:
+        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+    
+    if not movie_list.mid:
+        return jsonify({'code': 200, 'msg': "Empty movie list."})
+    
+    try:
+        mid_list = movie_list.mid.split(';')
+        print(mid_list)
+        result_list = []
+        for mid in mid_list:
+            movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+            if movie:
+                movie_info = res_movie_detail(uid, user, movie)
+                result_list.append(movie_info)
+        
+        result = {"count": len(result_list), "title": movie_list.title, "description": movie_list.description}
+        start = page_index * page_size
+        end = start + page_size
+        if end < result["count"]:
+            result["result_list"] = result_list[start:end]
+        else:
+            result["result_list"] = result_list[start:]
+        return jsonify({'code': 200, 'result': result})
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Get movies in movie list failed.', 'error_msg': str(e)})
+                

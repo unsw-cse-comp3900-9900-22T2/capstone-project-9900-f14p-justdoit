@@ -177,3 +177,6 @@ export function getFollowers(param){
 export function checkFollow(param){
     return fetchData('http://127.0.0.1:5000/app/movies/check_follow', param);
 }
+export function insertMovie(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
+}

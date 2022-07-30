@@ -5,6 +5,7 @@ from openpyxl.reader.excel import load_workbook
 from builtins import int
 
 import random
+import hashlib
 import time
 conn = pymysql.connect(host='localhost',user='root',passwd='qwer1234',db="imovie")
 # sql = 'select * from movies'
@@ -52,11 +53,24 @@ for row in worksheet.rows:
     cur.execute("insert into movies(mid,id,moviename,year,director,description,duration,country,language,genre,cast,coverimage,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
 
 
-#
-# admin_uid = getUniqueid()
-# admin_name = "admin"
-# admin_email = [str(admin_uid),]
 
+
+def EnPassWord(password: str) -> str:
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+admin_uid = getUniqueid()
+admin_name = "admin"
+admin_email = "adminemail@mail.com"
+admin_password = "admin1234"
+en_password = EnPassWord(admin_password)
+admin_role = 1
+admin_date = getTime()[0]
+admin_ctime = admin_date
+admin_utime = admin_date
+
+admin_valuestr = [str(admin_uid), 41,str(admin_name), str(en_password),str(admin_email), int(admin_role), 1,admin_ctime,admin_utime]
+
+cur.execute("insert into users(uid,id,username,password,email,role,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s)",admin_valuestr)
 
 admin = []
 

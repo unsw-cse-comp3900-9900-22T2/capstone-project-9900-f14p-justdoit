@@ -182,7 +182,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                   <h6>
                     {userMsg.description}
                   </h6>
-                  {isMySelf &&
+                  {isMySelf && USERMESSAGE.role !== 1 &&
                   <div
                     onClick={()=>{
                       changeEdit(true)

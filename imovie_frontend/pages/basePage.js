@@ -166,7 +166,9 @@ const Page = ({ router, children,USERMESSAGE }) => {
     if(key === 11){
       delCookie('USER_MESSAGE');
       window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
-      if((window.location.pathname || "").indexOf("/movie/userMsg") >= 0){
+      const _pathname = (window.location.pathname || "");
+      if(_pathname.indexOf("/movie/userMsg") >= 0 ||
+          _pathname.indexOf("/movie/addMovie") >= 0){
         window.location.href = "/movie/home"
       }else{
           window.location.reload();
@@ -193,6 +195,13 @@ const Page = ({ router, children,USERMESSAGE }) => {
                          if(!item.login){
                            return null;
                          }
+                         if(item.login && item.value === 6 && USERMESSAGE.role !== 1){
+                             return null
+                         }
+                       }else{
+                           if( item.value === 6 ){
+                               return null
+                           }
                        }
                        return <div
                          onMouseEnter={()=>{

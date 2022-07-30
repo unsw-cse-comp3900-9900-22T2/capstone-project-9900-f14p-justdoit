@@ -1,6 +1,6 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
-import {displayMovieReview, likeReview} from "../MockData"
+import {insertMovie} from "../MockData"
 import {Button, message,Input,Select,DatePicker,Image} from "antd";
 import moment from 'moment';
 const { RangePicker } = DatePicker;
@@ -8,20 +8,23 @@ const { TextArea } = Input;
 import addMovieStyle from "./addMovie.less"
 import _ from "lodash"
 const dateFormat = 'YYYY/MM/DD';
+import {CloseOutlined} from "@ant-design/icons"
 const AddMovie = ({USERMESSAGE,initQuery}) => {
   const [msg,changeMsg] = useState({
       movieName : "",
-      director : "",
       coverImage : "",
+      director : [],
       genres : [],
       releaseTime : null,
-      cast : "",
+      cast : [],
       country : "",
       language : "",
       duration : "",
       description : "",
       lookImage : false
   });
+  const [castValue,changeCastValue] = useState("");
+  const [directorValue,changeCastDirector] = useState("");
   const [genresList] = useState([{
       key : "Action",
       value : "Action"
@@ -121,6 +124,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
       const {
           movieName,
           director,
+          coverImage,
           genres,
           releaseTime,
           cast,
@@ -130,21 +134,24 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
           description,
       } = msg;
       return !(movieName && director && genres && genres.length > 0 && releaseTime
-          && cast && country && language && duration && description)
+          && cast && cast.length > 0 && country && language && duration && checkIsNumber(duration)
+          && description && coverImage)
     }
     function initMsg(){
       changeMsg({
           movieName : "",
           coverImage : "",
-          director : "",
+          director : [],
           genres : [],
           releaseTime : null,
-          cast : "",
+          cast : [],
           country : "",
           language : "",
           duration : "",
           description : "",
       })
+        changeCastValue("");
+      changeCastDirector("");
     }
     function submitMsg(){
       if(checkDisabled() || !USERMESSAGE){
@@ -153,6 +160,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
         const {
             movieName,
             director,
+            coverImage,
             genres,
             releaseTime,
             cast,
@@ -161,20 +169,37 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             duration,
             description,
         } = msg;
-      const msg = {
+      const _msg = {
           uid : USERMESSAGE && USERMESSAGE.uid || null,
           moviename : movieName,
           description,
           genre : genres.join(" "),
-          cast,
-          director,
+          cast : cast.join(";"),
+          director: director.join(";"),
           country,
           language,
           release_date : (releaseTime || "").replace(/\//g,"-"),
-          year : (releaseTime || "").split("/")[0],
-          duration
+          duration : (duration || 0) * 1,
+          coverimage : coverImage
       }
-      console.log("msg",msg)
+        insertMovie(_msg).then(res => {
+            if(res.code === 200){
+                message.success("insert successfully");
+                initMsg();
+            }else{
+                message.error("insert failed")
+            }
+        }).catch(err => {
+            message.error("insert failed")
+        })
+      console.log("msg",_msg)
+    }
+    function checkIsNumber(a){
+      if(isNaN(Number(a,10))){
+          return false
+      } else{
+          return true
+      }
     }
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
@@ -184,7 +209,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
         <div className={"add-movie-component"}>
             <div className={"add-movie-item"}>
                  <p>Movie Name</p>
-                 <Input placeholder="movieName"
+                 <Input placeholder="please enter movie name"
                         onChange={(e)=>{
                             const _msg = _.cloneDeep(msg);
                             _msg.movieName = e.target.value;
@@ -195,7 +220,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             <div className={"add-movie-item"}>
                 <p>Cover image</p>
                 <div className={"add-movie-flex"}>
-                    <Input placeholder="Cover image"
+                    <Input placeholder="Please enter the link of the cover image. If you need to confirm, please press check"
                            onChange={(e)=>{
                                const _msg = _.cloneDeep(msg);
                                _msg.coverImage = e.target.value;
@@ -208,7 +233,8 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
                         }}
                         onClick={()=>{
                             if(!msg.coverImage){
-                                message.warning("please enter cover image")
+                                message.warning("please enter cover image");
+                                return;
                             }
                             const _msg = _.cloneDeep(msg);
                             _msg.lookImage = true;
@@ -225,13 +251,37 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             </div>
             <div className={"add-movie-item"}>
                 <p>Director</p>
-                <Input placeholder="director"
+                <div className={"cast-label"}>
+                    {
+                        msg.director && msg.director.map((item,index) => {
+                            return <div className={"cast-label-item"} key={"cast-director-label-item-" + index}>
+                                {item} <CloseOutlined
+                                onClick={()=>{
+                                    const _msg = _.cloneDeep(msg);
+                                    _msg.director.splice(index,1);
+                                    changeMsg(_msg)
+                                }}
+                                className={"close"}/>
+                            </div>
+                        })
+                    }
+                </div>
+                <Input placeholder="Please enter the director's name. Press enter after entering a director"
                        onChange={(e)=>{
-                           const _msg = _.cloneDeep(msg);
-                           _msg.director = e.target.value;
-                           changeMsg(_msg)
+                           changeCastDirector(e.target.value)
                        }}
-                       value={msg.director}/>
+                       onPressEnter={(e)=>{
+                           const _msg = _.cloneDeep(msg);
+                           const value = (e.target.value || "").trim();
+                           const _cast =  _msg.director || [];
+                           if(_cast.indexOf(value) < 0){
+                               _cast.push(value)
+                           }
+                           _msg.director = _cast;
+                           changeMsg(_msg);
+                           changeCastDirector("");
+                       }}
+                       value={directorValue}/>
             </div>
             <div className={"add-movie-flex"}>
                 <div className={"add-movie-item-flex"}>
@@ -248,11 +298,11 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
                             _msg.genres = newValue || [];
                             changeMsg(_msg)
                         },
-                        placeholder: 'Genres',
+                        placeholder: 'Please select Genres',
                     }} />
                 </div>
                 <div className={"add-movie-item-flex"}>
-                    <p>Release Time</p>
+                    <p>Release Date</p>
                     <DatePicker
                         value={msg.releaseTime &&
                         moment(msg.releaseTime,dateFormat) || null}
@@ -268,15 +318,37 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             </div>
             <div className={"add-movie-item"}>
                 <p>Cast</p>
-                <TextArea placeholder="cast"
+                <div className={"cast-label"}>
+                    {
+                        msg.cast && msg.cast.map((item,index) => {
+                            return <div className={"cast-label-item"} key={"cast-label-item-" + index}>
+                                {item} <CloseOutlined
+                                onClick={()=>{
+                                    const _msg = _.cloneDeep(msg);
+                                    _msg.cast.splice(index,1);
+                                    changeMsg(_msg)
+                                }}
+                                className={"close"}/>
+                            </div>
+                        })
+                    }
+                </div>
+                <Input placeholder="Please enter the cast's name. Press enter after entering a cast"
                        onChange={(e)=>{
-                           const _msg = _.cloneDeep(msg);
-                           _msg.cast = e.target.value;
-                           changeMsg(_msg)
+                           changeCastValue(e.target.value)
                        }}
-                      minRows={6}
-                      maxRows={15}
-                      value={msg.cast}/>
+                       onPressEnter={(e)=>{
+                           const _msg = _.cloneDeep(msg);
+                           const value = (e.target.value || "").trim();
+                           const _cast =  _msg.cast || [];
+                           if(_cast.indexOf(value) < 0){
+                               _cast.push(value)
+                           }
+                           _msg.cast = _cast;
+                           changeMsg(_msg);
+                           changeCastValue("");
+                       }}
+                      value={castValue}/>
             </div>
             <div className={"add-movie-flex"}>
                 <div className={"add-movie-item-flex"}>
@@ -292,12 +364,12 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
                             _msg.country = newValue || "";
                             changeMsg(_msg)
                         },
-                        placeholder: 'country',
+                        placeholder: 'Please select country',
                     }} />
                 </div>
                 <div className={"add-movie-item-flex"}>
                     <p>Language</p>
-                    <Input placeholder="language"
+                    <Input placeholder="Please enter language"
                            onChange={(e)=>{
                                const _msg = _.cloneDeep(msg);
                                _msg.language = e.target.value;
@@ -308,7 +380,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             </div>
             <div className={"add-movie-item"}>
                 <p>Duration</p>
-                <Input placeholder="duration"
+                <Input placeholder="Please enter duration"
                           onChange={(e)=>{
                               const _msg = _.cloneDeep(msg);
                               _msg.duration = e.target.value;
@@ -318,7 +390,7 @@ const AddMovie = ({USERMESSAGE,initQuery}) => {
             </div>
             <div className={"add-movie-item"}>
                 <p>Description</p>
-                <TextArea placeholder="description"
+                <TextArea placeholder="Please enter description"
                           onChange={(e)=>{
                               const _msg = _.cloneDeep(msg);
                               _msg.description = e.target.value;

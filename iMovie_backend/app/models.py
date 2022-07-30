@@ -184,9 +184,9 @@ class movielistModel(db.Model):
     __tablename__ = 'movielist'
 
     id = db.Column(db.Integer, primary_key=True)
-    molid  = db.Column(db.String(256), unique=True, nullable=False)
+    molid = db.Column(db.String(256), unique=True, nullable=False)
     uid = db.Column(db.String(256), nullable=False)  # users.uid
-    mid = db.Column(db.String(256), nullable=False)  # movies.uid
+    mid = db.Column(db.String(256))  # movies.mid
     title = db.Column(db.String(256), nullable=False)
     description = db.Column(db.TEXT)
     # public = db.Column(db.Integer, nullable=False, default=1) # 0:not public,  1: public

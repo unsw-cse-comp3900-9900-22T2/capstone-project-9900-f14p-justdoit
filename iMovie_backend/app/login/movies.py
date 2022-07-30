@@ -1068,7 +1068,7 @@ def reply_review():
     try:
         urid = getUniqueid()
         time_form = getTime()[0]
-        userReview = userReviewModel(uid = uid, urid = urid,  mrid = mrid, review = review, ctime = time_form, utime = time_form)
+        userReview = userReviewModel(uid=uid, urid=urid,  mrid=mrid, review=review, ctime=time_form, utime=time_form)
         db.session.add(userReview)
         db.session.commit()
         return jsonify({'code': 200, 'msg': 'reply review successfully.'})
@@ -1291,3 +1291,32 @@ def delete_userReview():
         return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})
 
 
+def create_movielist():
+    data = request.get_json(force=True)
+    title = data["title"]
+    if not title:
+        return jsonify({'code': 400, 'msg': 'Empty title.'})
+
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
+
+    mid = data["mid"]
+    if mid:
+        movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+        if not movie:
+            return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
+    description = data["description"]
+    
+    try:
+        molid = getUniqueid()
+        date_time = getTime()[0]
+        movielist = movielistModel(molid=molid, uid=uid, mid=mid, title=title, description=description, 
+                                   ctime=date_time, utime=date_time, active=1)
+        db.session.add(movielist)
+        db.session.commit()
+        return jsonify({'code': 200, 'msg': f'Create movie list {title} successfully.'})
+        
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Create movie list failed', 'error_msg': str(e)})

@@ -1416,7 +1416,7 @@ def check_follow():
     if not f_usr:
         return jsonify({'code': 400, 'msg': 'follower user does not exist'})
     follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid,)).first()
-    print(follow_info.active)
+    # print(follow_info.active)
     if not follow_info:
         return jsonify({'code': 200, 'result': 0})
     else:

@@ -116,6 +116,88 @@ def res_movie_detail(uid, user, movie):
 
     return result
 
+def rate_display():
+    data = request.get_json(force=True)
+    mid = data["mid"]
+    result = {}
+    check_movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not check_movie:
+        return jsonify({'code': 200, 'result': result})
+    # 0.5 rate
+    ratings_0_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1, RatingModel.rate == 0.5).count()
+    result["0.5"] = ratings_0_5
+    ratings_1 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 1).count()
+    result["1"] = ratings_1
+
+    ratings_1_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 1.5).count()
+    result["1.5"] = ratings_1_5
+    ratings_2 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 2).count()
+    result["2"] = ratings_2
+    ratings_2_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 2.5).count()
+    result["2.5"] = ratings_2_5
+    ratings_3 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 3).count()
+    result["3"] = ratings_3
+
+    ratings_3_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 3.5).count()
+    result["3.5"] = ratings_3_5
+    ratings_4 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 4).count()
+    result["4"] = ratings_4
+    ratings_4_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 4.5).count()
+    result["4.5"] = ratings_4_5
+    ratings_5 = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                         RatingModel.rate == 5).count()
+    result["5"] = ratings_5
+
+    return jsonify({'code': 200, 'result': result})
+
+def rate_distribution():
+    data = request.get_json(force=True)
+    mid = data["mid"]
+    rating = data["rating"]
+    if not mid or not rating:
+        return jsonify({'code': 400, 'msg': 'please input rating or mid'})
+    if not is_number(rating):
+        return jsonify({'code': 400, 'msg': 'please input rating'})
+    rating = float(rating)
+    result = {}
+    userlist = []
+    count = 0
+    ratings = RatingModel.query.filter(RatingModel.mid == mid, RatingModel.active == 1,
+                                           RatingModel.rate == rating).all()
+    if len(ratings) > 0:
+        for i in ratings:
+            print(i.uid)
+            user = UserModel.query.filter(UserModel.uid == i.uid, UserModel.role == 0).first()
+            if user:
+
+                user_sig = {}
+                count = count + 1
+                user_sig["username"] = user.username
+                user_sig["uid"] = user.uid
+                user_sig["active"] = user.active
+                userlist.append(user_sig)
+    result["count"] = count
+    result["userList"] = userlist
+    return jsonify({'code': 200, 'result': result})
+
+
+
+
+
+
+
+
+
+
+
 # simplify the res_movie_detail
 # display the mid, cast, director,genre, & moviename
 def res_movie_detail_spf(uid, user, movie):

@@ -1,15 +1,20 @@
 
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
-import { Modal, Input, message } from "antd";
+import {Modal, Input, message, Rate} from "antd";
 import ReviewsInfoStyle from "./ReviewsInfo.less";
 import { createReview } from "../../pages/MockData";
+import {CloseOutlined} from "@ant-design/icons";
 const { TextArea } = Input;
+const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
    const [visible ,changeVisible] = useState(false);
    const [movieName , changeMovieName] = useState("");
    const [value,changeValue]=useState("");
    const [mid,changeMid] = useState("");
    const [uid,changeUid] = useState("");
+    const [onHover,changeOnHover] = useState(false);
+    const [hoverRate,changeHoverRate] = useState(0);
+    const [rate,changeRate] = useState(0);
     useImperativeHandle(reviewsInfoRef, () => ({
       changeVisible: (vis,movieName,_mid,_uid) => {
         changeMovieName(movieName);
@@ -57,6 +62,28 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
       >
         <div className={"review-component"}>
           <p>{movieName}</p>
+            <h6>{onHover ? (hoverRate || 0): (rate || 0)}/5</h6>
+            <div className={"rate-box"}>
+                <Rate
+                    style={{
+                        fontSize: 36,
+                    }}
+                    allowHalf
+                    onHoverChange={(number)=>{
+                        changeOnHover(!!number);
+                        changeHoverRate(number);
+                    }}
+                    tooltips={desc} onChange={changeRate} value={rate} defaultValue={rate} />
+                {
+                    !!rate && rate > 0 && <CloseOutlined
+                        onClick={()=>{
+                            changeOnHover(false);
+                            changeHoverRate(0);
+                            changeRate(0);
+                        }}
+                        className={"clear-rate"}/>
+                }
+            </div>
           <div className={"review-box"}>
                 <TextArea
                   value={value}

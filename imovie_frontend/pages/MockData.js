@@ -180,3 +180,9 @@ export function checkFollow(param){
 export function insertMovie(param){
     return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
 }
+export function rateDisplay(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_display', param);
+}
+export function rateDistribution(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_distribution', param);
+}

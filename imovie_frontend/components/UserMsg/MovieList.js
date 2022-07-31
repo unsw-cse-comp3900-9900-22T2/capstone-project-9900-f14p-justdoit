@@ -92,7 +92,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
     //删除movieList,需要传movieList的id
     const deleteMovieList = (molid) => {
         confirm({
-            title: 'Are you sure you want to clear Movie List?',
+            title: 'Are you sure you want to clear this movielist?',
             icon: <ExclamationCircleOutlined/>,
             okText: "YES",
             cancelText: "NO",
@@ -237,7 +237,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
                                                        }}
                                                        onChange={e => setListName(e.target.value)}/>
                                             </span>}
-                                        <Button onClick={() => setChangeList(true)}>返回影单</Button>
+                                        <Button onClick={() => setChangeList(true)}>Back to movielist</Button>
                                         <DeleteTwoTone style={{marginLeft: 50}}
                                                        onClick={() => deleteMovieList(item.molid)}/>
                                     </div>
@@ -272,7 +272,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
                             showClear={isMySelf && true || false}
                             clearMovie={() => {
                                 confirm({
-                                    title: 'Are you sure you want to remove this movie from your wishlist?',
+                                    title: 'Are you sure you want to remove this movie from your movielist?',
                                     icon: <ExclamationCircleOutlined/>,
                                     okText: "YES",
                                     cancelText: "NO",

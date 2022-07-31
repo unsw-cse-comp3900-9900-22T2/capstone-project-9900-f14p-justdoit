@@ -397,7 +397,7 @@ const ImageDom = ({
                     onClick={()=>{
                       changeOperation(3,index)
                     }}
-                    className={"swiper-component-operation-item border-no padding2"}>
+                    className={"swiper-component-operation-item"}>
                     {is_user_dislike ? "Cancel Dislike" : "Dislike"}
                   </div>
                   <div

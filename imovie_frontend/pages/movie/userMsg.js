@@ -145,7 +145,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         !showDom ? null :
           (
             !edit ?  <div className={"user-message-box"}>
-              <div className={"following-box"}>
+              {!initQuery.nouser &&
+                  <div className={"following-box"}>
                  <div className={"following"}>
                     <h6>{userMsg.followers_count || 0}</h6>
                     <h5
@@ -170,7 +171,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                         }}
                     >FOLLOWERS</h5>
                   </div>
-              </div>
+              </div>}
               {!initQuery.nouser && <div className="user-message-title">
                 <div className="user-logo">
                   <Avatar size={60}

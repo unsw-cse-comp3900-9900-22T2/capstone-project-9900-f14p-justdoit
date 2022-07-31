@@ -1527,19 +1527,67 @@ def insert_movie():
         return jsonify({'code': 400, 'msg': 'user does not exist'})
     if usr.role != 1:
         return jsonify({'code': 400, 'msg': 'user has no access'})
-    moviename = data["moviename"].strip()
-    coverimage = data["coverimage"].strip()
-    description = data["description"].strip()
-    genre = data["genre"].strip()
-    cast = data["cast"].strip()
-    director = data["director"].strip()
-    country = data["country"].strip()
-    language = data["language"].strip()
-    release_date = data["release_date"].strip()
+
+    moviename = data["moviename"]
+    coverimage = data["coverimage"]
+    description = data["description"]
+    genre = data["genre"]
+    cast = data["cast"]
+    director = data["director"]
+    country = data["country"]
+    language = data["language"]
+    release_date = data["release_date"]
     duration = data["duration"]
+
+    moviename = moviename.strip()
+    if len(moviename) > 50:
+        return jsonify({'code': 400, 'msg': 'Your moviename is too long.'})
+    if len(moviename) < 1:
+        return jsonify({'code': 400, 'msg': 'Your moviename is too short.'})
+
+    description = description.strip()
+    if len(description) > 120:
+        return jsonify({'code': 400, 'msg': 'Your description is too long.'})
+    if len(description) < 1:
+        return jsonify({'code': 400, 'msg': 'Your description is too short.'})
+
+    genre = genre.strip()
+    if len(genre) < 1:
+            return jsonify({'code': 400, 'msg': 'Your genre is too short.'})
+
+    if isSplitRight(genre, ' ') == -1:
+        return jsonify({'code': 400, 'msg': 'Your genre is wrong.'})
+    cast = cast.strip()
+    if len(cast) < 1:
+            return jsonify({'code': 400, 'msg': 'Your cast is too short.'})
+    if isSplitRight(cast, ';') == -1:
+        return jsonify({'code': 400, 'msg': 'Your cast is wrong.'})
+
+    director = director.strip()
+    if len(director) > 60:
+        return jsonify({'code': 400, 'msg': 'Your director is too long.'})
+    if len(director) < 1:
+        return jsonify({'code': 400, 'msg': 'Your director is too short.'})
+    country = country.strip()
+    if len(country) > 30:
+        return jsonify({'code': 400, 'msg': 'Your country is too long.'})
+    if len(country) < 1:
+        return jsonify({'code': 400, 'msg': 'Your country is too short.'})
+    language = language.strip()
+    if len(language) > 30:
+        return jsonify({'code': 400, 'msg': 'Your language is too long.'})
+    if len(language) < 1:
+        return jsonify({'code': 400, 'msg': 'Your language is too short.'})
+
+
     mid = getUniqueid()
     time_form = getTime()[0]
     year = int(release_date[0:4])
+
+    movie = MoviesModel.query.filter(MoviesModel.moviename == moviename, MoviesModel.duration == duration, MoviesModel.active == 1).first()
+    if movie:
+        return jsonify({'code': 400, 'msg': 'Movie already exist.'})
+
     movie = MoviesModel(mid = mid,moviename = moviename, coverimage = coverimage,description = description,
                         genre = genre, cast = cast, director = director, country = country, language = language,
                         release_date = release_date,duration = duration, year = year, active = 1, ctime = time_form, utime = time_form)

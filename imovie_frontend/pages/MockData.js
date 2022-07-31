@@ -168,7 +168,24 @@ export function movieRecommendUser(param) {
 export function registerVisitor(param){
     return fetchData('http://127.0.0.1:5000/app/views/register_visitor', param);
 }
-
+export function followOrNot(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/follow_or_not', param);
+}
+export function getFollowers(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/get_followers', param);
+}
+export function checkFollow(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/check_follow', param);
+}
+export function insertMovie(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
+}
+export function rateDisplay(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_display', param);
+}
+export function rateDistribution(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_distribution', param);
+}
 /*
 movies list
  */

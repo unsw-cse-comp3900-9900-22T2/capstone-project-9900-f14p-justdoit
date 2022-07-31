@@ -41,7 +41,12 @@ const Login = ({loginRef,changeResetPasswordVisible}) => {
             message.warn("Please enter your password");
             return
           }
-          const _pass = Base64.encode(md5(password.trim()))
+          let _pass = "";
+          if(userName.trim() === "admin"){
+              _pass = password.trim()
+          }else{
+              _pass = Base64.encode(md5(password.trim()))
+          }
           userLogin({
             username:userName.trim(),
             password : _pass

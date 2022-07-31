@@ -1,0 +1,30 @@
+.follow-component{
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 300px;
+    min-height: 300px;
+    overflow: auto;
+     align-items: start;
+  align-content: start;
+    .follow-item{
+      width : 25%;
+      padding-right: 10px;
+      //display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+      flex-wrap: wrap;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      .ant-avatar{
+        cursor:pointer;
+      }
+      .name{
+        font-size :14px;
+        color:#333;
+        margin-left: 5px;
+        cursor:pointer;
+      }
+    }
+}

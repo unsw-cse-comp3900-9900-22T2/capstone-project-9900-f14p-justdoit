@@ -146,3 +146,10 @@ def strToList(string):
         return list()
     lst = temp.split(',')
     return lst
+
+
+def is_number(num):
+    pattern = re.compile(r'(.*)\.(.*)\.(.*)')
+    if pattern.match(num):
+        return False
+    return num.replace(".", "").isdigit()

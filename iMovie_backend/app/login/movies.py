@@ -1134,6 +1134,9 @@ def res_movieReview_detail(movieReview, mainUser):
     result["mrid"] = mrid
     result["uid"] = uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'user does not exist'})
+
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
@@ -1191,24 +1194,21 @@ def display_movieReview():
     print(movieReview)
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
-    try:
-        movieReview_list = []
-        result = {}
-        count = 0
-        for m in movieReview:  # movies: [movies0, movies[1]....]
-            is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
-            if is_block:
-                print("this has been blockedr")
-                continue
+    movieReview_list = []
+    result = {}
+    count = 0
+    for m in movieReview:  # movies: [movies0, movies[1]....]
+        is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
+        if is_block:
+            print("this has been blockedr")
+            continue
 
-            movieReview_info = res_movieReview_detail(m,user)
-            movieReview_list.append(movieReview_info)
-            count += 1
-        result["movieReview_count"] = count
-        result["movieReview"] = movieReview_list
-        return jsonify({'code': 200, 'result': result})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
+        movieReview_info = res_movieReview_detail(m,user)
+        movieReview_list.append(movieReview_info)
+        count += 1
+    result["movieReview_count"] = count
+    result["movieReview"] = movieReview_list
+    return jsonify({'code': 200, 'result': result})
 
 # func for display all movie Reviews user post before
 def res_movieReview_detail_spf(movieReview):

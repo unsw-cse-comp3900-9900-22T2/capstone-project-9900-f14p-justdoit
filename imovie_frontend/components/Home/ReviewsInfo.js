@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useRef ,useImperativeHandle} from 'react'
 import {Modal, Input, message, Rate} from "antd";
 import ReviewsInfoStyle from "./ReviewsInfo.less";
-import { createReview } from "../../pages/MockData";
+import {createReview, ratingMovie} from "../../pages/MockData";
 import {CloseOutlined} from "@ant-design/icons";
 const { TextArea } = Input;
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
-const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
+const ReviewsInfo = ({reviewsInfoRef,changeReview,changeRating}) => {
    const [visible ,changeVisible] = useState(false);
    const [movieName , changeMovieName] = useState("");
    const [value,changeValue]=useState("");
@@ -15,19 +15,22 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
     const [onHover,changeOnHover] = useState(false);
     const [hoverRate,changeHoverRate] = useState(0);
     const [rate,changeRate] = useState(0);
+    const [initRate,changeInitRate] = useState(0);
     useImperativeHandle(reviewsInfoRef, () => ({
-      changeVisible: (vis,movieName,_mid,_uid) => {
+      changeVisible: (vis,movieName,_mid,_uid,rate) => {
         changeMovieName(movieName);
         changeVisible(vis);
         changeUid(_uid);
         changeMid(_mid);
+        changeRate(rate < 0 ? 0 : rate);
+        changeInitRate(rate < 0 ? 0 : rate);
       },
     }));
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: ReviewsInfoStyle }} />
       <Modal
-        title={"Reviews and Info"}
+        title={"Add reviews and rate"}
         centered
         visible={visible}
         okText="SUBMIT"
@@ -37,21 +40,33 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview}) => {
             message.warn("Please write you comment");
             return
           }
-          createReview({
-            review : value && value.trim(),
-            uid,
-            mid
-          }).then(res => {
-            if(res.code === 200){
-              message.success("write comment success");
-              changeVisible(false);
-              changeValue("");
-              changeMovieName("");
-              changeReview && changeReview();
-            }else{
-              message.error("write comment failed");
+            if(rate !== initRate){
+                ratingMovie({
+                    mid,
+                    uid,
+                    rate
+                }).then(res => {
+                    if(res.code === 200){
+                        changeRate(0);
+                        changeRating && changeRating(mid,rate,res.result && res.result.avg_rate || 0);
+                    }
+                })
             }
-          })
+            createReview({
+                review : value && value.trim(),
+                uid,
+                mid
+            }).then(res => {
+                if(res.code === 200){
+                    message.success("write comment success");
+                    changeVisible(false);
+                    changeValue("");
+                    changeMovieName("");
+                    changeReview && changeReview();
+                }else{
+                    message.error("write comment failed");
+                }
+            })
         }}
         onCancel={() => {
           changeVisible(false);

@@ -475,19 +475,22 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                   {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
-              {!!rateObj && <div
+              <div className={"ratings-box"}>
+                <h6 className={"rating-title"}>Ratings:</h6>
+                  {!!rateObj && <div
 
-                  className={"echarts-dom"}>
-                {setRateObj()}
-                {/*<div className={"start-position"}>*/}
-                {/*  <StarFilled className={"start-position-item"}/>*/}
-                {/*  <StarFilled className={"start-position-item"}/>*/}
-                {/*  <StarFilled className={"start-position-item"}/>*/}
-                {/*  <StarFilled className={"start-position-item"}/>*/}
-                {/*  <StarFilled className={"start-position-item"}/>*/}
-                {/*</div>*/}
+                      className={"echarts-dom"}>
+                    {setRateObj()}
+                    {/*<div className={"start-position"}>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*</div>*/}
 
-              </div>}
+                  </div>}
+              </div>
             </div>
             <div className={"movie-msg-box-right"}>
               {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
@@ -641,7 +644,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     && <span  onClick={()=>{
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
                                               && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
-                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
+                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                                             }}
                 >add review</span>}</p>
                 {reviewsList && reviewsList.length > 2 &&

@@ -84,3 +84,4 @@ def init_route(app: Flask):
     app.add_url_rule('/app/movies/delete_movie_from_movielist', view_func=movies.delete_movie_from_movielist, methods=['POST'])
     app.add_url_rule('/app/movies/get_movielists', view_func=movies.get_movielists, methods=['POST'])
     app.add_url_rule('/app/movies/get_movies_in_movielist', view_func=movies.get_movies_in_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/get_latest_movielists', view_func=movies.get_latest_movielists, methods=['POST'])

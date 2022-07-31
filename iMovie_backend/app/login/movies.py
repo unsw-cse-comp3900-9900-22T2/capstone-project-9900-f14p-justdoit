@@ -3,7 +3,7 @@ from sqlalchemy import exists, func
 from app.login.utils import *
 # from app.login.recommend import *
 from app.models import *
-from sqlalchemy import or_, and_, not_
+from sqlalchemy import or_, and_, not_, desc
 
 
 def res_movie_detail(uid, user, movie):
@@ -1467,7 +1467,7 @@ def get_movielists():
 
     try:
         result_list = []
-        print(movie_lists)
+        # print(movie_lists)
         for ml in movie_lists:
             cover_image = "./iMovie_backend/coverimage.jpg"
             if ml.mid:
@@ -1523,4 +1523,37 @@ def get_movies_in_movielist():
         return jsonify({'code': 200, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get movies in movie list failed.', 'error_msg': str(e)})
-                
+
+
+def get_latest_movielists():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    nonempty_movielists = movielistModel.query.filter(movielistModel.active == 1, movielistModel.mid != "").order_by(desc(movielistModel.utime)).all()
+    if not nonempty_movielists:
+        return jsonify({'code': 200, 'msg': 'There is no movie list.'})
+
+    try:
+        latest_movielists = nonempty_movielists
+        if len(nonempty_movielists) > 4:
+            latest_movielists = nonempty_movielists[:4]
+        result_list = []
+        # print(movie_lists)
+        for ml in latest_movielists:
+            cover_image = "./iMovie_backend/coverimage.jpg"
+            if ml.mid:
+                latest_movie_id = ml.mid.split(';')[-1]
+                latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id, MoviesModel.active == 1).first()
+                if latest_movie:
+                    cover_image = latest_movie.coverimage
+            ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
+            result_list.append(ml_dict)
+        result = {"count": len(result_list), "result_list": result_list}
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
+

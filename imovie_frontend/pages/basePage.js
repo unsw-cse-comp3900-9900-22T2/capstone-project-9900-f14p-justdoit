@@ -132,15 +132,22 @@ const Page = ({ router, children,USERMESSAGE }) => {
                   value : "Like",
                   hasBorder : false,
                   href : "/movie/userMsg?activeKey=6&nouser=1"
-              },{
+              },
+              {
                   key : 10,
                   value : "Dislike",
-                  hasBorder : true,
+                  hasBorder : false,
                   href : "/movie/userMsg?activeKey=7&nouser=1"
+              },
+              {
+                  key : 11,
+                  value : "Block",
+                  hasBorder : true,
+                  href : "/movie/userMsg?activeKey=8&nouser=1"
               }]]
       }
       changeUserTabList([...MSGList,...[{
-        key : 11,
+        key : 12,
         value : "Sigh Out",
         hasBorder : false
       }]])
@@ -163,7 +170,7 @@ const Page = ({ router, children,USERMESSAGE }) => {
     if(!!href){
       window.location.href = href;
     }
-    if(key === 11){
+    if(key === 12){
       delCookie('USER_MESSAGE');
       window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
       const _pathname = (window.location.pathname || "");

@@ -180,3 +180,12 @@ export function checkFollow(param){
 export function insertMovie(param){
     return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
 }
+export function blockOrNot(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/block_user', param);
+}
+export function getBlockers(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/get_blockers', param);
+}
+export function checkBlock(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/check_block', param);
+}

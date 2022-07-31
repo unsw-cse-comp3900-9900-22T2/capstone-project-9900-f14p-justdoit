@@ -1,0 +1,100 @@
+.BlockComponent{
+  width : 100%;
+  margin-top:20px;
+  padding-bottom: 20px;
+  .title-box{
+    display: flex;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 1px solid #ececec;
+    .title{
+      font-size : 16px;
+      color:#333;
+      font-weight: bold;
+      line-height: 60px;
+      margin: 0;
+    }
+  }
+  .blockers-box{
+    width : 90%;
+     display: flex;
+     flex-wrap: wrap;
+    margin : 30px auto;
+   justify-content: space-between;
+   .blockers-item{
+     width : 50%;
+     display: flex;
+     align-items: center;
+     margin-bottom: 30px;
+     .blockers-icon{
+        width : 6%;
+        font-size: 20px;
+       color:#333;
+     }
+     .blockers-detail-box{
+       width : 90%;
+       display: flex;
+       align-items: flex-start;
+       position: relative;
+       .blocker{
+         width :65%;
+         .blockers-body{
+           text-overflow: ellipsis;
+           display: -webkit-box;
+           -webkit-box-orient: vertical;
+           -webkit-line-clamp: 2;
+           overflow: hidden;
+           font-size: 16px;
+           line-height: 20px;
+           color:#333;
+           cursor: pointer;
+         }
+       }
+       .blockers-active{
+          display: flex;
+         align-items: center;
+         justify-content: flex-end;
+         position: absolute;
+         right:0;
+         width: 10%;
+         top:3px;
+        //  .read{
+        //    font-size: 14px;
+        //    color: #2f54eb;
+        //    text-decoration: underline;
+        //    cursor: pointer;
+        //    margin-right: 10px;
+        //  }
+         .del{
+           color:#999;
+           cursor: pointer;
+           font-size: 14px;
+           margin-right: 80px;
+         }
+       }
+     }
+   }
+ }
+ .empty{
+  width : 100%;
+  margin:  0 auto;
+ img {
+    display: block;
+   width: 15%;
+   margin: 10px auto 10px auto;
+ }
+h5{
+  text-align: center;
+  font-size: 14px;
+  color:#cdcdcd;
+}
+}
+// .ant-popover-inner-content{
+//   padding: 12px 16px!important;
+// }
+}
+.ant-popover-inner-content{
+  padding: 12px 16px!important;
+}
+
+

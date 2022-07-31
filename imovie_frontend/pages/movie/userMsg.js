@@ -2,10 +2,10 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, message, Avatar } from "antd";
 const {TabPane} = Tabs;
-import {getUserDetail,followOrNot,checkFollow} from "../MockData";
+import {getUserDetail,followOrNot,checkFollow,checkBlock,blockOrNot} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
-  HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
+  HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined,FrownOutlined} from "@ant-design/icons";
 import {delCookie, isVisitor} from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
@@ -16,6 +16,7 @@ import HisToryComponent from "../../components/UserMsg/HisTory"
 import DisLikeComponent from "../../components/UserMsg/DisLike"
 import LiKeComponent from "../../components/UserMsg/LiKe"
 import FollowComponent from "../../components/UserMsg/Follow"
+import BlockComponent from "../../components/UserMsg/Block"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
@@ -30,6 +31,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
   });
   const [showDom,changeShowDom] = useState(false);
   const [isFollow,changeIsFollow] = useState(false);
+  const [isBlock,changeIsBlock] = useState(false);
   const followerRef = useRef();
   const [tabList] = useState([{
      key : 1,
@@ -60,10 +62,16 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     key : 6,
     value : "Like",
     icon : <LikeOutlined />
-  },{
+  },
+  {
     key : 7,
     value : "Dislike",
     icon : <DislikeOutlined />
+  },
+  {
+    key : 8,
+    value : "Block",
+    icon : <FrownOutlined />
   }
   ])
   useEffect(()=>{
@@ -86,6 +94,14 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
               changeIsFollow(!!res.result);
             }
           })
+          checkBlock({
+            o_uid :initQuery.uid,
+            b_uid : (USERMESSAGE && USERMESSAGE.uid) || null
+        }).then(res => {
+          if(res.code === 200){
+            changeIsBlock(!!res.result);
+          }
+        })
         }
       }
       getUserDetail({
@@ -128,6 +144,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         return <LiKeComponent uid={_uid} isMySelf={isMySelf}/>;
       case 7:
         return <DisLikeComponent uid={_uid} isMySelf={isMySelf}/>;
+      case 8:
+        return <BlockComponent uid={_uid} isMySelf={isMySelf} USERMESSAGE={USERMESSAGE} initQuery={initQuery}/>;  
       default:
         return <div>{item.key}</div>
     }
@@ -219,6 +237,28 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                           }}
                           className={!isFollow ? "follow-button" : "follow-button-cancel"}>{!isFollow ? "FOLLOW" : "CANCEL FOLLOW"}</div>
                   }
+                  &nbsp;&nbsp;
+                  {
+                    !isMySelf && !isVisitor(USERMESSAGE) &&
+                      <div
+                          onClick={()=>{
+                            blockOrNot({
+                              b_uid : initQuery.uid,
+                              o_uid : USERMESSAGE && USERMESSAGE.uid || null,
+                              block_status : !isBlock ? 1 : 0
+                            }).then(res => {
+                              if(res.code === 200){
+                                message.success((!isBlock ? "block" : "cancel")
+                                    +" successfully")
+                                changeIsBlock(!isBlock);
+                              }else{
+                                message.error((!isBlock ? "block" : "cancel")
+                                    +" failed")
+                              }
+                            })
+                          }}
+                          className={!isFollow ? "follow-button" : "follow-button-cancel"}>{!isBlock ? "BLOCK" : "CANCEL BLOCK"}</div>
+                  }  
                 </div>
               </div>}
               <div className={"tab-pane-box"}>
@@ -266,13 +306,14 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
       <FollowComponent followRef={followerRef}
                        isMySelf={isMySelf}
                        USERMESSAGE={USERMESSAGE} initQuery={initQuery}/>
+
     </PageBase>
   )
 }
 UserMsg.getInitialProps = async (status) => {
 
   const profile = status && status.query && status.query.profile;
-  const activeKey = status && status.query && status.query.activeKey <= 7 &&
+  const activeKey = status && status.query && status.query.activeKey <= 8 &&
     status.query.activeKey || "1";
   const nouser = status && status.query && status.query.nouser || null
   const uid = status && status.query && status.query.uid || null

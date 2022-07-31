@@ -110,7 +110,7 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview,changeRating}) => {
                   onChange={(e)=>{
                     changeValue(e.target.value || '')
                   }}
-                  placeholder="Writing you comment"
+                  placeholder="Add your review"
                   maxLength={800}
                   autoSize={{ minRows: 4, maxRows: 8 }}
                 />

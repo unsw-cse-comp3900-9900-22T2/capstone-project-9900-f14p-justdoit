@@ -487,7 +487,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 </Tooltip>
               </div>
               <div className={"rating"}>
-                <h6 className={"rating-title"}>Average rating:</h6>
+                <h6 className={"rating-title"}>Average Rating:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
                   {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
@@ -658,13 +658,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }
         {!!movieDetail && <div className={"reviews-list"}>
               <div className={"review-title"}>
-                <p>Related Reviews{!!isLogin && !isVisitor(USERMESSAGE)
+                <p>Related Review{!!isLogin && !isVisitor(USERMESSAGE)
                     && <span  onClick={()=>{
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
                                               && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
                                                 movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                                             }}
-                >add review</span>}</p>
+                >Add review and rating</span>}</p>
                 {reviewsList && reviewsList.length > 2 &&
                     <div
                         onClick={()=>{

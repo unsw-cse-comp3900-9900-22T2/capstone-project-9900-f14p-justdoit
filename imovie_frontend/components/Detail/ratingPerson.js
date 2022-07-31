@@ -62,7 +62,7 @@ const RatingPerson = ({ratingPersonRef,USERMESSAGE}) => {
                       return <div className={"follow-item"} key={"follow-item-" + index}>
                                   <Avatar
                                       onClick={()=>{
-                                          goUserDetail(item.user_id);
+                                          goUserDetail(item.uid);
                                       }}
                                       size={30}  icon={<UserOutlined />} />
                                       <Tooltip title={item.username}>

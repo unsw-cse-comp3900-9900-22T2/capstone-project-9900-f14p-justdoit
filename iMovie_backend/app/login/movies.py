@@ -1467,8 +1467,15 @@ def get_movielists():
 
     try:
         result_list = []
+        print(movie_lists)
         for ml in movie_lists:
-            ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description}
+            cover_image = "./iMovie_backend/coverimage.jpg"
+            if ml.mid:
+                latest_movie_id = ml.mid.split(';')[-1]
+                latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id, MoviesModel.active == 1).first()
+                if latest_movie:
+                    cover_image = latest_movie.coverimage
+            ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
             result_list.append(ml_dict)
         result = {"count": len(result_list), "result_list": result_list}
         return jsonify({'code': 200, 'result': result})

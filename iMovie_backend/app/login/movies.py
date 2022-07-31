@@ -1557,3 +1557,43 @@ def get_latest_movielists():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
+
+def get_movielist_in_mdp():
+    data = request.get_json(force=True)
+    uid = data["uid"]
+    user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
+    mid = data["mid"]
+    movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+    if not movie:
+        return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
+
+    nonempty_movielists = movielistModel.query.filter(movielistModel.active == 1, movielistModel.mid != "").order_by(
+        desc(movielistModel.utime)).all()
+    if not nonempty_movielists:
+        return jsonify({'code': 200, 'msg': 'There is no movie list.'})
+
+    try:
+        latest_movielists = nonempty_movielists
+        result_list = []
+        for ml in latest_movielists:
+            cover_image = "./iMovie_backend/coverimage.jpg"
+            if ml.mid and mid in ml.mid:
+                latest_movie_id = ml.mid.split(';')[-1]
+                latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id,
+                                                        MoviesModel.active == 1).first()
+                if latest_movie:
+                    cover_image = latest_movie.coverimage
+                ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
+                result_list.append(ml_dict)
+                if len(result_list) == 4:
+                    break
+        if len(result_list) == 0:
+            return jsonify({'code': 200, 'msg': "No movie list has this movie."})
+        result = {"count": len(result_list), "result_list": result_list}
+        return jsonify({'code': 200, 'result': result})
+
+    except Exception as e:
+        return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})

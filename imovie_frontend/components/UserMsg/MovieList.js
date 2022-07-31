@@ -193,16 +193,17 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
             ?
             <div className="watchListComponent">
                 <div className={"title-box"}>
-                    <p className="title">Movie List&nbsp;<Button onClick={() => setShowModel(true)}>+Create</Button></p>
+                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() => setShowModel(true)}>+ Create</Button></p>
                 </div>
                 <div className={"imgBox"}>
                     {movieList.map((item, index) => <React.Fragment>
+                      {console.log(item)}
                         <Card
                             // width={267}
                             // height={400}
                             hoverable
-                            style={{width: 267, height: 400, marginRight: '20px', marginBottom: '50px'}}
-                            cover={<img alt="example" src={item.cover_image}/>}
+                            style={{width: 350, height: 522, marginRight: '25px', marginBottom: '70px'}}
+                            cover={item.cover_image==="./iMovie_backend/coverimage.jpg"?<img alt="example" src={"/static/emptyMovieList.png"}/>:<img alt="example" src={item.cover_image}/>}
                             onClick={() => {
                                 setMolid(item.molid)
                                 getMoviesListDetails(item.molid)
@@ -210,7 +211,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
                             }}
                         >
                             {/*<Meta title={item.title} description={item.description} />*/}
-                            {item.title}
+                            <h6>{item.title}</h6>
                         </Card>
                     </React.Fragment>)}
                 </div>
@@ -237,7 +238,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
                                                        }}
                                                        onChange={e => setListName(e.target.value)}/>
                                             </span>}
-                                        <Button onClick={() => setChangeList(true)}>Back to movielist</Button>
+                                        <Button onClick={() => {setChangeList(true); fetchData()}}>Back to movielist</Button>
                                         <DeleteTwoTone style={{marginLeft: 50}}
                                                        onClick={() => deleteMovieList(item.molid)}/>
                                     </div>
@@ -309,7 +310,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
             <label>List Name</label>
             <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
             <label>List Description</label>
-            <TextArea rows={4} allowClear value={listDescription} onChange={e => setListDescription(e.target.value)}/>
+            <TextArea maxLength={250} showCount={true} autoSize={{minRows: 4, maxRows: 6}} allowClear value={listDescription} onChange={e => setListDescription(e.target.value)}/>
         </Modal>
     </React.Fragment>)
 }

@@ -26,11 +26,28 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview,changeRating}) => {
         changeInitRate(rate < 0 ? 0 : rate);
       },
     }));
+    function createReviewPro(value){
+        createReview({
+            review : value && value.trim(),
+            uid,
+            mid
+        }).then(res => {
+            if(res.code === 200){
+                message.success("write comment success");
+                changeVisible(false);
+                changeValue("");
+                changeMovieName("");
+                changeReview && changeReview();
+            }else{
+                message.error("write comment failed");
+            }
+        })
+    }
     return (
       <React.Fragment>
         <style dangerouslySetInnerHTML={{ __html: ReviewsInfoStyle }} />
       <Modal
-        title={"Add reviews and rate"}
+        title={"Add review and rating"}
         centered
         visible={visible}
         okText="SUBMIT"
@@ -50,23 +67,11 @@ const ReviewsInfo = ({reviewsInfoRef,changeReview,changeRating}) => {
                         changeRate(0);
                         changeRating && changeRating(mid,rate,res.result && res.result.avg_rate || 0);
                     }
+                    createReviewPro(value);
                 })
+            }else{
+                createReviewPro(value);
             }
-            createReview({
-                review : value && value.trim(),
-                uid,
-                mid
-            }).then(res => {
-                if(res.code === 200){
-                    message.success("write comment success");
-                    changeVisible(false);
-                    changeValue("");
-                    changeMovieName("");
-                    changeReview && changeReview();
-                }else{
-                    message.error("write comment failed");
-                }
-            })
         }}
         onCancel={() => {
           changeVisible(false);

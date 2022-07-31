@@ -92,8 +92,16 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     rateDisplay({
       mid : initQuery.movieId,
     }).then(res => {
-       if(res.code === 200){
-         changeRateObj(res.result || null);
+       if(res.code === 200 && res.result){
+         let sumValue = 0;
+         for(let i in res.result){
+           sumValue += res.result[i];
+         }
+         if(sumValue > 0){
+           changeRateObj(res.result || null);
+         }else{
+           changeRateObj(null);
+         }
        }else{
          changeRateObj(null);
        }
@@ -365,10 +373,11 @@ const Detail = ({USERMESSAGE,initQuery}) => {
        default:
          name = ""
      }
+     const _avg = sumRateNumber  && ((rateNumber / sumRateNumber) * 100) || 0;
      if(rateNumber === 0 || rateNumber === 1){
-       return rateNumber + " " + name + " rating (" + ((rateNumber / sumRateNumber) * 100) + "%)"
+       return rateNumber + " " + name + " rating (" + _avg + "%)"
      }
-     return rateNumber + " " + name + " ratings (" + ((rateNumber / sumRateNumber) * 100) + "%)"
+     return rateNumber + " " + name + " ratings (" + _avg + "%)"
   }
   function setRateObj(){
       let dataList = [];
@@ -382,10 +391,18 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             maxValue = rateObj[i];
           }
         }
-        dataList.sort()
+        dataList.sort();
+        if(!sumValue){
+          return null;
+        }
         return dataList && dataList.map((item,index) => {
           const _rate = rateObj[item];
-          const _height = _rate === 0 ? 0 : (_rate / maxValue) * 100;
+          let _height = 0;
+          if(maxValue === 0){
+            _height = 0;
+          }else{
+            _height = _rate === 0 ? 0 : (_rate / maxValue) * 100;
+          }
           return <Tooltip placement="top" title={getRateMsg(_rate,sumValue,item)}>
                   <div
                       style={{
@@ -411,6 +428,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
       return null
   }
   function displayMovieReviewService(){
+    changeReviewsList([]);
     displayMovieReview({
       mid : initQuery.movieId,
       uid : USERMESSAGE && USERMESSAGE.uid || null,
@@ -475,7 +493,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                   {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
-              <div className={"ratings-box"}>
+              {!!rateObj &&<div className={"ratings-box"}>
                 <h6 className={"rating-title"}>Ratings:</h6>
                   {!!rateObj && <div
 
@@ -490,7 +508,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     {/*</div>*/}
 
                   </div>}
-              </div>
+              </div>}
             </div>
             <div className={"movie-msg-box-right"}>
               {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
@@ -795,6 +813,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           goHrefMore={()=>{
             window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
           }}
+          typeFrom={"movieDetail"}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
                              listCount={recommendListCount}
                              isLogin={isLogin && !isVisitor(USERMESSAGE)} list={recommendList} title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}

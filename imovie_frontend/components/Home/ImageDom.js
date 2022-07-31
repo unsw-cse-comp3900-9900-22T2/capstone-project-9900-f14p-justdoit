@@ -289,23 +289,23 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
                 overlayClassName='popUpStatus'
                 placement="rightTop" title={"More Operations"} content={()=>{
                 return <div className={"swiper-component-operation"}>
-                  <div
-                    onClick={()=>{
-                      ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),
-                        mid,uid,is_user_rate);
-                    }}
-                    className={"swiper-component-operation-item padding1"}>
-                    Rate
-                  </div>
+                  {/*<div*/}
+                  {/*  onClick={()=>{*/}
+                  {/*    ratingRef && ratingRef.current && ratingRef.current.changeVisible*/}
+                  {/*    && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),*/}
+                  {/*      mid,uid,is_user_rate);*/}
+                  {/*  }}*/}
+                  {/*  className={"swiper-component-operation-item padding1"}>*/}
+                  {/*  Rate*/}
+                  {/*</div>*/}
                   <div
                     onClick={()=>{
                       reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
                       && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
-                        mid,uid);
+                        mid,uid,is_user_rate);
                     }}
                     className={"swiper-component-operation-item"}>
-                    Reviews and info
+                    Add review and rating
                   </div>
                   <div
                     onClick={()=>{
@@ -412,7 +412,41 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
           }
         }}
         ratingRef={ratingRef}/>
-      <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsInfoComponent
+          changeRating={(mid,rate,avg_rate)=>{
+            if(mid === thisItem.mid){
+              const _thisItem = _.cloneDeep(thisItem);
+              _thisItem.avg_rate = avg_rate;
+              _thisItem.is_user_rate = rate;
+              _thisItem.is_user_wish = false;
+              _thisItem.is_user_watch = false;
+              _thisItem.wishlist_num = (_thisItem.wishlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.wishlist_num || 0) - 1);
+              _thisItem.watchlist_num = (_thisItem.watchlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.watchlist_num || 0) - 1);
+              const _is_user_watch = _thisItem.is_user_watch;
+              if(!_is_user_watch){
+                _thisItem.is_user_watch = true;
+                _thisItem.watchlist_num = (_thisItem.watchlist_num || 0)+ 1;
+              }
+              changeThisItem(_thisItem);
+              changeRateChange(false);
+              setTimeout(()=>{
+                changeRateChange(true);
+              },0)
+              if(from === "wishList"){
+                wishListDo && wishListDo();
+              }
+              if(from === "watchList"){
+                watchListDo && watchListDo();
+              }
+              if(from === "disLike"){
+                disLikeDo && disLikeDo();
+              }
+              if(from === "liKe"){
+                liKeDo && liKeDo();
+              }
+            }
+          }}
+          reviewsInfoRef={reviewsInfoRef}/>
     </React.Fragment>
     )
 }

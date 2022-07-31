@@ -1496,6 +1496,28 @@ def get_blockers():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'get blockers failed', 'error_msg': str(e)})
 
+
+# determine block or not
+def check_block():
+    data = request.get_json(force=True)
+    o_uid = data["uid"]   # owner user
+    buid = data["buid"]   # follower user
+    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
+    if not o_usr:
+        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
+    busr = UserModel.query.filter(UserModel.uid == buid, UserModel.active == 1).first()
+    if not busr:
+        return jsonify({'code': 400, 'msg': 'follower user does not exist'})
+    follow_info = blocklistModel.query.filter(and_(blocklistModel.uid == o_uid, blocklistModel.buid == buid)).first()
+    # print(follow_info.active)
+    if not follow_info:
+        return jsonify({'code': 200, 'result': 0})
+    else:
+        if follow_info.active == 1:
+            return jsonify({'code': 200, 'result': 1})
+        else:
+            return jsonify({'code': 200, 'result': 0})
+
 # admin access only
 def insert_movie():
     data = request.get_json(force=True)

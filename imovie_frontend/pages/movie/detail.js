@@ -487,7 +487,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 </Tooltip>
               </div>
               <div className={"rating"}>
-                <h6 className={"rating-title"}>Average ratings:</h6>
+                <h6 className={"rating-title"}>Average rating:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
                   {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}

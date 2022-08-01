@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Card, Input, List, message, Modal, Select} from "antd";
 import MovieListStyle from "./MovieList.less"
-import {DeleteTwoTone, ExclamationCircleOutlined} from "@ant-design/icons";
+import {DeleteTwoTone, ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import {
     addMoviesList,
     addMovieToList,
@@ -10,10 +10,11 @@ import {
     editMoviesList,
     getMoviesInList,
     getMoviesList,
-    getWatchlist,
+    getWatchlist, searchBy,
     searchResult
 } from "../../pages/MockData";
 import ImageDom from "../Home/ImageDom";
+import DocunceSelectComponent from "../DounceSelect";
 
 const {Meta} = Card;
 const {TextArea, Search} = Input;
@@ -299,67 +300,154 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             }
                         })}
                     </p>
-                    <Search enterButton={false}
-                            onFocus={() => setFlag(true)}
-                            placeholder="input search text"
-                            // onBlur={() => setFlag(false)}
-                            onScroll={(event)=>{
-                                event.stopPropagation();
+                    <div className={"search-movie"}>
+                        <div className={"tag-search-logo"}>
+                            <SearchOutlined/>
+                        </div>
+                        <DocunceSelectComponent
+                            value={searchKeyWord || undefined}
+                            allowClear
+                            placeholder="Search Movie"
+                            size={'middle'}
+                            fetchOptions={async (keyword)=>{
+                                setSearchKeyWord(keyword);
+                                return searchResult({
+                                    page_index: page.number - 1,
+                                    page_size: page.size,
+                                    uid,
+                                    keyword
+                                }).then(res => {
+                                    if(res.code === 200){
+                                        const {result} = res;
+                                        if(result){
+                                            const {movies,count} = result;
+                                            const _length = count > 50? 50 : count;
+                                            const data = [];
+                                            for(let i = 0 ; i < _length ; i++){
+                                                data.push(movies[i]);
+                                            }
+                                            return {
+                                                list : data,
+                                                value : keyword
+                                            }
+                                        }else{
+                                            return {
+                                                list : [],
+                                                value : keyword
+                                            }
+                                        }
+                                    }else{
+                                        return {
+                                            list : [],
+                                            value : keyword
+                                        }
+                                    }
+                                }).catch(err => {
+                                    message.error("search error");
+                                    return {
+                                        list : [],
+                                        value : keyword
+                                    }
+                                })
                             }}
-                            onChange={e => {
-                                const _value = e.target.value;
-                                setSearchKeyWord(_value)
-                                if(setTimeOutFun){
-                                    clearTimeout(setTimeOutFun);
-                                    changeSetTimeOut(null);
-                                }
-                                const _setTimeOut = setTimeout(()=>{
-                                    setSearchMovie([])
-                                    searchMovieList(_value);
-                                    clearTimeout(setTimeOutFun);
-                                    changeSetTimeOut(null);
-                                },300)
-                                changeSetTimeOut(_setTimeOut)
+                            onChange={(newValue) => {
+                                setSearchKeyWord(newValue);
+                            }}
+                            style={{
+                                width: '90%',
+                            }}
+                            defaultActiveFirstOption={false}
+                            showArrow={false}
+                            filterOption={false}
+                            bordered={false}
+                            nodeDom={(options,inputValue)=>{
+                                return options &&
+                                    options.map((item) => {
+                                        return (
+                                            <Option key={'labelData_' + item.mid + "_mid"} value={item.mid}>
+                                                <div
+                                                    style={{
+                                                        width: "100%",
+                                                        wordWrap: 'break-word',
+                                                        wordBreak: 'break-all',
+                                                        whiteSpace: 'normal',
+                                                    }}
+                                                    className={"label_data_user_movie_list_mid_search"}
+                                                    onClick={()=>{
+                                                        addMovieListDetails(item.mid)
+                                                        // window.location.href = "/movie/detail?movieId=" + item.mid;
+                                                    }}
+                                                >
+                                                    <h5>{item.moviename}{!!item.year && ("(" + item.year +")")}</h5>
+                                                </div>
+                                            </Option>
+                                        );
+                                    })
+                            }}
+                            showSearch />
+                    </div>
 
-                            }} onSearch={(e) => {
-                    }} style={{width: 200}}/>
-                    <List
-                        bordered
-                        style={{
-                            width: 200,
-                            height: 400,
-                            overflow: 'auto',
-                            display: flag ? 'inline' : 'none',
-                            position: 'absolute',
-                            right: '0px',
-                            top: '60px',
-                            // top: '245px',
+                    {/*<Search enterButton={false}*/}
+                    {/*        onFocus={() => setFlag(true)}*/}
+                    {/*        placeholder="input search text"*/}
+                    {/*        // onBlur={() => setFlag(false)}*/}
+                    {/*        onScroll={(event)=>{*/}
+                    {/*            event.stopPropagation();*/}
+                    {/*        }}*/}
+                    {/*        onChange={e => {*/}
+                    {/*            const _value = e.target.value;*/}
+                    {/*            setSearchKeyWord(_value)*/}
+                    {/*            if(setTimeOutFun){*/}
+                    {/*                clearTimeout(setTimeOutFun);*/}
+                    {/*                changeSetTimeOut(null);*/}
+                    {/*            }*/}
+                    {/*            const _setTimeOut = setTimeout(()=>{*/}
+                    {/*                setSearchMovie([])*/}
+                    {/*                searchMovieList(_value);*/}
+                    {/*                clearTimeout(setTimeOutFun);*/}
+                    {/*                changeSetTimeOut(null);*/}
+                    {/*            },300)*/}
+                    {/*            changeSetTimeOut(_setTimeOut)*/}
 
-                            borderRadius: '5px',
-                            backgroundColor: 'white',
-                            zIndex: '27'
-                        }}
-                        itemLayout="horizontal"
-                        dataSource={searchMovie}
-                        onScroll={(event)=>{
-                            event.stopPropagation();
-                        }}
-                        renderItem={(item) => {
-                            return (
-                                <List.Item
-                                    style={{cursor: 'pointer'}}
-                                    onFocus={() => setFlag(true)}
-                                    onBlur={() => setFlag(false)}
-                                    onClick={() => {
-                                        setFlag(true)
-                                        addMovieListDetails(item.mid)
-                                    }}>
-                                    <span onFocus={() => setFlag(true)}>{item.moviename}</span>
-                                </List.Item>
-                            )
-                        }
-                        }
-                    />
+                    {/*        }} onSearch={(e) => {*/}
+                    {/*}} style={{width: 200}}/>*/}
+                    {/*<List*/}
+                    {/*    bordered*/}
+                    {/*    style={{*/}
+                    {/*        width: 200,*/}
+                    {/*        height: 400,*/}
+                    {/*        overflow: 'auto',*/}
+                    {/*        display: flag ? 'inline' : 'none',*/}
+                    {/*        position: 'absolute',*/}
+                    {/*        right: '0px',*/}
+                    {/*        top: '60px',*/}
+                    {/*        // top: '245px',*/}
+
+                    {/*        borderRadius: '5px',*/}
+                    {/*        backgroundColor: 'white',*/}
+                    {/*        zIndex: '27'*/}
+                    {/*    }}*/}
+                    {/*    itemLayout="horizontal"*/}
+                    {/*    dataSource={searchMovie}*/}
+                    {/*    onScroll={(event)=>{*/}
+                    {/*        event.stopPropagation();*/}
+                    {/*    }}*/}
+                    {/*    renderItem={(item) => {*/}
+                    {/*        return (*/}
+                    {/*            <List.Item*/}
+                    {/*                style={{cursor: 'pointer'}}*/}
+                    {/*                onFocus={() => setFlag(true)}*/}
+                    {/*                onBlur={() => setFlag(false)}*/}
+                    {/*                onClick={() => {*/}
+                    {/*                    setFlag(true)*/}
+                    {/*                    addMovieListDetails(item.mid)*/}
+                    {/*                }}>*/}
+                    {/*                <span onFocus={() => setFlag(true)}>{item.moviename}</span>*/}
+                    {/*            </List.Item>*/}
+                    {/*        )*/}
+                    {/*    }*/}
+                    {/*    }*/}
+                    {/*/>*/}
                 </div>
                 <div className={"imgBox"} style={{position: "relative", top: 50}}>
                     {movieListDetail.map((item, index) => <React.Fragment>

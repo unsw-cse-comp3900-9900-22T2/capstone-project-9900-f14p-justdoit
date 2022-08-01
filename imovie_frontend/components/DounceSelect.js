@@ -43,10 +43,12 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     const { list, value } = data;
                     for (let i = 0; i < list.length; i++) {
                         const _newOptions = list[i];
-                        _newOptions.showName = getNewDom(
-                            _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
-                            value,
-                        );
+                        if(_newOptions) {
+                            _newOptions.showName = getNewDom(
+                                _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
+                                value,
+                            );
+                        }
                     }
                     setOptions(list);
                     changeInputValue(props.value)
@@ -60,10 +62,12 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     const { list, value } = data;
                     for (let i = 0; i < list.length; i++) {
                         const _newOptions = list[i];
-                        _newOptions.showName = getNewDom(
-                            _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
-                            value,
-                        );
+                        if(_newOptions) {
+                            _newOptions.showName = getNewDom(
+                                _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
+                                value,
+                            );
+                        }
                     }
                     setOptions(list);
                     changeInputValue(value)
@@ -89,10 +93,12 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     }
                     for (let i = 0; i < list.length; i++) {
                         const _newOptions = list[i];
-                        _newOptions.showName = getNewDom(
-                            _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
-                            value,
-                        );
+                        if(_newOptions) {
+                            _newOptions.showName = getNewDom(
+                                _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
+                                value,
+                            );
+                        }
                     }
                     setOptions(list);
                     changeInputValue(value)
@@ -123,10 +129,13 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                     }
                     for (let i = 0; i < list.length; i++) {
                         const _newOptions = list[i];
-                        _newOptions.showName = getNewDom(
-                            _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
-                            value,
-                        );
+                        if(_newOptions){
+                            _newOptions.showName = getNewDom(
+                                _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
+                                value,
+                            );
+                        }
+
                     }
                     setOptions(list);
                     changeInputValue(value)
@@ -178,10 +187,12 @@ const DebounceSelect = ({ hasOpen, selectRef, fetchOptions, initShowList,debounc
                             }
                             for (let i = 0; i < list.length; i++) {
                                 const _newOptions = list[i];
-                                _newOptions.showName = getNewDom(
-                                    _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
-                                    value,
-                                );
+                                if(_newOptions) {
+                                    _newOptions.showName = getNewDom(
+                                        _newOptions.userEname + '（' + _newOptions.userName + ' / ' + _newOptions.userId + '）',
+                                        value,
+                                    );
+                                }
                             }
                             setOptions(list);
                             changeInputValue("")

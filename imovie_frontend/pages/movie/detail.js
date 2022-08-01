@@ -946,13 +946,17 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                 title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
 
             {/*推荐列表*/}
-            {recommendedMovieList.map((item, index) => <Card
+            {recommendedMovieList.length != 0 &&<h4 style={{marginLeft:125}}>RECOMMEND MOVIE LIST</h4>}
+            <div className={"imgBox"} style={{display: 'flex'}}>
+            {recommendedMovieList.map((item, index) => 
+                  <div className='card' style={{display: 'flex',marginLeft:125,marginRight:'-43px'}}>
+                    <Card
                         // width={267}
                         // height={400}
                         hoverable
-                        style={{width: 350, height: 522, marginRight: '25px', marginBottom: '70px'}}
-                        cover={item.cover_image === "./iMovie_backend/coverimage.jpg" ?
-                            <img alt="example" src={"/static/emptyMovieList.png"}/> :
+                        style={{width: 277, height: 416,marginRight:'-50px' }}
+                        cover={item.cover_image === null ?
+                            <img alt="example" src={"/static/emptyLogo.png"}/> :
                             <img alt="example" src={item.cover_image}/>}
                         onClick={() => {
                             // window.location.href = "/movie/recommendMovie?movieId=" +''
@@ -961,8 +965,11 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                         {/*<Meta title={item.title} description={item.description} />*/}
                         <h6>{item.title}</h6>
                     </Card>
+                  </div>
                 )
+               
             }
+            </div>
 
             <RatingComponent
                 changeRating={(mid, rate, avg_rate) => {

@@ -126,7 +126,7 @@ const Home = ({USERMESSAGE}) => {
         {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
         {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
         {/* 主页推荐影单 */}
-        <h4 style={{marginLeft:125}}>RECOMMEND MOVIE LIST</h4>
+        {movieList.length != 0 &&<h4 style={{marginLeft:125}}>RECOMMEND MOVIE LIST</h4>}
         <div className={"imgBox"} style={{display: 'flex'}}>
             {movieList.map((item, index) => <React.Fragment>
                 <div className='card' style={{display: 'flex',marginLeft:125,marginRight:'-43px'}}>
@@ -136,8 +136,8 @@ const Home = ({USERMESSAGE}) => {
 
                         hoverable
                         style={{width: 277, height: 416,marginRight:'-50px' }}
-                        cover={item.cover_image === "./iMovie_backend/coverimage.jpg" ?
-                            <img alt="example" src={"/static/emptyMovieList.png"}/> :
+                        cover={item.cover_image === null ?
+                            <img alt="example" src={"/static/emptyLogo.png"}/> :
                             <img alt="example" src={item.cover_image}/>}
                         onClick={() => {
                             // setMolid(item.molid)

@@ -237,8 +237,8 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             // height={400}
                             hoverable
                             style={{width: 350, height: 522, marginRight: '25px', marginBottom: '70px'}}
-                            cover={item.cover_image === "./iMovie_backend/coverimage.jpg" ?
-                                <img alt="example" src={"/static/emptyMovieList.png"}/> :
+                            cover={item.cover_image === null ?
+                                <img alt="example" src={"/static/emptyLogo.png"}/> :
                                 <img alt="example" src={item.cover_image}/>}
                             onClick={() => {
                                 setMolid(item.molid)

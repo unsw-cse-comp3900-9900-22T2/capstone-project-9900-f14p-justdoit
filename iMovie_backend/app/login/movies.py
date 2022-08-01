@@ -1611,9 +1611,12 @@ def get_movies_in_movielist():
     if not movie_list.mid:
         return jsonify({'code': 200, 'msg': "Empty movie list."})
 
+    creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
+    if not creator:
+        return jsonify({'code': 400, 'msg': 'Creator does not exist.'})
+    creator_info = {"uid": creator.uid, "username": creator.username}
+
     try:
-        creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
-        creator_info = {"uid": creator.uid, "username": creator.username}
         mid_list = movie_list.mid.split(';')
         print(mid_list)
         result_list = []
@@ -1684,7 +1687,7 @@ def get_movielists_in_mdp():
     nonempty_movielists = movielistModel.query.filter(movielistModel.active == 1, movielistModel.mid != "").order_by(
         desc(movielistModel.utime)).all()
     if not nonempty_movielists:
-        return jsonify({'code': 200, 'msg': 'There is no movie list.'})
+        return jsonify({'code': 400, 'msg': 'There is no movie list.'})
 
     try:
         latest_movielists = nonempty_movielists

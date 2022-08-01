@@ -1630,7 +1630,7 @@ def get_movies_in_movielist():
             result["result_list"] = result_list[start:end]
         else:
             result["result_list"] = result_list[start:]
-        return jsonify({'code': 200, 'creator':creator_info, 'result': result})
+        return jsonify({'code': 200, 'creator': creator_info, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get movies in movie list failed.', 'error_msg': str(e)})
 

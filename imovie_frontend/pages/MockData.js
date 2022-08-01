@@ -181,13 +181,13 @@ export function insertMovie(param){
     return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
 }
 export function blockOrNot(param){
-    return fetchData('http://127.0.0.1:5000/app/movies/block_user', param);
+    return fetchData('http://127.0.0.1:5000/app/views/block_user', param);
 }
 export function getBlockers(param){
-    return fetchData('http://127.0.0.1:5000/app/movies/get_blockers', param);
+    return fetchData('http://127.0.0.1:5000/app/views/get_blockers', param);
 }
 export function checkBlock(param){
-    return fetchData('http://127.0.0.1:5000/app/movies/check_block', param);
+    return fetchData('http://127.0.0.1:5000/app/views/check_block', param);
 }
 export function rateDisplay(param){
     return fetchData('http://127.0.0.1:5000/app/movies/rate_display', param);

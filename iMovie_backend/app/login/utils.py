@@ -184,3 +184,8 @@ def isSplitRight(str, sign):
                 return -1
 
     return 0
+def is_number(num):
+    pattern = re.compile(r'(.*)\.(.*)\.(.*)')
+    if pattern.match(num):
+        return False
+    return num.replace(".", "").isdigit()

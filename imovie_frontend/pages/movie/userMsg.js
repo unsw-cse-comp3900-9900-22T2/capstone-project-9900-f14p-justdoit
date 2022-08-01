@@ -13,6 +13,7 @@ import ReviewsComponent from "../../components/UserMsg/Review"
 import WatchListComponent from "../../components/UserMsg/WatchList"
 // 改了这
 import HisToryComponent from "../../components/UserMsg/HisTory"
+import MovieListComponent from "../../components/UserMsg/MovieList"
 import DisLikeComponent from "../../components/UserMsg/DisLike"
 import LiKeComponent from "../../components/UserMsg/LiKe"
 import FollowComponent from "../../components/UserMsg/Follow"
@@ -43,15 +44,16 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     value : "Watchlist",
     icon : <EyeOutlined />
   },
-  // {
-  //   key : 3,
-  //   value : "movielist",
-  //   icon : <PlaySquareOutlined />
-  // },
+
   {
     key : 4,
     value : "History",
     icon : <HistoryOutlined />
+  },
+  {
+    key : 3,
+    value : "Movielist",
+    icon : <PlaySquareOutlined />
   },
   {
     key : 5,
@@ -136,6 +138,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         return <WishListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 2:
         return <WatchListComponent uid={_uid} isMySelf={isMySelf}/>;
+      case 3:
+        return <MovieListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 4:
         return <HisToryComponent uid={_uid} isMySelf={isMySelf}/>;
       case 5:
@@ -159,7 +163,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         !showDom ? null :
           (
             !edit ?  <div className={"user-message-box"}>
-              <div className={"following-box"}>
+              {!initQuery.nouser &&
+                  <div className={"following-box"}>
                  <div className={"following"}>
                     <h6>{userMsg.followers_count || 0}</h6>
                     <h5
@@ -184,7 +189,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                         }}
                     >FOLLOWERS</h5>
                   </div>
-              </div>
+              </div>}
               {!initQuery.nouser && <div className="user-message-title">
                 <div className="user-logo">
                   <Avatar size={60}

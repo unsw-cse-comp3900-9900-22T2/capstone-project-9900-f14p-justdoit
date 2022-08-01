@@ -115,12 +115,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
                   hasBorder : false,
                   href : "/movie/userMsg?activeKey=4&nouser=1"
               },
-              // {
-              //   key : 7,
-              //   value : "movie lists",
-              //   hasBorder : false,
-              //   href : "/movie/userMsg?activeKey=3&nouser=1"
-              // },
+              {
+                key : 7,
+                value : "Movielist",
+                hasBorder : false,
+                href : "/movie/userMsg?activeKey=3&nouser=1"
+              },
               {
                   key : 8,
                   value : "Review",

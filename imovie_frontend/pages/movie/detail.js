@@ -1,7 +1,7 @@
 import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import detailStyle from "./detail.less";
-import { Avatar, Popover, Rate ,message,Tooltip} from "antd";
+import { Avatar, Popover, Rate ,message,Tooltip,Input,Modal,Select,TextArea} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
 import { UserOutlined,MessageOutlined } from "@ant-design/icons";
@@ -10,10 +10,22 @@ import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,movieSimilerRecommend
   ,displayMovieReview,likeReview} from "../MockData";
-import { likeAddOrDelete,dislikeAddOrDelete } from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete,
+  addMoviesList,
+  addMovieToList,
+  delMovieFromList,
+  delMoviesList,
+  editMoviesList,
+  getMoviesInList,
+  getMoviesList,
+  getWatchlist
+} from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
+import {DeleteTwoTone, ExclamationCircleOutlined,PlusOutlined} from "@ant-design/icons";
 import {isVisitor} from "../../util/common";
-const Detail = ({USERMESSAGE,initQuery}) => {
+const {Option} = Select;
+const Detail = ({USERMESSAGE,initQuery}) => { 
+  const {uid} = USERMESSAGE
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
   const [movieDetail,changeMovieDetail]=useState(null);
@@ -24,6 +36,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
   const reviewsThisRef = useRef();
+  const [movieList, setMovieList] = useState([]);//影单列表
+  const [showModel, setShowModel] = useState(false);//选择movieList的弹窗
+  const [showAddMoviesListModel, setShowAddMoviesListModel] = useState(false);//添加movieList的弹窗
+  const [listName, setListName] = useState("");//影单title
+  const [listDescription, setListDescription] = useState("");//影单描述
+  const [molid, setMolid] = useState(-1);//影单id
+  const [mid, setMid] = useState(''); 
   function getMsg(number){
     if (!number && number !== 0) return number;
     var str_num
@@ -74,6 +93,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
            const {result} = res;
           changeMovieDetail(result || null);
           // 改了这儿
+          setMid(result.mid)
           historyAddOrDelete({
             mid : initQuery.movieId,
             uid : USERMESSAGE && USERMESSAGE.uid || null,
@@ -326,6 +346,52 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     }
      window.location.href = "/movie/userMsg?uid=" + uid
   }
+    //查询影单列表
+    const queryMoviesList = () => {
+      getMoviesList({uid}).then(res => {
+          if (res.code === 200) {
+              const {result} = res;
+              if (result) {
+                  console.log(result, '影单列表');
+                  setMovieList(result.result_list)
+              }
+          }
+      }).catch(err => {
+          console.log(err)
+      })
+  }
+    //添加电影到影单
+    const addToMovieList = (molid, mid) => {
+      addMovieToList({
+          uid,
+          molid,
+          mid
+      }).then(res => {
+          if (res.code === 200) {
+              message.success(res.msg)
+              setShowModel(false)
+          }
+          console.log(res, '添加心愿列表')
+      })
+  }
+
+  //创建影单一个moveList影单
+  const createMovieList = () => {
+      addMoviesList({
+          "uid": uid, "title": listName, "mid": item.mid, "description": listDescription
+      }).then(res => {
+          if (res.code === 200) {
+              message.success(res.msg);
+          }
+      }).catch(err => {
+          console.log(err)
+      }).finally(() => {
+          queryMoviesList();
+          setShowAddMoviesListModel(false)
+      })
+  }
+
+
   return (
     <PageBase USERMESSAGE={USERMESSAGE}>
       <style dangerouslySetInnerHTML={{ __html: detailStyle }} />
@@ -510,7 +576,23 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                   </div>
                   <div className={"a-href"}>
                     Rate
+                  </div>          
+                </div>
+                <div
+                    onClick={() => {
+                        setShowModel(true)
+                        queryMoviesList()
+                    }}
+                    className={"operation-image"}>
+                  <div
+                    className={"image-box"}>
+                    {/* {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
+                        movieDetail.is_user_rate <= 0
+                    ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>} */}
                   </div>
+                  <div className={"a-href"}>
+                    Movielist
+                  </div>          
                 </div>
               </div>
             }
@@ -712,6 +794,28 @@ const Detail = ({USERMESSAGE,initQuery}) => {
             displayMovieReviewService();
           }}
           reviewsThisRef={reviewsThisRef}/>
+      {/*添加和编辑的弹窗*/}
+      <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addToMovieList(molid, mid)}>
+                <Select style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
+                    {movieList.map((item, index) => <Option value={item.molid} key={index}>{item.title}</Option>)}
+                </Select>
+                <a onClick={() => {
+                    setShowModel(false)
+                    setShowAddMoviesListModel(true)
+                }}><PlusOutlined/>&nbsp;Create new movielist</a>
+            </Modal>
+
+            <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {
+                createMovieList()
+            }}>
+                <label>List Name</label>
+                <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
+                <label>List Description</label>
+                <TextArea 
+                          maxLength={250} autoSize={{minRows: 4, maxRows: 6}} 
+                          allowClear value={listDescription}
+                          onChange={e => setListDescription(e.target.value)}/>
+            </Modal>
     </PageBase>
   )
 }

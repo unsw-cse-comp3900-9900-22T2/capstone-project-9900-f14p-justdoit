@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Card, Input, message, Modal, Select} from "antd";
-import WatchListStyle from "./WatchList.less"
+import MovieListStyle from "./MovieList.less"
 import {DeleteTwoTone, ExclamationCircleOutlined} from "@ant-design/icons";
 import {
     addMoviesList,
@@ -188,7 +188,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
     }
 
     return (<React.Fragment>
-        <style dangerouslySetInnerHTML={{__html: WatchListStyle}}/>
+        <style dangerouslySetInnerHTML={{__html: MovieListStyle}}/>
         {changeList
             ?
             <div className="watchListComponent">
@@ -244,7 +244,10 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
                                     </div>
                                     {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
                                                                 onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
-                                        <TextArea autoSize allowClear value={listDescription}
+                                        <TextArea autoSize={{maxRows:2}}
+                                                //   width={400}
+                                                  style={{width:400}}
+                                                  allowClear value={listDescription}
                                                   onChange={e => setListDescription(e.target.value)}
                                                   placeholder={item.description}
                                                   onKeyDown={e => {

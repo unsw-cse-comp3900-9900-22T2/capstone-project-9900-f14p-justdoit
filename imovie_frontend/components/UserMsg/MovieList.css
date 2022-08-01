@@ -1,0 +1,70 @@
+.watchListComponent {
+  width: 100%;
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+.watchListComponent .title-box {
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  border-bottom: 1px solid #ececec;
+}
+.watchListComponent .title-box .title {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  line-height: 60px;
+  margin: 0;
+}
+.watchListComponent .title-box .operation {
+  display: flex;
+}
+.watchListComponent .title-box .operation .operation-item {
+  font-size: 14px;
+  color: #1d39c4;
+  text-decoration: underline;
+  line-height: 60px;
+  margin: 0;
+  cursor: pointer;
+}
+.watchListComponent .title-box .operation .line {
+  width: 1px;
+  height: 20px;
+  margin: 20px 15px 0 15px;
+  background: #dcdcdc;
+}
+.watchListComponent .title-box .operation .select-operation .ant-select-selector {
+  margin-top: 14px;
+}
+.watchListComponent .list-detail-pagination {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+.watchListComponent .imgBox {
+  position: relative;
+  top: 50px;
+  width: 100%;
+  display: flex;
+  /*justify-content: space-between;*/
+  flex-wrap: wrap;
+  margin: 40px auto 20px auto;
+  /*overflow : hidden;*/
+}
+.watchListComponent .imgBox .swiper-image-list-item {
+  margin-bottom: 20px;
+}
+.watchListComponent .empty {
+  width: 100%;
+  margin: 0 auto;
+}
+.watchListComponent .empty img {
+  display: block;
+  width: 15%;
+  margin: 10px auto 10px auto;
+}
+.watchListComponent .empty h5 {
+  text-align: center;
+  font-size: 14px;
+  color: #cdcdcd;
+}

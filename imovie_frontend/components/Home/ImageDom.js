@@ -551,7 +551,7 @@ const ImageDom = ({
         <a onClick={() => {
           setShowModel(false)
           setShowAddMoviesListModel(true)
-        }}><PlusOutlined/>Create new movielist</a>
+        }}><PlusOutlined/>&nbsp;Create new movielist</a>
       </Modal>
 
       <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {
@@ -560,7 +560,8 @@ const ImageDom = ({
         <label>List Name</label>
         <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
         <label>List Description</label>
-        <TextArea rows={4} allowClear value={listDescription}
+        <TextArea allowClear value={listDescription}
+                  maxLength={250} autoSize={{minRows: 4, maxRows: 6}} 
                   onChange={e => setListDescription(e.target.value)}/>
       </Modal>
     </React.Fragment>

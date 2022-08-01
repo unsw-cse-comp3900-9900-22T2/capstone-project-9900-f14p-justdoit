@@ -1666,7 +1666,7 @@ def get_latest_movielists():
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
 
-def get_movielist_in_mdp():
+def get_movielists_in_mdp():
     data = request.get_json(force=True)
     uid = data["uid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()

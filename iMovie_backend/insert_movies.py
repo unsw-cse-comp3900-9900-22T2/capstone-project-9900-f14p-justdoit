@@ -68,11 +68,11 @@ admin_date = getTime()[0]
 admin_ctime = admin_date
 admin_utime = admin_date
 
-admin_valuestr = [str(admin_uid), 41,str(admin_name), str(en_password),str(admin_email), int(admin_role), 1,admin_ctime,admin_utime]
+admin_valuestr = [str(admin_uid), 1,str(admin_name), str(en_password),str(admin_email), int(admin_role), 1,admin_ctime,admin_utime]
 
 cur.execute("insert into users(uid,id,username,password,email,role,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s)",admin_valuestr)
 
-admin = []
+# admin = []
 
 cur.close()
 conn.commit()

@@ -37,6 +37,14 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const reviewsInfoRef = useRef();
   const reviewsThisRef = useRef();
   const ratingPersonRef = useRef();
+  const {uid} = USERMESSAGE
+  const [movieList, setMovieList] = useState([]);//影单列表
+  const [showModel, setShowModel] = useState(false);//选择movieList的弹窗
+  const [showAddMoviesListModel, setShowAddMoviesListModel] = useState(false);//添加movieList的弹窗
+  const [listName, setListName] = useState("");//影单title
+  const [listDescription, setListDescription] = useState("");//影单描述
+  const [molid, setMolid] = useState(-1);//影单id
+  const [mid, setMid] = useState(''); 
   function getMsg(number){
     if (!number && number !== 0) return number;
     var str_num
@@ -952,6 +960,28 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           }}
           reviewsThisRef={reviewsThisRef}/>
       <RatingPersonComponent USERMESSAGE={USERMESSAGE} ratingPersonRef={ratingPersonRef}/>
+      {/*添加和编辑的弹窗*/}
+      <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addToMovieList(molid, mid)}>
+          <Select style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
+              {movieList.map((item, index) => <Option value={item.molid} key={index}>{item.title}</Option>)}
+          </Select>
+          <a onClick={() => {
+              setShowModel(false)
+              setShowAddMoviesListModel(true)
+          }}><PlusOutlined/>&nbsp;Create new movielist</a>
+      </Modal>
+
+      <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {
+          createMovieList()
+      }}>
+          <label>List Name</label>
+          <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
+          <label>List Description</label>
+          <TextArea 
+                    maxLength={250} autoSize={{minRows: 4, maxRows: 6}} 
+                    allowClear value={listDescription}
+                    onChange={e => setListDescription(e.target.value)}/>
+      </Modal>
     </PageBase>
   )
 }

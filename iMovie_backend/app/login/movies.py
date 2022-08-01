@@ -1593,6 +1593,7 @@ def get_movielists():
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
 
+# get movies from movielists
 def get_movies_in_movielist():
     data = request.get_json(force=True)
     page_index = data["page_index"]

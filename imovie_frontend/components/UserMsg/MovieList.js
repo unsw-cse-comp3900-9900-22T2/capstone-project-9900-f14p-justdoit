@@ -20,7 +20,7 @@ const {TextArea, Search} = Input;
 const {Option} = Select;
 const {confirm} = Modal;
 const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
-
+    const [setTimeOutFun,changeSetTimeOut] = useState(null);
     const [showModel, setShowModel] = useState(false);//添加movieList的弹窗
     const [changeList, setChangeList] = useState(true);//切换movieList和详情列表
     const [movieList, setMovieList] = useState([]);//影单列表
@@ -303,10 +303,24 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             onFocus={() => setFlag(true)}
                             placeholder="input search text"
                             // onBlur={() => setFlag(false)}
+                            onScroll={(event)=>{
+                                event.stopPropagation();
+                            }}
                             onChange={e => {
-                                setSearchKeyWord(e.target.value)
-                                setSearchMovie([])
-                                searchMovieList(e.target.value)
+                                const _value = e.target.value;
+                                setSearchKeyWord(_value)
+                                if(setTimeOutFun){
+                                    clearTimeout(setTimeOutFun);
+                                    changeSetTimeOut(null);
+                                }
+                                const _setTimeOut = setTimeout(()=>{
+                                    setSearchMovie([])
+                                    searchMovieList(_value);
+                                    clearTimeout(setTimeOutFun);
+                                    changeSetTimeOut(null);
+                                },300)
+                                changeSetTimeOut(_setTimeOut)
+
                             }} onSearch={(e) => {
                     }} style={{width: 200}}/>
                     <List
@@ -327,6 +341,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                         }}
                         itemLayout="horizontal"
                         dataSource={searchMovie}
+                        onScroll={(event)=>{
+                            event.stopPropagation();
+                        }}
                         renderItem={(item) => {
                             return (
                                 <List.Item

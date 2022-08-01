@@ -48,12 +48,12 @@ for row in worksheet.rows:
         sqlstr_8 = sqlstr[8].lower()
     else:
         sqlstr_8 = None
-
+    # print(str(sqlstr[1]), sqlstr[5])
 
     valuestr = [str(mid), str(sqlstr[1]),int(sqlstr[2]), str(sqlstr[3]), str(sqlstr[4]), int(sqlstr[5])
-                , str(sqlstr[6]), str(sqlstr[7]), str(sqlstr_8),str(sqlstr[9]),str(sqlstr[10]),1,data_time,data_time]
+                , str(sqlstr[6]), str(sqlstr[7]), str(sqlstr_8),str(sqlstr[9]),str(sqlstr[10]),1,data_time,data_time,sqlstr[11]]
 
-    cur.execute("insert into movies(mid,moviename,year,director,description,duration,country,language,genre,cast,coverimage,active,ctime,utime)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
+    cur.execute("insert into movies(mid,moviename,year,director,description,duration,country,language,genre,cast,coverimage,active,ctime,utime,release_date)value(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",valuestr)
 
 
 

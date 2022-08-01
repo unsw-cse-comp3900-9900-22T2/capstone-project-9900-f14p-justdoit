@@ -186,6 +186,12 @@ export function rateDisplay(param){
 export function rateDistribution(param){
     return fetchData('http://127.0.0.1:5000/app/movies/rate_distribution', param);
 }
+export function sentRecentMovie(param){
+    return fetchData('http://127.0.0.1:5000/app/views/sent_recent_movie', param);
+}
+export function getRecentMovies(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/get_recent_movies', param);
+}
 /*
 movies list
  */

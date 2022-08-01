@@ -1948,16 +1948,21 @@ def get_recent_movies():
     result = {}
     mlist = []
     num = 0
+    now = getTime()[0]
     recent_movies = MoviesModel.query.filter(MoviesModel.release_date != None, MoviesModel.active == 1).order_by("release_date").all()
     if len(recent_movies)>0:
         for i in recent_movies:
-            mdict = res_movie_detail(uid, user, i)
-            if num >= 16:
-                break
-            if "Music" not in mdict["genre"]:
-                num = num + 1
-                mlist.append(mdict)
-
+            # print(now)
+            data = now.split(" ")[0]
+            timeB = i.release_date.split(" ")[0]
+            day_ = compare_time(data,timeB)
+            if day_ <= 30:
+                mdict = res_movie_detail(uid, user, i)
+                if num >= 16:
+                    break
+                if "Music" not in mdict["genre"]:
+                    num = num + 1
+                    mlist.append(mdict)
     result["count"] = num
     result["mlist"] = mlist
     return jsonify({'code': 200, 'result': result})

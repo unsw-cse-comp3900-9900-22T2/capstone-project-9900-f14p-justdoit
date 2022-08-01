@@ -1614,9 +1614,10 @@ def get_movies_in_movielist():
     creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
     if not creator:
         return jsonify({'code': 400, 'msg': 'Creator does not exist.'})
-    creator_info = {"uid": creator.uid, "username": creator.username}
+
 
     try:
+        creator_info = {"uid": creator.uid, "username": creator.username}
         mid_list = movie_list.mid.split(';')
         print(mid_list)
         result_list = []

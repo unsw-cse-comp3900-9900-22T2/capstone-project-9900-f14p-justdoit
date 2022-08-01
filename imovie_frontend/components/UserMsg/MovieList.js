@@ -253,7 +253,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             </div>
             :
             <div className="watchListComponent">
-                <div className={"title-box"}>
+                <div className={"title-box"} style={{position : "relative",zIndex:14}}>
                     <p className="title">
                         {movieList.map((item, index) => {
                             if (item.molid === molid) {
@@ -332,12 +332,12 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             display: flag ? 'inline' : 'none',
                             position: 'absolute',
                             right: '0px',
-                            top: '200px',
+                            top: '60px',
                             // top: '245px',
 
                             borderRadius: '5px',
                             backgroundColor: 'white',
-                            zIndex: '99999'
+                            zIndex: '27'
                         }}
                         itemLayout="horizontal"
                         dataSource={searchMovie}

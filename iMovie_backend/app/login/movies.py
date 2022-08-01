@@ -1212,7 +1212,11 @@ def res_movieReview_detail(movieReview, mainUser):
     mid = movieReview.mid
     result["mrid"] = mrid
     result["uid"] = uid
+    print("mrid: ", mrid)
+    print("uid: ", uid)
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    if not user:
+        return
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
@@ -1264,27 +1268,25 @@ def display_movieReview():
         .group_by(movieReviewModel.mrid)\
         .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
         .order_by(func.count(reviewlikeModel.mrid).desc()).all()
-    print(movieReview)
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
-    try:
-        movieReview_list = []
-        result = {}
-        count = 0
-        for m in movieReview:  # movies: [movies0, movies[1]....]
-            is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
-            if is_block:
-                print("this has been blockedr")
-                continue
 
-            movieReview_info = res_movieReview_detail(m,user)
+    movieReview_list = []
+    result = {}
+    count = 0
+    for m in movieReview:  # movies: [movies0, movies[1]....]
+        is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
+        if is_block:
+            print("this has been blockedr")
+            continue
+
+        movieReview_info = res_movieReview_detail(m,user)
+        if movieReview_info:
             movieReview_list.append(movieReview_info)
             count += 1
-        result["movieReview_count"] = count
-        result["movieReview"] = movieReview_list
-        return jsonify({'code': 200, 'result': result})
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'display movieReview failure', 'error_msg': str(e)})
+    result["movieReview_count"] = count
+    result["movieReview"] = movieReview_list
+    return jsonify({'code': 200, 'result': result})
 
 
 # func for display all movie Reviews user post before
@@ -1704,183 +1706,6 @@ def get_movielists_in_mdp():
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
-def follow_or_not():
-    data = request.get_json(force=True)
-    o_uid = data["o_uid"]   # owner user
-    f_uid = data["f_uid"]   # follower user
-    follow_status = data["follow_status"]       # 0: cancel follow     1 : follow
-    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
-    if not o_usr:
-        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
-    f_usr = UserModel.query.filter(UserModel.uid == f_uid, UserModel.active == 1).first()
-    if not f_usr:
-        return jsonify({'code': 400, 'msg': 'follower user does not exist'})
-
-    follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid)).first()
-    try:
-        if not follow_info:
-            if follow_status == 0:
-                return jsonify({'code': 400, 'msg': 'You did not follow the user'})
-            else:
-                fid = getUniqueid()
-                time_form = getTime()[0]
-                follow_insert = followModel(fid = fid, uid = o_uid, fuid = f_uid, active = 1, ctime = time_form, utime = time_form)
-                db.session.add(follow_insert)
-                db.session.commit()
-                return jsonify({'code': 200, 'msg': 'follow successfully'})
-
-        else:
-            if follow_info.active == follow_status:
-                return jsonify({'code': 400, 'msg': 'already on this status'})
-            else:
-                follow_info.active = follow_status
-                db.session.commit()
-                return jsonify({'code': 200, 'msg': 'follow or cancel successfully'})
-
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'follow or not others failed', 'error_msg': str(e)})
-
-def get_followers():
-    data = request.get_json(force=True)
-    uid = data["uid"]   # owner user
-    target = data["target"]     # 0 : following  1: followers
-    usr = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    if not usr:
-        return jsonify({'code': 400, 'msg': 'user does not exist'})
-    if target == 1:
-        follow_info = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).all()
-        try:
-            result = dict()
-            follow_lst = list()
-            for f in follow_info:
-                follow_dict = dict()
-                fuid = f.fuid
-                follow_dict["user_id"] = fuid
-                u = UserModel.query.filter(UserModel.uid == fuid, UserModel.active == 1).first()
-                if not u:
-                    return jsonify({'code': 400, 'msg': 'followers does not exist'})
-                name = u.username
-                follow_dict["user_name"] = name
-                follow_lst.append(follow_dict)
-            result["follow_lst"] = follow_lst
-            result["count"] = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).count()
-            return jsonify({'code': 200, 'result': result})
-
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'get followers failed', 'error_msg': str(e)})
-    if target == 0:
-        follow_info = followModel.query.filter(and_(followModel.fuid == uid, followModel.active == 1)).all()
-        try:
-            result = dict()
-            follow_lst = list()
-            for f in follow_info:
-                follow_dict = dict()
-                fuid = f.uid
-                follow_dict["user_id"] = fuid
-                u = UserModel.query.filter(UserModel.uid == fuid, UserModel.active == 1).first()
-                if not u:
-                    return jsonify({'code': 400, 'msg': 'following user does not exist'})
-                name = u.username
-                follow_dict["user_name"] = name
-                follow_lst.append(follow_dict)
-            result["follow_lst"] = follow_lst
-            result["count"] = followModel.query.filter(and_(followModel.fuid == uid, followModel.active == 1)).count()
-            return jsonify({'code': 200, 'result': result})
-
-        except Exception as e:
-            return jsonify({'code': 400, 'msg': 'get followings failed', 'error_msg': str(e)})
-
-# determine follow or not
-def check_follow():
-    data = request.get_json(force=True)
-    o_uid = data["o_uid"]   # owner user
-    f_uid = data["f_uid"]   # follower user
-    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
-    if not o_usr:
-        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
-    f_usr = UserModel.query.filter(UserModel.uid == f_uid, UserModel.active == 1).first()
-    if not f_usr:
-        return jsonify({'code': 400, 'msg': 'follower user does not exist'})
-    follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid,)).first()
-    print(follow_info.active)
-    if not follow_info:
-        return jsonify({'code': 200, 'result': 0})
-    else:
-        if follow_info.active == 1:
-            return jsonify({'code': 200, 'result': 1})
-        else:
-            return jsonify({'code': 200, 'result': 0})
-
-
-
-
-def block_user():
-    data = request.get_json(force=True)
-    o_uid = data["o_uid"]   # owner user
-    b_uid = data["b_uid"]   # blocker user
-    block_status = data["block_status"]       # 0: cancel block     1 : block
-    o_usr = UserModel.query.filter(UserModel.uid == o_uid, UserModel.active == 1).first()
-    if not o_usr:
-        return jsonify({'code': 400, 'msg': 'owner user does not exist'})
-    b_usr = UserModel.query.filter(UserModel.uid == b_uid, UserModel.active == 1).first()
-    if not b_usr:
-        return jsonify({'code': 400, 'msg': 'blocker user does not exist'})
-
-    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == o_uid, blocklistModel.buid == b_uid)).first()
-    try:
-        if not block_info:
-            if block_status == 0:
-                return jsonify({'code': 400, 'msg': 'You did not block the user'})
-            else:
-                bid = getUniqueid()
-                time_form = getTime()[0]
-                block_insert = blocklistModel(bid = bid, uid = o_uid, buid = b_uid, active = 1, ctime = time_form, utime = time_form)
-                db.session.add(block_insert)
-                db.session.commit()
-                return jsonify({'code': 200, 'msg': 'block successfully'})
-
-        else:
-            if block_info.active == block_status:
-                return jsonify({'code': 400, 'msg': 'already on this status'})
-            else:
-                block_info.active = block_status
-                db.session.commit()
-                return jsonify({'code': 200, 'msg': 'block or cancel successfully'})
-
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'block or not others failed', 'error_msg': str(e)})
-
-
-
-
-def get_blockers():
-    data = request.get_json(force=True)
-    uid = data["uid"]   # owner user
-    usr = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    if not usr:
-        return jsonify({'code': 400, 'msg': 'user does not exist'})
-
-
-    block_info = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.active == 1)).all()
-    try:
-        result = dict()
-        block_lst = list()
-        for f in block_info:
-            block_dict = dict()
-            buid = f.buid
-            block_dict["user_id"] = buid
-            u = UserModel.query.filter(UserModel.uid == buid, UserModel.active == 1).first()
-            if not u:
-                return jsonify({'code': 400, 'msg': 'blocking user does not exist'})
-            name = u.username
-            block_dict["user_name"] = name
-            block_lst.append(block_dict)
-        result["block_lst"] = block_lst
-        result["count"] = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.active == 1)).count()
-        return jsonify({'code': 200, 'result': result})
-
-    except Exception as e:
-        return jsonify({'code': 400, 'msg': 'get blockers failed', 'error_msg': str(e)})
 
 # admin access only
 def insert_movie():
@@ -1891,19 +1716,67 @@ def insert_movie():
         return jsonify({'code': 400, 'msg': 'user does not exist'})
     if usr.role != 1:
         return jsonify({'code': 400, 'msg': 'user has no access'})
-    moviename = data["moviename"].strip()
-    coverimage = data["coverimage"].strip()
-    description = data["description"].strip()
-    genre = data["genre"].strip()
-    cast = data["cast"].strip()
-    director = data["director"].strip()
-    country = data["country"].strip()
-    language = data["language"].strip()
-    release_date = data["release_date"].strip()
+
+    moviename = data["moviename"]
+    coverimage = data["coverimage"]
+    description = data["description"]
+    genre = data["genre"]
+    cast = data["cast"]
+    director = data["director"]
+    country = data["country"]
+    language = data["language"]
+    release_date = data["release_date"]
     duration = data["duration"]
+
+    moviename = moviename.strip()
+    if len(moviename) > 400:
+        return jsonify({'code': 400, 'msg': 'Your moviename is too long.'})
+    if len(moviename) < 1:
+        return jsonify({'code': 400, 'msg': 'Your moviename is too short.'})
+
+    description = description.strip()
+    if len(description) > 800:
+        return jsonify({'code': 400, 'msg': 'Your description is too long.'})
+    if len(description) < 1:
+        return jsonify({'code': 400, 'msg': 'Your description is too short.'})
+
+    genre = genre.strip()
+    if len(genre) < 1:
+            return jsonify({'code': 400, 'msg': 'Your genre is too short.'})
+
+    if isSplitRight(genre, ' ') == -1:
+        return jsonify({'code': 400, 'msg': 'Your genre is wrong.'})
+    cast = cast.strip()
+    if len(cast) < 1:
+            return jsonify({'code': 400, 'msg': 'Your cast is too short.'})
+    if isSplitRight(cast, ';') == -1:
+        return jsonify({'code': 400, 'msg': 'Your cast is wrong.'})
+
+    director = director.strip()
+    if len(director) > 200:
+        return jsonify({'code': 400, 'msg': 'Your director is too long.'})
+    if len(director) < 1:
+        return jsonify({'code': 400, 'msg': 'Your director is too short.'})
+    country = country.strip()
+    if len(country) > 30:
+        return jsonify({'code': 400, 'msg': 'Your country is too long.'})
+    if len(country) < 1:
+        return jsonify({'code': 400, 'msg': 'Your country is too short.'})
+    language = language.strip()
+    if len(language) > 30:
+        return jsonify({'code': 400, 'msg': 'Your language is too long.'})
+    if len(language) < 1:
+        return jsonify({'code': 400, 'msg': 'Your language is too short.'})
+
+
     mid = getUniqueid()
     time_form = getTime()[0]
     year = int(release_date[0:4])
+
+    movie = MoviesModel.query.filter(MoviesModel.moviename == moviename, MoviesModel.duration == duration, MoviesModel.active == 1, MoviesModel.year == year).first()
+    if movie:
+        return jsonify({'code': 400, 'msg': 'Movie already exist.'})
+
     movie = MoviesModel(mid = mid,moviename = moviename, coverimage = coverimage,description = description,
                         genre = genre, cast = cast, director = director, country = country, language = language,
                         release_date = release_date,duration = duration, year = year, active = 1, ctime = time_form, utime = time_form)

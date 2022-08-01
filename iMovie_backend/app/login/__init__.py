@@ -71,17 +71,19 @@ def init_route(app: Flask):
     # delete user review
     app.add_url_rule('/app/movies/delete_userReview', view_func=movies.delete_userReview, methods=['POST'])
 
+    #followe / not follow users
+    app.add_url_rule('/app/views/follow_or_not', view_func=views.follow_or_not, methods=['POST'])
+    app.add_url_rule('/app/views/get_followers', view_func=views.get_followers, methods=['POST'])
+    app.add_url_rule('/app/views/check_follow', view_func=views.check_follow, methods=['POST'])
+    app.add_url_rule('/app/views/block_user', view_func=views.block_user, methods=['POST'])
+    app.add_url_rule('/app/views/get_blockers', view_func=views.get_blockers, methods=['POST'])
+    app.add_url_rule('/app/views/check_block', view_func=views.check_block, methods=['POST'])
+
     # similar movies
     app.add_url_rule('/app/recommend/movie_similer_recommend', view_func=recommend.movie_similer_recommend, methods=['POST'])
     # similar user movies
     app.add_url_rule('/app/recommend/movie_recommend_user', view_func=recommend.movie_recommend_user, methods=['POST'])
 
-    #followe / not follow users
-    app.add_url_rule('/app/movies/follow_or_not', view_func=movies.follow_or_not, methods=['POST'])
-    app.add_url_rule('/app/movies/get_followers', view_func=movies.get_followers, methods=['POST'])
-    app.add_url_rule('/app/movies/check_follow', view_func=movies.check_follow, methods=['POST'])
-    app.add_url_rule('/app/movies/block_user', view_func=movies.block_user, methods=['POST'])
-    app.add_url_rule('/app/movies/get_blockers', view_func=movies.get_blockers, methods=['POST'])
     app.add_url_rule('/app/movies/insert_movie', view_func=movies.insert_movie, methods=['POST'])
     app.add_url_rule('/app/movies/rate_display', view_func=movies.rate_display, methods=['POST'])
     app.add_url_rule('/app/movies/rate_distribution', view_func=movies.rate_distribution, methods=['POST'])

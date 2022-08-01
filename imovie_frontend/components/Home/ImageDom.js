@@ -551,7 +551,7 @@ const ImageDom = ({
         <a onClick={() => {
           setShowModel(false)
           setShowAddMoviesListModel(true)
-        }}><PlusOutlined/>Create new movielist</a>
+        }}><PlusOutlined/>&nbsp;Create new movielist</a>
       </Modal>
 
       <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {

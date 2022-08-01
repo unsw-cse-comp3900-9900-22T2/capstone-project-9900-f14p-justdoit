@@ -10,11 +10,21 @@ import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,movieSimilerRecommend
   ,displayMovieReview,likeReview} from "../MockData";
-import { likeAddOrDelete,dislikeAddOrDelete,rateDisplay } from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete,rateDisplay,
+  addMoviesList,
+  addMovieToList,
+  delMovieFromList,
+  delMoviesList,
+  editMoviesList,
+  getMoviesInList,
+  getMoviesList,
+  getWatchlist
+} from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 import {DeleteTwoTone, ExclamationCircleOutlined,PlusOutlined} from "@ant-design/icons";
 import {isVisitor} from "../../util/common";
 import RatingPersonComponent from "../../components/Detail/ratingPerson"
+const {Option} = Select;
 const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
@@ -78,7 +88,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
            const {result} = res;
           changeMovieDetail(result || null);
           // 改了这儿
-          setMid(result.mid)
+          // setMid(result.mid)
           historyAddOrDelete({
             mid : initQuery.movieId,
             uid : USERMESSAGE && USERMESSAGE.uid || null,

@@ -2,6 +2,56 @@
   width :80%;
   margin : 40px auto 20px auto;
   position: relative;
+  .follow-button{
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 3px 10px;
+    background: #1d39c4;
+    color: #fff;
+    border-radius: 15px;
+  }
+  .follow-button-cancel{
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 3px 10px;
+    background: #999;
+    color: #fff;
+    border-radius: 15px;
+  }
+  .following-box{
+    position : absolute;
+    top:0;
+    right:0;
+    display: flex;
+    .following{
+      text-align: center;
+      h5{
+        color:#333;
+        font-size: 12px;
+        border-left: 1px solid #333;
+        padding: 0 5px;
+        margin:0;
+        text-decoration: underline;
+        cursor:pointer;
+        &.border-none{
+          border:none;
+        }
+      }
+      h6{
+        text-align: center;
+        color:#333;
+        font-weight: bold;
+        font-size: 14px;
+        margin:0;
+      }
+    }
+  }
   .user-message-title{
     width :100%;
     display: flex;

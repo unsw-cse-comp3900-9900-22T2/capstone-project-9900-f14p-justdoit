@@ -4,28 +4,18 @@ import detailStyle from "./detail.less";
 import { Avatar, Popover, Rate ,message,Tooltip,Input,Modal,Select,TextArea} from "antd";
 import _ from "lodash";
 import RatingComponent from "../../components/Home/Rating"
-import { UserOutlined,MessageOutlined } from "@ant-design/icons";
+import { UserOutlined,MessageOutlined ,StarFilled} from "@ant-design/icons";
 import ReviewsInfoComponent from "../../components/Home/ReviewsInfo";
 import ReviewsThisComponent from "../../components/Home/ReviewsThis";
 import ScrollImageComponent from "../../components/Detail/ScrollImage";
 import { wishlistAddOrDelete, watchlistAddOrDelete, getMovieDetail,historyAddOrDelete,movieSimilerRecommend
   ,displayMovieReview,likeReview} from "../MockData";
-import { likeAddOrDelete,dislikeAddOrDelete,
-  addMoviesList,
-  addMovieToList,
-  delMovieFromList,
-  delMoviesList,
-  editMoviesList,
-  getMoviesInList,
-  getMoviesList,
-  getWatchlist
-} from "../MockData";
+import { likeAddOrDelete,dislikeAddOrDelete,rateDisplay } from "../MockData";
 import RateComponent from "../../components/Rate/RateComponent"
 import {DeleteTwoTone, ExclamationCircleOutlined,PlusOutlined} from "@ant-design/icons";
 import {isVisitor} from "../../util/common";
-const {Option} = Select;
-const Detail = ({USERMESSAGE,initQuery}) => { 
-  const {uid} = USERMESSAGE
+import RatingPersonComponent from "../../components/Detail/ratingPerson"
+const Detail = ({USERMESSAGE,initQuery}) => {
   const [isLogin] = useState(!!USERMESSAGE);
   const [detailMsgLook,changeDetailMsgLook] = useState(false);
   const [movieDetail,changeMovieDetail]=useState(null);
@@ -36,13 +26,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   const ratingRef = useRef();
   const reviewsInfoRef = useRef();
   const reviewsThisRef = useRef();
-  const [movieList, setMovieList] = useState([]);//影单列表
-  const [showModel, setShowModel] = useState(false);//选择movieList的弹窗
-  const [showAddMoviesListModel, setShowAddMoviesListModel] = useState(false);//添加movieList的弹窗
-  const [listName, setListName] = useState("");//影单title
-  const [listDescription, setListDescription] = useState("");//影单描述
-  const [molid, setMolid] = useState(-1);//影单id
-  const [mid, setMid] = useState(''); 
+  const ratingPersonRef = useRef();
   function getMsg(number){
     if (!number && number !== 0) return number;
     var str_num
@@ -85,6 +69,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           changeRecommendList(_list)
         }
       })
+      getRateDisPlay();
       getMovieDetail({
         uid : USERMESSAGE && USERMESSAGE.uid || null,
         mid : initQuery.movieId
@@ -104,6 +89,26 @@ const Detail = ({USERMESSAGE,initQuery}) => {
     }
 
   },[]);
+  const [rateObj,changeRateObj] = useState(null);
+  function getRateDisPlay(){
+    rateDisplay({
+      mid : initQuery.movieId,
+    }).then(res => {
+       if(res.code === 200 && res.result){
+         let sumValue = 0;
+         for(let i in res.result){
+           sumValue += res.result[i];
+         }
+         if(sumValue > 0){
+           changeRateObj(res.result || null);
+         }else{
+           changeRateObj(null);
+         }
+       }else{
+         changeRateObj(null);
+       }
+    })
+  }
   function setGeners(list) {
     if(!list){
       return null;
@@ -325,7 +330,107 @@ const Detail = ({USERMESSAGE,initQuery}) => {
   function setToolTitle(type,number){
     return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
   }
+  function getRateMsg(rateNumber,sumRateNumber ,type){
+    let name = "";
+     switch (type){
+       case "0.5":
+       case 0.5:
+         name = "½";
+         break;
+       case "1":
+       case 1:
+         name = "★";
+         break;
+       case "1.5":
+       case 1.5:
+         name = "★½";
+         break;
+       case "2":
+       case 2:
+         name = "★★";
+         break;
+       case "2.5":
+       case 2.5:
+         name = "★★½";
+       case "3":
+       case 3:
+         name = "★★★";
+         break;
+       case "3.5":
+       case 3.5:
+         name = "★★★½";
+         break;
+       case "4":
+       case 4:
+         name = "★★★★";
+         break;
+       case "4.5":
+       case 4.5:
+         name = "★★★★½";
+         break;
+       case "5":
+       case 5:
+         name = "★★★★★";
+         break;
+       default:
+         name = ""
+     }
+     const _avg = sumRateNumber  && ((rateNumber / sumRateNumber) * 100) || 0;
+     if(rateNumber === 0 || rateNumber === 1){
+       return rateNumber + " " + name + " rating (" + _avg + "%)"
+     }
+     return rateNumber + " " + name + " ratings (" + _avg + "%)"
+  }
+  function setRateObj(){
+      let dataList = [];
+      if(rateObj){
+        let maxValue = 0;
+        let sumValue = 0;
+        for(let i in rateObj){
+          dataList.push(i);
+          sumValue += rateObj[i];
+          if(rateObj[i] > maxValue){
+            maxValue = rateObj[i];
+          }
+        }
+        dataList.sort();
+        if(!sumValue){
+          return null;
+        }
+        return dataList && dataList.map((item,index) => {
+          const _rate = rateObj[item];
+          let _height = 0;
+          if(maxValue === 0){
+            _height = 0;
+          }else{
+            _height = _rate === 0 ? 0 : (_rate / maxValue) * 100;
+          }
+          return <Tooltip placement="top" title={getRateMsg(_rate,sumValue,item)}>
+                  <div
+                      style={{
+                        width : 100 / dataList.length - 1 + "%",
+                        marginRight : "1%"
+                      }}
+                      className={"rate-list-dom"}>
+                       <div
+                           style={{
+                             height : _height + "px",
+                           }}
+                           onClick={()=>{
+                             ratingPersonRef && ratingPersonRef.current &&
+                             ratingPersonRef.current.changeVisible &&
+                             ratingPersonRef.current.changeVisible(true,item,initQuery.movieId);
+                           }}
+                           className={"rate-list-size"}/>
+                       <h4>{item}</h4>
+                  </div>
+          </Tooltip>
+        })
+      }
+      return null
+  }
   function displayMovieReviewService(){
+    changeReviewsList([]);
     displayMovieReview({
       mid : initQuery.movieId,
       uid : USERMESSAGE && USERMESSAGE.uid || null,
@@ -430,12 +535,28 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                 </Tooltip>
               </div>
               <div className={"rating"}>
-                <h6 className={"rating-title"}>Ratings:</h6>
+                <h6 className={"rating-title"}>Average Rating:</h6>
                 <div className={"rating-box"}>
                   <h5 className={"rating-box-title"}>{setAvgRate(movieDetail.avg_rate || 0)}</h5>
                   {rateChange && <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                 </div>
               </div>
+              {!!rateObj &&<div className={"ratings-box"}>
+                <h6 className={"rating-title"}>Ratings:</h6>
+                  {!!rateObj && <div
+
+                      className={"echarts-dom"}>
+                    {setRateObj()}
+                    {/*<div className={"start-position"}>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*  <StarFilled className={"start-position-item"}/>*/}
+                    {/*</div>*/}
+
+                  </div>}
+              </div>}
             </div>
             <div className={"movie-msg-box-right"}>
               {!!movieDetail.director && <div className={"movie-message-body movie-message-body-flex"}>
@@ -601,13 +722,13 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         }
         {!!movieDetail && <div className={"reviews-list"}>
               <div className={"review-title"}>
-                <p>Related Reviews{!!isLogin && !isVisitor(USERMESSAGE)
+                <p>Related Review{!!isLogin && !isVisitor(USERMESSAGE)
                     && <span  onClick={()=>{
                                               reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
                                               && reviewsInfoRef.current.changeVisible(true,movieDetail.moviename + setYear(movieDetail.year),
-                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null);
+                                                movieDetail.mid,USERMESSAGE && USERMESSAGE.uid || null,movieDetail.is_user_rate || 0);
                                             }}
-                >add review</span>}</p>
+                >Add review and rating</span>}</p>
                 {reviewsList && reviewsList.length > 2 &&
                     <div
                         onClick={()=>{
@@ -756,6 +877,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           goHrefMore={()=>{
             window.location.href = "/movie/similarMovie?movieId=" + initQuery.movieId
           }}
+          typeFrom={"movieDetail"}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
                              listCount={recommendListCount}
                              isLogin={isLogin && !isVisitor(USERMESSAGE)} list={recommendList} title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
@@ -763,6 +885,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
         changeRating={(mid,rate,avg_rate)=>{
           if(mid === movieDetail.mid){
             displayMovieReviewService();
+            getRateDisPlay();
             const _movieDetail = _.cloneDeep(movieDetail);
             _movieDetail.avg_rate = avg_rate;
             _movieDetail.is_user_rate = rate;
@@ -788,34 +911,37 @@ const Detail = ({USERMESSAGE,initQuery}) => {
           changeReview={()=>{
             displayMovieReviewService();
           }}
+          changeRating={(mid,rate,avg_rate)=>{
+            if(mid === movieDetail.mid){
+              displayMovieReviewService();
+              getRateDisPlay();
+              const _movieDetail = _.cloneDeep(movieDetail);
+              _movieDetail.avg_rate = avg_rate;
+              _movieDetail.is_user_rate = rate;
+              _movieDetail.is_user_wish = false;
+              _movieDetail.is_user_watch = false;
+              _movieDetail.wishlist_num = (_movieDetail.wishlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+              _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0) - 1 < 0 ? 0 : ((_movieDetail.wishlist_num || 0) - 1);
+              const _is_user_watch = _movieDetail.is_user_watch;
+              if(!_is_user_watch){
+                _movieDetail.is_user_watch = true;
+                _movieDetail.watchlist_num = (_movieDetail.watchlist_num || 0)+ 1;
+              }
+
+              changeMovieDetail(_movieDetail);
+              changeRateChange(false);
+              setTimeout(()=>{
+                changeRateChange(true);
+              },0)
+            }
+          }}
           reviewsInfoRef={reviewsInfoRef}/>
       <ReviewsThisComponent
           changeReview={()=>{
             displayMovieReviewService();
           }}
           reviewsThisRef={reviewsThisRef}/>
-      {/*添加和编辑的弹窗*/}
-      <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addToMovieList(molid, mid)}>
-                <Select style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
-                    {movieList.map((item, index) => <Option value={item.molid} key={index}>{item.title}</Option>)}
-                </Select>
-                <a onClick={() => {
-                    setShowModel(false)
-                    setShowAddMoviesListModel(true)
-                }}><PlusOutlined/>&nbsp;Create new movielist</a>
-            </Modal>
-
-            <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {
-                createMovieList()
-            }}>
-                <label>List Name</label>
-                <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
-                <label>List Description</label>
-                <TextArea 
-                          maxLength={250} autoSize={{minRows: 4, maxRows: 6}} 
-                          allowClear value={listDescription}
-                          onChange={e => setListDescription(e.target.value)}/>
-            </Modal>
+      <RatingPersonComponent USERMESSAGE={USERMESSAGE} ratingPersonRef={ratingPersonRef}/>
     </PageBase>
   )
 }

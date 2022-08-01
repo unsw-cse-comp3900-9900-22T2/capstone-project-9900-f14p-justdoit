@@ -1577,7 +1577,7 @@ def get_movielists():
         result_list = []
         # print(movie_lists)
         for ml in movie_lists:
-            cover_image = "./iMovie_backend/coverimage.jpg"
+            cover_image = None
             if ml.mid:
                 latest_movie_id = ml.mid.split(';')[-1]
                 latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id, MoviesModel.active == 1).first()
@@ -1652,7 +1652,7 @@ def get_latest_movielists():
         result_list = []
         # print(movie_lists)
         for ml in latest_movielists:
-            cover_image = "./iMovie_backend/coverimage.jpg"
+            cover_image = None
             if ml.mid:
                 latest_movie_id = ml.mid.split(';')[-1]
                 latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id, MoviesModel.active == 1).first()
@@ -1688,7 +1688,7 @@ def get_movielists_in_mdp():
         latest_movielists = nonempty_movielists
         result_list = []
         for ml in latest_movielists:
-            cover_image = "./iMovie_backend/coverimage.jpg"
+            cover_image = None
             if ml.mid and mid in ml.mid:
                 latest_movie_id = ml.mid.split(';')[-1]
                 latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id,

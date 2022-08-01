@@ -272,17 +272,45 @@ def get_movies():
     result = {}
     mlist = []
     num = 0
-    for i in popular_movie:
-        if num >= 16:
-            break
-        movie = MoviesModel.query.filter(MoviesModel.mid == i[0], MoviesModel.active == 1).first()
-        if movie:
-            mdict = res_movie_detail(uid, user, movie)
+    length = len(popular_movie)
+    if length <= 16:
+
+        for i in popular_movie:
+            movie = MoviesModel.query.filter(MoviesModel.mid == i[0], MoviesModel.active == 1).first()
+            if movie:
+                mdict = res_movie_detail(uid, user, movie)
+                if "Music" not in mdict["genre"]:
+                    num = num + 1
+                    mlist.append(mdict)
+        res_count = 16 - num
+        movies_other = MoviesModel.query.filter( MoviesModel.active == 1).all()
+        if not movies_other:
+            return jsonify({'code': 200})
+        for i in movies_other:
+            # print(i.mid)
+            if num >= 16:
+                break
+            mdict = res_movie_detail(uid, user, i)
             if "Music" not in mdict["genre"]:
                 num = num + 1
                 mlist.append(mdict)
+
+    else:
+
+        for i in popular_movie:
+            if num >= 16:
+                break
+            movie = MoviesModel.query.filter(MoviesModel.mid == i[0], MoviesModel.active == 1).first()
+            if movie:
+                mdict = res_movie_detail(uid, user, movie)
+                if "Music" not in mdict["genre"]:
+                    num = num + 1
+                    mlist.append(mdict)
+
+
     result["count"] = num
     result["mlist"] = mlist
+
     return jsonify({'code': 200, 'result': result})
 
 
@@ -1422,7 +1450,7 @@ def create_movielist():
                                    ctime=date_time, utime=date_time, active=1)
         db.session.add(movielist)
         db.session.commit()
-        return jsonify({'code': 200, 'msg': f'Create movie list {title} successfully.'})
+        return jsonify({'code': 200, 'msg': 'Create movie list {title} successfully.'})
 
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Create movie list failed', 'error_msg': str(e)})
@@ -1611,7 +1639,7 @@ def get_movies_in_movielist():
 
     try:
         mid_list = movie_list.mid.split(';')
-        print(mid_list)
+        # print(mid_list)
         result_list = []
         for mid in mid_list:
             movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
@@ -1802,7 +1830,7 @@ def check_follow():
     if not f_usr:
         return jsonify({'code': 400, 'msg': 'follower user does not exist'})
     follow_info = followModel.query.filter(and_(followModel.uid == o_uid, followModel.fuid == f_uid,)).first()
-    print(follow_info.active)
+    # print(follow_info.active)
     if not follow_info:
         return jsonify({'code': 200, 'result': 0})
     else:
@@ -1910,3 +1938,31 @@ def insert_movie():
     db.session.add(movie)
     db.session.commit()
     return jsonify({'code': 200, 'msg': "insert successfully "})
+
+
+def get_recent_movies():
+    uid = request.json.get('uid')
+    user = None
+    if uid:
+        user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
+    result = {}
+    mlist = []
+    num = 0
+    recent_movies = MoviesModel.query.filter(MoviesModel.release_date != None, MoviesModel.active == 1).order_by("release_date").all()
+    if len(recent_movies)>0:
+        for i in recent_movies:
+            mdict = res_movie_detail(uid, user, i)
+            if num >= 16:
+                break
+            if "Music" not in mdict["genre"]:
+                num = num + 1
+                mlist.append(mdict)
+
+    result["count"] = num
+    result["mlist"] = mlist
+    return jsonify({'code': 200, 'result': result})
+
+
+
+
+

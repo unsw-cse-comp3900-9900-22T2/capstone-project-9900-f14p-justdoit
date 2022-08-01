@@ -1604,15 +1604,16 @@ def get_movies_in_movielist():
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
     molid = data["molid"]
-    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
-                                             movielistModel.active == 1).first()
+    movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.active == 1).first()
     if not movie_list:
-        return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+        return jsonify({'code': 400, 'msg': 'Movie list does not exist.'})
 
     if not movie_list.mid:
         return jsonify({'code': 200, 'msg': "Empty movie list."})
 
     try:
+        creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
+        creator_info = {"uid": creator.uid, "username": creator.username}
         mid_list = movie_list.mid.split(';')
         print(mid_list)
         result_list = []
@@ -1629,7 +1630,7 @@ def get_movies_in_movielist():
             result["result_list"] = result_list[start:end]
         else:
             result["result_list"] = result_list[start:]
-        return jsonify({'code': 200, 'result': result})
+        return jsonify({'code': 200, 'creator':creator_info, 'result': result})
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get movies in movie list failed.', 'error_msg': str(e)})
 

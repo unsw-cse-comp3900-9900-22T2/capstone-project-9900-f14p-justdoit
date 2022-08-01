@@ -725,9 +725,7 @@ const Detail = ({USERMESSAGE,initQuery}) => {
                     className={"operation-image"}>
                   <div
                     className={"image-box"}>
-                    {/* {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
-                        movieDetail.is_user_rate <= 0
-                    ) ? <img src={"/static/star.png"}/>:<img src={"/static/starChoose.png"}/>} */}
+                    <img src={"/static/playSquare.png"}/>
                   </div>
                   <div className={"a-href"}>
                     Movielist

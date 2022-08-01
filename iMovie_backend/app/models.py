@@ -260,3 +260,18 @@ class verifycodeModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+
+class recentmovieModel(db.Model):
+    __tablename__ = 'recentmovie'
+
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid
+    mid = db.Column(db.String(256), nullable=False)  #
+    count = db.Column(db.Integer) #
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()

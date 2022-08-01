@@ -311,10 +311,8 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             size={'middle'}
                             fetchOptions={async (keyword)=>{
                                 setSearchKeyWord(keyword);
-                                return searchResult({
-                                    page_index: page.number - 1,
-                                    page_size: page.size,
-                                    uid,
+                                return searchBy({
+                                    uid : USERMESSAGE && USERMESSAGE.uid || null,
                                     keyword
                                 }).then(res => {
                                     if(res.code === 200){
@@ -363,6 +361,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             nodeDom={(options,inputValue)=>{
                                 return options &&
                                     options.map((item) => {
+                                        if(!item){
+                                            return;
+                                        }
                                         return (
                                             <Option key={'labelData_' + item.mid + "_mid"} value={item.mid}>
                                                 <div

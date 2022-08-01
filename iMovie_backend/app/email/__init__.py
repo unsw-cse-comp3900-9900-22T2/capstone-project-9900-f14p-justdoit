@@ -68,7 +68,59 @@ def init_app(app: Flask):
             except Exception as e:
                 return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again'})
 
+    def compare_time(timeA, timeB):
+        # print(timeA, timeB)
+        timeAList = timeA.split("-")
+        timeBList = timeB.split("-")
+        d1 = datetime.date(int(timeAList[0]), int(timeAList[1]), int(timeAList[2]))
+        d2 = datetime.date(int(timeBList[0]), int(timeBList[1]), int(timeBList[2]))
+        return (d1 - d2).days
+
+    def sent_recent_movie():
+        sender = Mail(app)
+        recent_movies = MoviesModel.query.filter(MoviesModel.release_date != None, MoviesModel.active == 1).all()
+        now = getTime()[0]
+        if len(recent_movies) > 0:
+            for i in recent_movies:
+                data = now.split(" ")[0]
+                timeB = i.release_date.split(" ")[0]
+                day_ = compare_time(data, timeB)
+                if day_ <= 3:
+
+                    wishList = wishWatchModel.query.filter(wishWatchModel.mid == i.mid, wishWatchModel.type == 0,
+                                                           wishWatchModel.active == 1).all()
+                    if len(wishList) > 0:
+                        for j in wishList:
+                            user = UserModel.query.filter(UserModel.uid == j.uid, UserModel.active == 1).first()
+                            if user:
+                                username = user.username
+                                moviename = i.moviename
+                                check_email_send = recentmovieModel.query.filter(recentmovieModel.uid == j.uid,
+                                                                                 recentmovieModel.mid == i.mid).count()
+                                if check_email_send > 0:
+                                    continue
+
+                                msg = Message('Only Movie', recipients=[user.email])
+                                msg.body = 'Dear ' + str(username) + ',\n' \
+                                                                     "Movie \"" + str(
+                                    moviename) + "\" is coming out, please remember to watch it in the cinema! " \
+                                                 "Thank you for your attention.\n" \
+                                                 "The OnlyMovie Team.\n"
+                                try:
+
+                                    sender.send(msg)
+                                    time_form = getTime()[0]
+                                    count = 1
+                                    recent_new = recentmovieModel(uid=j.uid, mid=i.mid, count=count, ctime=time_form,
+                                                                  utime=time_form)
+                                    db.session.add(recent_new)
+                                    db.session.commit()
+                                except Exception as e:
+                                    continue
+        return jsonify({'code': 200, 'msg': 'sent email succesfully'})
+
     app.add_url_rule("/app/views/send_email", view_func=send_email, methods=['GET','POST'])
+    app.add_url_rule("/app/views/sent_recent_movie", view_func=sent_recent_movie, methods=['GET', 'POST'])
 
     #
     #     return jsonify({'code': 200, "result": 'verify successfully'})

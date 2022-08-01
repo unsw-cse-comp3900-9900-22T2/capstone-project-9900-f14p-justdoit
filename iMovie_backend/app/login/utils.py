@@ -189,3 +189,12 @@ def is_number(num):
     if pattern.match(num):
         return False
     return num.replace(".", "").isdigit()
+
+
+def compare_time(timeA, timeB):
+    # print(timeA, timeB)
+    timeAList = timeA.split("-")
+    timeBList = timeB.split("-")
+    d1 = datetime.date(int(timeAList[0]), int(timeAList[1]), int(timeAList[2]))
+    d2 = datetime.date(int(timeBList[0]), int(timeBList[1]), int(timeBList[2]))
+    return (d1 - d2).days

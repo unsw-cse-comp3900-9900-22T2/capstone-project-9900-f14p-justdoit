@@ -5,7 +5,7 @@ import { getCookie } from '../util/common'
 import {Container} from 'next/app'
 import { ConfigProvider, message } from "antd";
 import enUS from 'antd/lib/locale/en_US';
-import {getUserDetail, sentRecentMovie} from "./MockData";
+import { getUserDetail } from "./MockData";
 import { Base64 } from "js-base64";
 
 const App = ({ Component, pageProps, cookie, router }) => {
@@ -19,7 +19,6 @@ const App = ({ Component, pageProps, cookie, router }) => {
   } catch (e) {
     _cookie = null
   }
-  sentRecentMovie({})
   if(_cookie && _cookie.id){
     getUserDetail({
       uid : _cookie.uid

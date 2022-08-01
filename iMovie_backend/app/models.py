@@ -252,22 +252,8 @@ class verifycodeModel(db.Model):
     __tablename__ = 'verifycode'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(256), nullable=False)
-    verifycode = db.Column(db.String(256), nullable=False)
-    ctime = db.Column(db.DateTime, nullable=False)  # create time
-    utime = db.Column(db.DateTime, nullable=False)  # update time
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-class recentmovieModel(db.Model):
-    __tablename__ = 'recentmovie'
-
-    id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.String(256), nullable=False)  # users.uid
-    mid = db.Column(db.String(256), nullable=False)  #
-    count = db.Column(db.Integer) #
+    email = db.Column(db.String(256), nullable=False)  # users.uid (follow)
+    verifycode = db.Column(db.String(256), nullable=False)  # users.uid (be followed)
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 

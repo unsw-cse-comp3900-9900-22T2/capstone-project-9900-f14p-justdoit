@@ -29,7 +29,7 @@ const ResetPassword = ({resetPasswordRef}) => {
         message.warn("Please enter your email");
         return
       }else{
-        if(!(/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
+        if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
           message.warn("Please enter your email in the correct format");
           return
         }
@@ -76,7 +76,7 @@ const ResetPassword = ({resetPasswordRef}) => {
             message.warn("Please enter your email");
             return
           }else{
-            if(!(/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
+            if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
               message.warn("Please enter your email in the correct format");
               return
             }
@@ -142,7 +142,7 @@ const ResetPassword = ({resetPasswordRef}) => {
                     if(!_value|| !(_value &&_value.trim())){
                         _check =  true
                     }else{
-                        if(!(/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((_value &&_value.trim())))){
+                        if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((_value &&_value.trim())))){
                             _check =  true
                         }
                     }

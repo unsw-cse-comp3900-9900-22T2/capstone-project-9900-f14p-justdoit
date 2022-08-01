@@ -1212,9 +1212,11 @@ def res_movieReview_detail(movieReview, mainUser):
     mid = movieReview.mid
     result["mrid"] = mrid
     result["uid"] = uid
+    print("mrid: ", mrid)
+    print("uid: ", uid)
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
-        return jsonify('user does not exist')
+        return
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
@@ -1266,9 +1268,9 @@ def display_movieReview():
         .group_by(movieReviewModel.mrid)\
         .filter(movieReviewModel.mid == mid,movieReviewModel.active == 1)\
         .order_by(func.count(reviewlikeModel.mrid).desc()).all()
-    print(movieReview)
     if not movieReview:
         return jsonify({'code': 400, 'msg': 'movieReview does not exist'})
+
     movieReview_list = []
     result = {}
     count = 0
@@ -1279,8 +1281,9 @@ def display_movieReview():
             continue
 
         movieReview_info = res_movieReview_detail(m,user)
-        movieReview_list.append(movieReview_info)
-        count += 1
+        if movieReview_info:
+            movieReview_list.append(movieReview_info)
+            count += 1
     result["movieReview_count"] = count
     result["movieReview"] = movieReview_list
     return jsonify({'code': 200, 'result': result})

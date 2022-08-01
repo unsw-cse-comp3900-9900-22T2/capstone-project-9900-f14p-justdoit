@@ -34,8 +34,8 @@ def getUniqueid():
     return uniqueId
 
 workbook = load_workbook("./movies_data.xlsx")
-sheets = workbook.get_sheet_names()
-worksheet = workbook.get_sheet_by_name(sheets[0])
+sheets = workbook.sheetnames
+worksheet = workbook['Sheet1']
 for row in worksheet.rows:
     sqlstr = []
     for cell in row:

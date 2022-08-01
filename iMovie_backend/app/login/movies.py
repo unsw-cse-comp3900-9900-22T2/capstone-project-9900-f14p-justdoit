@@ -1585,7 +1585,8 @@ def get_movielists():
                     cover_image = latest_movie.coverimage
             ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
             result_list.append(ml_dict)
-        result = {"count": len(result_list), "result_list": result_list}
+        user_info = {"uid": user.uid, "username": user.username}
+        result = {"count": len(result_list), "user": user_info, "result_list": result_list}
         return jsonify({'code': 200, 'result': result})
 
     except Exception as e:

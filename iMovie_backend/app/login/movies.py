@@ -1214,8 +1214,7 @@ def res_movieReview_detail(movieReview, mainUser):
     result["uid"] = uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
-        return jsonify({'code': 400, 'msg': 'user does not exist'})
-
+        return jsonify('user does not exist')
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review

@@ -89,7 +89,10 @@ def movie_similer_recommend():
     page_size = request.json.get('page_size')
     user = None
     # count = 0
+    result = {}
     target_movie = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == mid).first()
+    if not target_movie:
+        return jsonify({'code': 400})
     result = {}
     mlist = []
     if uid:

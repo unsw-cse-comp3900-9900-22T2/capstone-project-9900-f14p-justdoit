@@ -39,7 +39,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             message.warn("Please enter your email");
             return
         }else{
-            if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
+            if(!(/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
                 message.warn("Please enter your email in the correct format");
                 return
             }
@@ -101,7 +101,7 @@ const Regester = ({regesterRef,changeLoginInVisible}) => {
             message.warn("Please enter your email");
             return
           }else{
-            if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
+            if(!(/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test((email &&email.trim())))){
               message.warn("Please enter your email in the correct format");
               return
             }

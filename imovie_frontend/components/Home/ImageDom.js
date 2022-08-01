@@ -545,7 +545,7 @@ const ImageDom = ({
           reviewsInfoRef={reviewsInfoRef}/>
       {/*添加和编辑的弹窗*/}
       <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addToMovieList(molid, item.mid)}>
-        <Select style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
+        <Select placeholder={'existing movie list'} style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
           {movieList.map((item, index) => <Option value={item.molid} key={index}>{item.title}</Option>)}
         </Select>
         <a onClick={() => {
@@ -561,7 +561,7 @@ const ImageDom = ({
         <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
         <label>List Description</label>
         <TextArea allowClear value={listDescription}
-                  maxLength={250} autoSize={{minRows: 4, maxRows: 6}} 
+                  maxLength={250} autoSize={{minRows: 4, maxRows: 6}}
                   onChange={e => setListDescription(e.target.value)}/>
       </Modal>
     </React.Fragment>

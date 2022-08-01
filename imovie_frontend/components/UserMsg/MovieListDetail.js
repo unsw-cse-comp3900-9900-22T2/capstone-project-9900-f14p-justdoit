@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Button, Card, Input, List, message, Modal, Select} from "antd";
+import {Button, Card, Input, message, Modal, Select} from "antd";
 import MovieListStyle from "./MovieList.less"
 import {DeleteTwoTone, ExclamationCircleOutlined} from "@ant-design/icons";
 import {
@@ -10,26 +10,24 @@ import {
     editMoviesList,
     getMoviesInList,
     getMoviesList,
-    getWatchlist,
-    searchResult
+    getWatchlist
 } from "../../pages/MockData";
 import ImageDom from "../Home/ImageDom";
 
 const {Meta} = Card;
-const {TextArea, Search} = Input;
+const {TextArea} = Input;
 const {Option} = Select;
 const {confirm} = Modal;
-const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
+const MovieListComponent = ({uid, isMySelf, loginUid}) => {
 
     const [showModel, setShowModel] = useState(false);//添加movieList的弹窗
-    const [changeList, setChangeList] = useState(true);//切换movieList和详情列表
+    const [changeList, setChangeList] = useState(false);//切换movieList和详情列表
     const [movieList, setMovieList] = useState([]);//影单列表
     const [movieListDetail, setMovieListDetail] = useState([]);//影单详情列表
 
     const [listName, setListName] = useState("");//影单title
     const [listDescription, setListDescription] = useState("");//影单描述
     const [listNameFlag, setListNameFlag] = useState(true);//影单title的编辑切换
-    const [flag, setFlag] = useState(false);//是否显示电影的搜索列表
     const [listDescriptionFlag, setListDescriptionFlag] = useState(true);//影单描述的编辑切换
 
     const [molid, setMolid] = useState(-1);//影单id
@@ -40,8 +38,6 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
         total: 0,
         sort: null,
     });
-    const [searchMovie, setSearchMovie] = useState([]);//
-    const [searchKeyWord, setSearchKeyWord] = useState('');//
 
     useEffect(() => {
         fetchData();
@@ -137,22 +133,13 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
     }
 
     //添加电影到指定的影单
-    const addMovieListDetails = (mid) => {
+    const addMovieListDetails = () => {
         addMovieToList({
-            uid,
-            molid,
-            mid,
+            uid: "kw3XEFnafb1659247126",
+            molid: "4Yf3hBLD6u1659274149",
+            mid: '9TLUu2hBks1659247259'
         }).then(res => {
-            if (res.code === 200) {
-                setFlag(false)
-                getMoviesListDetails(molid)
-                message.success('add success')
-            } else if (res.code === 400) {
-                message.error('add failed')
-            }
-        }).catch(err => {
-            console.log(err)
-            throw err
+            console.log(res, '添加心愿列表')
         })
     }
 
@@ -200,58 +187,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
         })
     }
 
-    //查询电影
-    const searchMovieList = (keyword) => {
-        searchResult({
-            page_index: page.number - 1,
-            page_size: page.size,
-            uid,
-            keyword
-        }).then(res => {
-            console.log(res)
-            if (res.code === 200) {
-                const {result} = res;
-                if (result) {
-                    setSearchMovie(result.movies)
-                }
-            }
-        })
-    }
-
-
     return (<React.Fragment>
         <style dangerouslySetInnerHTML={{__html: MovieListStyle}}/>
-        {changeList
-            ?
-            <div className="watchListComponent">
-                <div className={"title-box"}>
-                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() => setShowModel(true)}>+
-                        Create</Button></p>
-                </div>
-                <div className={"imgBox"}>
-                    {movieList.length!==0?
-                        movieList.map((item, index) => <React.Fragment>
-                        <Card
-                            // width={267}
-                            // height={400}
-                            hoverable
-                            style={{width: 350, height: 522, marginRight: '25px', marginBottom: '70px'}}
-                            cover={item.cover_image === "./iMovie_backend/coverimage.jpg" ?
-                                <img alt="example" src={"/static/emptyMovieList.png"}/> :
-                                <img alt="example" src={item.cover_image}/>}
-                            onClick={() => {
-                                setMolid(item.molid)
-                                getMoviesListDetails(item.molid)
-                                setChangeList(false)
-                            }}
-                        >
-                            {/*<Meta title={item.title} description={item.description} />*/}
-                            <h6>{item.title}</h6>
-                        </Card>
-                    </React.Fragment>):<img style={{margin:'0 auto'}} alt="example" src={"/static/empty.png"} />}
-                </div>
-            </div>
-            :
+        {
             <div className="watchListComponent">
                 <div className={"title-box"}>
                     <p className="title">
@@ -273,18 +211,15 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                                                        }}
                                                        onChange={e => setListName(e.target.value)}/>
                                             </span>}
-                                        <Button onClick={() => {
-                                            setChangeList(true);
-                                            fetchData()
-                                        }}>Back to movielist</Button>
+                                        <Button onClick={() => {setChangeList(true); fetchData()}}>Back to movielist</Button>
                                         <DeleteTwoTone style={{marginLeft: 50}}
                                                        onClick={() => deleteMovieList(item.molid)}/>
                                     </div>
                                     {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
                                                                 onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
-                                        <TextArea autoSize={{maxRows: 2}}
-                                            //   width={400}
-                                                  style={{width: 400}}
+                                        <TextArea autoSize={{maxRows:2}}
+                                                //   width={400}
+                                                  style={{width:400}}
                                                   allowClear value={listDescription}
                                                   onChange={e => setListDescription(e.target.value)}
                                                   placeholder={item.description}
@@ -299,52 +234,8 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             }
                         })}
                     </p>
-                    <Search enterButton={false}
-                            onFocus={() => setFlag(true)}
-                            placeholder="input search text"
-                            // onBlur={() => setFlag(false)}
-                            onChange={e => {
-                                setSearchKeyWord(e.target.value)
-                                setSearchMovie([])
-                                searchMovieList(e.target.value)
-                            }} onSearch={(e) => {
-                    }} style={{width: 200}}/>
-                    <List
-                        bordered
-                        style={{
-                            width: 200,
-                            height: 400,
-                            overflow: 'auto',
-                            display: flag ? 'inline' : 'none',
-                            position: 'absolute',
-                            right: '0px',
-                            top: '200px',
-                            // top: '245px',
-
-                            borderRadius: '5px',
-                            backgroundColor: 'white',
-                            zIndex: '99999'
-                        }}
-                        itemLayout="horizontal"
-                        dataSource={searchMovie}
-                        renderItem={(item) => {
-                            return (
-                                <List.Item
-                                    style={{cursor: 'pointer'}}
-                                    onFocus={() => setFlag(true)}
-                                    onBlur={() => setFlag(false)}
-                                    onClick={() => {
-                                        setFlag(true)
-                                        addMovieListDetails(item.mid)
-                                    }}>
-                                    <span onFocus={() => setFlag(true)}>{item.moviename}</span>
-                                </List.Item>
-                            )
-                        }
-                        }
-                    />
                 </div>
-                <div className={"imgBox"} style={{position: "relative", top: 50}}>
+                <div className={"imgBox"}>
                     {movieListDetail.map((item, index) => <React.Fragment>
                         <ImageDom
                             item={item}
@@ -395,8 +286,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             <label>List Name</label>
             <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
             <label>List Description</label>
-            <TextArea maxLength={250} showCount={true} autoSize={{minRows: 4, maxRows: 6}} allowClear
-                      value={listDescription} onChange={e => setListDescription(e.target.value)}/>
+            <TextArea maxLength={250} showCount={true} autoSize={{minRows: 4, maxRows: 6}} allowClear value={listDescription} onChange={e => setListDescription(e.target.value)}/>
         </Modal>
     </React.Fragment>)
 }

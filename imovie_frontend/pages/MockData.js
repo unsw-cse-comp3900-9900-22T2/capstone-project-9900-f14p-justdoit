@@ -217,4 +217,11 @@ export function delMovieFromList(param) {
 export function getMoviesInList(param) {
     return fetchData('http://127.0.0.1:5000/app/movies/get_movies_in_movielist', param);
 }
-
+//查询主页的影单列表
+export function getMoviesListInHome(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_latest_movielists', param);
+}
+//查询详情页的影单列表
+export function getMoviesListInDetail(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_movielists_in_mdp', param);
+}

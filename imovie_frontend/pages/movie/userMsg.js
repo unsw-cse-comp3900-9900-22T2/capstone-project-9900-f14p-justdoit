@@ -123,7 +123,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
       case 2:
         return <WatchListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 3:
-        return <MovieListComponent uid={_uid} isMySelf={isMySelf}/>;
+        return <MovieListComponent uid={_uid} isMySelf={isMySelf} USERMESSAGE={USERMESSAGE}/>;
       case 4:
         return <HisToryComponent uid={_uid} isMySelf={isMySelf}/>;
       case 5:

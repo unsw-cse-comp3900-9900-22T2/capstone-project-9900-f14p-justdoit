@@ -1556,6 +1556,8 @@ def add_movie_to_movielist():
                                              movielistModel.active == 1).first()
     if not movie_list:
         return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
+    if len(movie_list.mid) + len(mid) + 1 > 256:
+        return jsonify({'code': 400, 'msg': 'The length of the movie list is up to limitation.'})
 
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:

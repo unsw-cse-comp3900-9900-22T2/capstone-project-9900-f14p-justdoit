@@ -61,7 +61,7 @@ class MoviesModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
+## 去掉
 class GenreModel(db.Model):
     __tablename__ = 'genre'
 

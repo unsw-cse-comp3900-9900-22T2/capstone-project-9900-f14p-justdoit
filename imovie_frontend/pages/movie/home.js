@@ -126,16 +126,17 @@ const Home = ({USERMESSAGE}) => {
         {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
         {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
         {/* 主页推荐影单 */}
-        {movieList.length != 0 &&<h4 style={{marginLeft:125}}>RECOMMEND MOVIE LIST</h4>}
+        <div style={{position:"relative"}}>
+        {movieList.length != 0 &&<h4 style={{marginLeft:150}}>RECOMMEND MOVIE LIST</h4>}
         <div className={"imgBox"} style={{display: 'flex'}}>
             {movieList.map((item, index) => <React.Fragment>
-                <div className='card' style={{display: 'flex',marginLeft:125,marginRight:'-43px'}}>
+                <div className='card' style={{display: 'flex',marginLeft:150,marginRight:'-57px'}}>
                     <Card
                         // width={267}
                         // height={400}
 
                         hoverable
-                        style={{width: 277, height: 416,marginRight:'-50px' }}
+                        style={{width:370.06, height:555 ,marginRight:'-50px' }}
                         cover={item.cover_image === null ?
                             <img alt="example" src={"/static/emptyLogo.png"}/> :
                             <img alt="example" src={item.cover_image}/>}
@@ -144,7 +145,7 @@ const Home = ({USERMESSAGE}) => {
                             // getMoviesListDetails(item.molid)
                             // setChangeList(false)
 
-                            window.location.href = `/movie/userMsg?uid=${USERMESSAGE&&USERMESSAGE.uid}&activeKey=3?activeKey=3`
+                            window.location.href = `/onlyshowML?molid=${item.molid}`
                         }}
                     >
                         {/*<Meta title={item.title} description={item.description} />*/}
@@ -152,6 +153,7 @@ const Home = ({USERMESSAGE}) => {
                     </Card>
                 </div>
             </React.Fragment>)}
+        </div>
         </div>
     </PageBase>)
 }

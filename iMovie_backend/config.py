@@ -13,7 +13,14 @@
 # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 # SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+
+
+##################################################################
+
 from urllib.parse import quote_plus as urlquote
+
+
+
 
 SECRET_KEY = "123456789"
 DIALECT = 'mysql'

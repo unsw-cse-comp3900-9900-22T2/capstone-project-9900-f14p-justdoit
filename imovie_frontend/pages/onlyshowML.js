@@ -1,8 +1,8 @@
 import PageBase from './basePage'
 import OnlyshowMLStyle from "./onlyshowML.less";
 import React, {useEffect, useState} from 'react'
-import {Button, Card, Input, List, message, Modal, Select} from "antd";
-import {DeleteTwoTone, ExclamationCircleOutlined, SearchOutlined,UserOutlined} from "@ant-design/icons";
+import {Card, Input, message, Modal, Select} from "antd";
+import {ExclamationCircleOutlined, UserOutlined} from "@ant-design/icons";
 import {
     addMoviesList,
     addMovieToList,
@@ -11,11 +11,10 @@ import {
     editMoviesList,
     getMoviesInList,
     getMoviesList,
-    getWatchlist, searchBy,
+    getWatchlist,
     searchResult
 } from "./MockData";
 import ImageDom from "../components/Home/ImageDom";
-import DocunceSelectComponent from "../components/DounceSelect";
 
 const {Meta} = Card;
 const {TextArea, Search} = Input;
@@ -23,9 +22,9 @@ const {Option} = Select;
 const {confirm} = Modal;
 
 
-const OnlyShowML = ({USERMESSAGE,initQuery}) => {
-    const {uid} = USERMESSAGE
-    const [setTimeOutFun,changeSetTimeOut] = useState(null);
+const OnlyShowML = ({USERMESSAGE}) => {
+    const {uid} = USERMESSAGE;
+    const [setTimeOutFun, changeSetTimeOut] = useState(null);
     const [showModel, setShowModel] = useState(false);//添加movieList的弹窗
     const [changeList, setChangeList] = useState(false);//切换movieList和详情列表
     const [movieList, setMovieList] = useState([]);//影单列表
@@ -37,8 +36,10 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
     const [flag, setFlag] = useState(false);//是否显示电影的搜索列表
     const [listDescriptionFlag, setListDescriptionFlag] = useState(true);//影单描述的编辑切换
 
-    // const [molid, setMolid] = useState(-1);//影单id
-    const [molid, setMolid] = useState('0pIPkd5WqX1659422904');//影单id
+    const [creatorInfo, setCreatorInfo] = useState('');//影单创建者
+    const [movieListTitle, setMovieListTitle] = useState('');//影单title
+    const [movieListDesc, setMovieListDesc] = useState('');//影单描述
+    const [molid, setMolid] = useState('');//影单id
     const [pages, setPages] = useState({pages_index: 0, pages_size: 20});//分页
     const [page, changePage] = useState({
         size: 12,
@@ -50,7 +51,12 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
     const [searchKeyWord, setSearchKeyWord] = useState('');//
 
     useEffect(() => {
-        fetchData();
+        const pathname = window.location;
+        let molidParam = pathname.search.split('=')
+        console.log(USERMESSAGE, molidParam[1])
+        setMolid(molidParam[1])
+        // fetchData();
+        getMoviesListDetails(molidParam[1])
     }, [])
 
 
@@ -132,7 +138,11 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
         }).then(res => {
             console.log(res, '详情')
             if (res.code === 200) {
+                console.log(res.creator)
+                setCreatorInfo(res.creator)
                 if (res.hasOwnProperty("result")) {
+                    setMovieListTitle(res.result.title)
+                    setMovieListDesc(res.result.description)
                     if (res.result.result_list) {
                         setMovieListDetail(res.result.result_list)
                     }
@@ -224,48 +234,20 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
         })
     }
 
-    {console.log(initQuery,USERMESSAGE)}
     return <PageBase USERMESSAGE={USERMESSAGE} uid={USERMESSAGE.uid}>
-                
+
         <style dangerouslySetInnerHTML={{__html: OnlyshowMLStyle}}/>
         {
             <div className="watchListComponent">
-                <div className={"title-box"} style={{position : "relative",zIndex:14}}>
+                <div className={"title-box"} style={{position: "relative", zIndex: 14}}>
                     <p className="title">
-                        {movieList.map((item, index) => {
-                            if (item.molid === molid) {
-                                return <>
-                                    <div>
-                                        {<span style={{display: 'inline-block', marginRight: 10, color:'#1890ff'}}>
-                                            {item.title}&nbsp;&nbsp;&nbsp;&nbsp;<span style={{color:'black'}}>Created by :&nbsp;&nbsp;<UserOutlined/> NAME </span>    
-                                        </span>}
-                                        {/* <Button 
-                                        // onClick={() => {
-                                        //     setChangeList(true);
-                                        //     fetchData()}}
-                                        >From user: </Button> */}
-                                        {/* <DeleteTwoTone style={{marginLeft: 50}}
-                                                       onClick={() => deleteMovieList(item.molid)}/> */}
-                                    </div>
-                                    {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
-                                                                onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
-                                        <TextArea autoSize={{maxRows: 2}}
-                                            //   width={400}
-                                                  style={{width: 400}}
-                                                  allowClear value={listDescription}
-                                                  onChange={e => setListDescription(e.target.value)}
-                                                  placeholder={item.description}
-                                                  onKeyDown={e => {
-                                                      if (e.key === 'Enter') {
-                                                          editMovieList(item.molid)
-                                                          setListDescriptionFlag(true)
-                                                      }
-                                                  }}
-                                        />}
-                                </>
-                            }
-                        })}
+                        <span style={{display: 'inline-block', marginRight: 10, color: '#1890ff'}}>{movieListTitle}&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span style={{color: 'black'}}>Created by :&nbsp;&nbsp;<UserOutlined/>{creatorInfo.username}</span>
+                        </span>
                     </p>
+
+
+
                     {/* <div className={"search-movie"}>
                         <div className={"tag-search-logo"}>
                             <SearchOutlined/>
@@ -355,6 +337,7 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                     </div> */}
 
                 </div>
+                <span>{movieListDesc}</span>
                 <div className={"imgBox"} style={{position: "relative", top: 50}}>
                     {movieListDetail.map((item, index) => <React.Fragment>
                         <ImageDom
@@ -366,7 +349,7 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                             watchListDo={watchList}
                             // disLikeDo={}
                             // liKeDo={}
-                            showClear={isMySelf && true || false}
+                            // showClear={isMySelf && true || false}
                             clearMovie={() => {
                                 confirm({
                                     title: 'Are you sure you want to remove this movie from your movielist?',
@@ -383,14 +366,14 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                                 marginRight: index % 4 === 3 ? "0%" : "2.666666666%"
                             }}
                         />
-                    
+
                     </React.Fragment>)}
                 </div>
             </div>
         }
 
-        
-        </PageBase>
+
+    </PageBase>
 }
 
 export default OnlyShowML

@@ -287,7 +287,8 @@ def get_movies():
                     num = num + 1
                     mlist.append(mdict)
         res_count = 16 - num
-        movies_other = MoviesModel.query.filter( MoviesModel.active == 1).all()
+        movies_other = MoviesModel.query.filter( MoviesModel.active == 1).limit(16).all()
+        # print(len(movies_other))
         if not movies_other:
             return jsonify({'code': 200})
         for i in movies_other:
@@ -1813,7 +1814,6 @@ def insert_movie():
     if len(language) < 1:
         return jsonify({'code': 400, 'msg': 'Your language is too short.'})
 
-
     mid = getUniqueid()
     time_form = getTime()[0]
     year = int(release_date[0:4])
@@ -1845,11 +1845,11 @@ def get_recent_movies():
             # print(now)
             data = now.split(" ")[0]
             timeB = i.release_date.split(" ")[0]
-            day_ = compare_time(data,timeB)
+            day_ = compare_time(data, timeB)
             if day_ <= 30:
                 mdict = res_movie_detail(uid, user, i)
-                if num >= 16:
-                    break
+                # if num >= 16:
+                #     break
                 if "Music" not in mdict["genre"]:
                     num = num + 1
                     mlist.append(mdict)

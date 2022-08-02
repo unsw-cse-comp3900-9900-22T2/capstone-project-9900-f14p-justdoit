@@ -2,7 +2,7 @@ import PageBase from './basePage'
 import OnlyshowMLStyle from "./onlyshowML.less";
 import React, {useEffect, useState} from 'react'
 import {Button, Card, Input, List, message, Modal, Select} from "antd";
-import {DeleteTwoTone, ExclamationCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {DeleteTwoTone, ExclamationCircleOutlined, SearchOutlined,UserOutlined} from "@ant-design/icons";
 import {
     addMoviesList,
     addMovieToList,
@@ -236,26 +236,16 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                             if (item.molid === molid) {
                                 return <>
                                     <div>
-                                        {listNameFlag ?
-                                            <a style={{marginRight: 10}}
-                                               onClick={() => setListNameFlag(false)}>{item.title}</a>
-                                            : <span style={{display: 'inline-block', marginRight: 10}}>
-                                                <Input allowClear style={{display: 'flex', width: 200}} type="text"
-                                                       value={listName} placeholder={item.title}
-                                                       onKeyUp={e => {
-                                                           if (e.key === 'Enter') {
-                                                               editMovieList(item.molid)
-                                                               setListNameFlag(true)
-                                                           }
-                                                       }}
-                                                       onChange={e => setListName(e.target.value)}/>
-                                            </span>}
-                                        <Button onClick={() => {
-                                            setChangeList(true);
-                                            fetchData()
-                                        }}>Back to movielist</Button>
-                                        <DeleteTwoTone style={{marginLeft: 50}}
-                                                       onClick={() => deleteMovieList(item.molid)}/>
+                                        {<span style={{display: 'inline-block', marginRight: 10, color:'#1890ff'}}>
+                                            {item.title}&nbsp;&nbsp;&nbsp;&nbsp;<span style={{color:'black'}}>Created by :&nbsp;&nbsp;<UserOutlined/> NAME </span>    
+                                        </span>}
+                                        {/* <Button 
+                                        // onClick={() => {
+                                        //     setChangeList(true);
+                                        //     fetchData()}}
+                                        >From user: </Button> */}
+                                        {/* <DeleteTwoTone style={{marginLeft: 50}}
+                                                       onClick={() => deleteMovieList(item.molid)}/> */}
                                     </div>
                                     {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
                                                                 onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
@@ -276,7 +266,7 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                             }
                         })}
                     </p>
-                    <div className={"search-movie"}>
+                    {/* <div className={"search-movie"}>
                         <div className={"tag-search-logo"}>
                             <SearchOutlined/>
                         </div>
@@ -362,7 +352,7 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
                                     })
                             }}
                             showSearch />
-                    </div>
+                    </div> */}
 
                 </div>
                 <div className={"imgBox"} style={{position: "relative", top: 50}}>
@@ -399,14 +389,7 @@ const OnlyShowML = ({USERMESSAGE,initQuery}) => {
             </div>
         }
 
-        {/*添加和编辑的弹窗*/}
-        <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addMovieList()}>
-            <label>List Name</label>
-            <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
-            <label>List Description</label>
-            <TextArea maxLength={250} showCount={true} autoSize={{minRows: 4, maxRows: 6}} allowClear
-                      value={listDescription} onChange={e => setListDescription(e.target.value)}/>
-        </Modal>
+        
         </PageBase>
 }
 

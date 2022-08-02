@@ -34,6 +34,10 @@ def res_movie_detail(uid, user, movie):
     else:
         result["avg_rate"] = -1
     result["release_date"] = movie.release_date
+    if movie.release_date:
+        result["is_release"] = check_release(movie.release_date)
+    else:
+        result["is_release"] = 1
     if movie.year:
         result["year"] = movie.year
     else:
@@ -283,7 +287,8 @@ def get_movies():
                     num = num + 1
                     mlist.append(mdict)
         res_count = 16 - num
-        movies_other = MoviesModel.query.filter( MoviesModel.active == 1).all()
+        movies_other = MoviesModel.query.filter( MoviesModel.active == 1).limit(16).all()
+        # print(len(movies_other))
         if not movies_other:
             return jsonify({'code': 200})
         for i in movies_other:
@@ -325,6 +330,9 @@ def rating_movie():
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Sorry you can not view the movie details'})
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
 
     rate_tentimes = float(rate) * 10
     if rate_tentimes % 5 != 0:
@@ -1143,7 +1151,9 @@ def create_review():
 
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
-
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
     if review is None or len(review) == 0 or review.isspace():
         return jsonify({'code': 400, 'msg': 'text is empty'})
 
@@ -1804,7 +1814,6 @@ def insert_movie():
     if len(language) < 1:
         return jsonify({'code': 400, 'msg': 'Your language is too short.'})
 
-
     mid = getUniqueid()
     time_form = getTime()[0]
     year = int(release_date[0:4])
@@ -1836,11 +1845,11 @@ def get_recent_movies():
             # print(now)
             data = now.split(" ")[0]
             timeB = i.release_date.split(" ")[0]
-            day_ = compare_time(data,timeB)
+            day_ = compare_time(data, timeB)
             if day_ <= 30:
                 mdict = res_movie_detail(uid, user, i)
-                if num >= 16:
-                    break
+                # if num >= 16:
+                #     break
                 if "Music" not in mdict["genre"]:
                     num = num + 1
                     mlist.append(mdict)

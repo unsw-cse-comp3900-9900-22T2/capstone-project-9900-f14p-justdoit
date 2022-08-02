@@ -1,4 +1,4 @@
-import PageBase from './basePage'
+import PageBase from '../basePage'
 import OnlyshowMLStyle from "./onlyshowML.less";
 import React, {useEffect, useState} from 'react'
 import {Card, Input, message, Modal, Select} from "antd";
@@ -13,8 +13,8 @@ import {
     getMoviesList,
     getWatchlist,
     searchResult
-} from "./MockData";
-import ImageDom from "../components/Home/ImageDom";
+} from "../MockData";
+import ImageDom from "../../components/Home/ImageDom";
 
 const {Meta} = Card;
 const {TextArea, Search} = Input;
@@ -23,7 +23,7 @@ const {confirm} = Modal;
 
 
 const OnlyShowML = ({USERMESSAGE}) => {
-    const {uid} = USERMESSAGE;
+    const uid = USERMESSAGE  && USERMESSAGE.uid || null;
     const [setTimeOutFun, changeSetTimeOut] = useState(null);
     const [showModel, setShowModel] = useState(false);//添加movieList的弹窗
     const [changeList, setChangeList] = useState(false);//切换movieList和详情列表

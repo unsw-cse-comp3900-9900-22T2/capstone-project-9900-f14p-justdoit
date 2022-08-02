@@ -97,26 +97,25 @@ def init_app(app: Flask):
                                 moviename = i.moviename
                                 check_email_send = recentmovieModel.query.filter(recentmovieModel.uid == j.uid,
                                                                                  recentmovieModel.mid == i.mid).count()
-                                if check_email_send > 0:
-                                    continue
+                                if check_email_send == 0:
 
-                                msg = Message('Only Movie', recipients=[user.email])
-                                msg.body = 'Dear ' + str(username) + ',\n' \
-                                                                     "Movie \"" + str(
-                                    moviename) + "\" is coming out, please remember to watch it in the cinema! " \
-                                                 "Thank you for your attention.\n" \
-                                                 "The OnlyMovie Team.\n"
-                                try:
+                                    msg = Message('Only Movie', recipients=[user.email])
+                                    msg.body = 'Dear ' + str(username) + ',\n' \
+                                                                         "Movie \"" + str(
+                                        moviename) + "\" is coming out, please remember to watch it in the cinema! " \
+                                                     "Thank you for your attention.\n" \
+                                                     "The OnlyMovie Team.\n"
+                                    try:
 
-                                    sender.send(msg)
-                                    time_form = getTime()[0]
-                                    count = 1
-                                    recent_new = recentmovieModel(uid=j.uid, mid=i.mid, count=count, ctime=time_form,
-                                                                  utime=time_form)
-                                    db.session.add(recent_new)
-                                    db.session.commit()
-                                except Exception as e:
-                                    continue
+                                        sender.send(msg)
+                                        time_form = getTime()[0]
+                                        count = 1
+                                        recent_new = recentmovieModel(uid=j.uid, mid=i.mid, count=count, ctime=time_form,
+                                                                      utime=time_form)
+                                        db.session.add(recent_new)
+                                        db.session.commit()
+                                    except Exception as e:
+                                        continue
         return jsonify({'code': 200, 'msg': 'sent email succesfully'})
 
     app.add_url_rule("/app/views/send_email", view_func=send_email, methods=['GET','POST'])

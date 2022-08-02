@@ -16,7 +16,12 @@ def res_movie_detail(uid, user, movie):
     # split string (去空格)
     genre = movie.genre
     genre.lower()
-    genre_list = genre.split(" ")
+    # print(genre)
+    if "\xa0" in genre:
+        genre_list = genre.split("\xa0")
+    else:
+        genre_list = genre.split(" ")
+    # print(genre_list)
     genre_cap = []
     for i in genre_list:
         genre_cap.append(i.capitalize())
@@ -1712,13 +1717,16 @@ def get_latest_movielists():
             latest_movielists = nonempty_movielists[:4]
         result_list = []
         for ml in latest_movielists:
+            print(ml.mid)
             cover_image = None
             if ml.mid:
                 latest_movie_id = ml.mid.split(';')[-1]
                 latest_movie = MoviesModel.query.filter(MoviesModel.mid == latest_movie_id, MoviesModel.active == 1).first()
+                print(latest_movie.coverimage)
                 if latest_movie:
                     cover_image = latest_movie.coverimage
             ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
+            print(cover_image)
             result_list.append(ml_dict)
         result = {"count": len(result_list), "result_list": result_list}
         return jsonify({'code': 200, 'result': result})

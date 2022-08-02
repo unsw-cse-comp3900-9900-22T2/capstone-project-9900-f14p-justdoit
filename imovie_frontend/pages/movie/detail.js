@@ -35,7 +35,7 @@ const {Option} = Select;
 const {TextArea} = Input;
 
 const Detail = ({USERMESSAGE, initQuery}) => {
-    const {uid} = USERMESSAGE
+    const uid = USERMESSAGE  && USERMESSAGE.uid || null;
     const [isLogin] = useState(!!USERMESSAGE);
     const [detailMsgLook, changeDetailMsgLook] = useState(false);
     const [movieDetail, changeMovieDetail] = useState(null);
@@ -543,7 +543,7 @@ const Detail = ({USERMESSAGE, initQuery}) => {
     const queryRecommendedList = () => {
         if (initQuery && initQuery.movieId) {
             getMoviesListInDetail({
-                uid: USERMESSAGE&& USERMESSAGE.uid,
+                uid: USERMESSAGE && USERMESSAGE.uid,
                 mid: initQuery.movieId,
             }).then(res => {
                 if (res.code === 200) {
@@ -594,6 +594,7 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                                         </div>
                                     </Tooltip>
                                 </div>
+                                {!!movieDetail.is_release &&
                                 <div className={"rating"}>
                                     <h6 className={"rating-title"}>Average Rating:</h6>
                                     <div className={"rating-box"}>
@@ -601,7 +602,7 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                                         {rateChange &&
                                             <RateComponent defaultValue={setAvgRate(movieDetail.avg_rate || 0)}/>}
                                     </div>
-                                </div>
+                                </div>}
                                 {!!rateObj && <div className={"ratings-box"}>
                                     <h6 className={"rating-title"}>Ratings:</h6>
                                     {!!rateObj && <div
@@ -700,20 +701,28 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                                         <p>LENGTH: </p>
                                         <h6>{movieDetail.duration}min</h6>
                                     </div>}
+                                {!!movieDetail.release_date &&
+                                    <div className={"movie-message-body movie-message-body-flex"}>
+                                        <p>RELEASE DATE: </p>
+                                        <h6>{(movieDetail.release_date || "").split(" ")[0]}</h6>
+                                    </div>}
                             </div>
                             {
                                 !!isLogin && !isVisitor(USERMESSAGE) &&
                                 <div className={"operation"}>
-                                    <div className={"operation-image"}>
-                                        <div
-                                            onClick={() => {
-                                                changeOperation(1)
-                                            }}
-                                            className={"image-box"}>{svgGet(1, movieDetail.is_user_watch)}</div>
-                                        <div className={"a-href"}>
-                                            Watchlist
-                                        </div>
-                                    </div>
+                                    {!!movieDetail.is_release &&
+                                        <>
+                                            <div className={"operation-image"}>
+                                                <div
+                                                    onClick={() => {
+                                                        changeOperation(1)
+                                                    }}
+                                                    className={"image-box"}>{svgGet(1, movieDetail.is_user_watch)}</div>
+                                                <div className={"a-href"}>
+                                                    Watchlist
+                                                </div>
+                                            </div>
+                                        </>}
                                     <div className={"operation-image"}>
                                         <div
                                             onClick={() => {
@@ -724,44 +733,49 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                                             Wishlist
                                         </div>
                                     </div>
-                                    <div className={"operation-image"}>
-                                        <div
-                                            onClick={() => {
-                                                changeOperation(0)
-                                            }}
-                                            className={"image-box"}>{svgGet(0, movieDetail.is_user_like)}</div>
-                                        <div className={"a-href"}>
-                                            Like
-                                        </div>
-                                    </div>
-                                    <div className={"operation-image"}>
-                                        <div
-                                            onClick={() => {
-                                                changeOperation(3)
-                                            }}
-                                            className={"image-box"}>{svgGet(3, movieDetail.is_user_dislike)}</div>
-                                        <div className={"a-href"}>
-                                            Dislike
-                                        </div>
-                                    </div>
-                                    <div
-                                        onClick={() => {
-                                            const _year = movieDetail.year;
-                                            ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                                            && ratingRef.current.changeVisible(true, movieDetail.moviename + (_year && ("(" + _year + ")") || ""),
-                                                movieDetail.mid, USERMESSAGE && USERMESSAGE.uid || null, movieDetail.is_user_rate || 0);
-                                        }}
-                                        className={"operation-image"}>
-                                        <div
-                                            className={"image-box"}>
-                                            {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
-                                                movieDetail.is_user_rate <= 0
-                                            ) ? <img src={"/static/star.png"}/> : <img src={"/static/starChoose.png"}/>}
-                                        </div>
-                                        <div className={"a-href"}>
-                                            Rate
-                                        </div>
-                                    </div>
+                                    {!!movieDetail.is_release &&
+                                    <>
+                                        <div className={"operation-image"}>
+                                                <div
+                                                    onClick={() => {
+                                                        changeOperation(0)
+                                                    }}
+                                                    className={"image-box"}>{svgGet(0, movieDetail.is_user_like)}</div>
+                                                <div className={"a-href"}>
+                                                    Like
+                                                </div>
+                                            </div>
+                                            <div className={"operation-image"}>
+                                                <div
+                                                    onClick={() => {
+                                                        changeOperation(3)
+                                                    }}
+                                                    className={"image-box"}>{svgGet(3, movieDetail.is_user_dislike)}</div>
+                                                <div className={"a-href"}>
+                                                    Dislike
+                                                </div>
+                                            </div>
+                                            <div
+                                                onClick={() => {
+                                                    const _year = movieDetail.year;
+                                                    ratingRef && ratingRef.current && ratingRef.current.changeVisible
+                                                    && ratingRef.current.changeVisible(true, movieDetail.moviename + (_year && ("(" + _year + ")") || ""),
+                                                        movieDetail.mid, USERMESSAGE && USERMESSAGE.uid || null, movieDetail.is_user_rate || 0);
+                                                }}
+                                                className={"operation-image"}>
+                                                <div
+                                                    className={"image-box"}>
+                                                    {(movieDetail.is_user_rate === null || movieDetail.is_user_rate === undefined ||
+                                                        movieDetail.is_user_rate <= 0
+                                                    ) ? <img src={"/static/star.png"}/> : <img src={"/static/starChoose.png"}/>}
+                                                </div>
+                                                <div className={"a-href"}>
+                                                    Rate
+                                                </div>
+                                            </div>
+
+                                    </>}
+
                                     <div
                                         onClick={() => {
                                             setShowModel(true)
@@ -781,7 +795,8 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                         </div>
                     </>
                 }
-                {!!movieDetail && <div className={"reviews-list"}>
+                {!!movieDetail && !!movieDetail.is_release &&
+                    <div className={"reviews-list"}>
                     <div className={"review-title"}>
                         <p>Related Review{!!isLogin && !isVisitor(USERMESSAGE)
                             && <span onClick={() => {
@@ -946,10 +961,17 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                 title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
 
             {/*推荐列表*/}
-            {recommendedMovieList.length != 0 &&<h6 style={{marginLeft:190}}>RECOMMEND MOVIE LIST WITH CURRENT FILM</h6>}
+            {recommendedMovieList.length != 0 &&<h6 style={{width : "80%",
+                margin:"50px 10% 20px 10%",
+                fontSize: "16px",
+                fontWeight: 700,
+                height: "40px",
+                borderBottom: "1px solid #d7d7d7"
+            }}>RECOMMEND MOVIE LIST WITH CURRENT FILM</h6>}
             <div className={"imgBox"} style={{display: 'flex'}}>
             {recommendedMovieList.map((item, index) => 
-                  <div className='card' style={{display: 'flex',marginLeft:190,marginRight:'-99px'}}>
+                  <div className='card' style={{display: 'flex',width : "80%",
+                      margin:"0px 10% 10px 10%",marginRight:'-99px'}}>
                     <Card
                         // width={267}
                         // height={400}

@@ -97,8 +97,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
             }
           })
           checkBlock({
-            o_uid :initQuery.uid,
-            b_uid : (USERMESSAGE && USERMESSAGE.uid) || null
+            buid :initQuery.uid,
+            uid : (USERMESSAGE && USERMESSAGE.uid) || null
         }).then(res => {
           if(res.code === 200){
             changeIsBlock(!!res.result);
@@ -262,7 +262,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                               }
                             })
                           }}
-                          className={!isFollow ? "follow-button" : "follow-button-cancel"}>{!isBlock ? "BLOCK" : "CANCEL BLOCK"}</div>
+                          className={!isBlock ? "follow-button" : "follow-button-cancel"}>{!isBlock ? "BLOCK" : "CANCEL BLOCK"}</div>
                   }  
                 </div>
               </div>}

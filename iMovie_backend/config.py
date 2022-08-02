@@ -6,7 +6,7 @@
 # HOST = '127.0.0.1'
 # PORT = '3306'
 # DATABASE = 'imovie'
-#
+# 
 # SQLALCHEMY_DATABASE_URI = '{}+{}://{}:{}@{}:{}/{}?charset=UTF8MB4'.format(
 #     DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE
 # )

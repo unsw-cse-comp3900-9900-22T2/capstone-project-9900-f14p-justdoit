@@ -960,6 +960,8 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                             <img alt="example" src={item.cover_image}/>}
                         onClick={() => {
                             // window.location.href = "/movie/recommendMovie?movieId=" +''
+                            window.location.href = `/onlyshowML?molid=${item.molid}`
+
                         }}
                     >
                         {/*<Meta title={item.title} description={item.description} />*/}

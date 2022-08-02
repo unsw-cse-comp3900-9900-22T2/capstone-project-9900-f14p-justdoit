@@ -126,11 +126,11 @@ const Home = ({USERMESSAGE}) => {
         {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
         {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
         {/* 主页推荐影单 */}
-        <div style={{position:"relative"}}>
-        {movieList.length != 0 &&<h4 style={{marginLeft:150}}>RECOMMEND MOVIE LIST</h4>}
+        <div style={{position:"relative",width: "90%",margin : "0 auto"}}>
+        {movieList.length != 0 &&<h4 style={{marginLeft:50}}>RECOMMEND MOVIE LIST</h4>}
         <div className={"imgBox"} style={{display: 'flex'}}>
             {movieList.map((item, index) => <React.Fragment>
-                <div className='card' style={{display: 'flex',marginLeft:150,marginRight:'-57px'}}>
+                <div className='card' style={{display: 'flex',marginLeft:50,marginRight:'-57px'}}>
                     <Card
                         // width={267}
                         // height={400}

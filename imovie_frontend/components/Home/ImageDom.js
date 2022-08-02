@@ -1,5 +1,5 @@
 import React, {useImperativeHandle, useRef, useState} from "react";
-import {DeleteOutlined, EllipsisOutlined, PlayCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import {PlaySquareOutlined,DeleteOutlined, EllipsisOutlined, PlayCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import {Input, message, Modal, Popover, Select, Tooltip} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
@@ -44,7 +44,7 @@ const ImageDom = ({
     const {
         director, cast, genre, avg_rate, moviename,
         is_user_like, is_user_watch, is_user_wish, release_date, is_user_dislike, year,
-        watchlist_num, num_like, wishlist_num, movieslist_num, coverimage, mid, is_user_rate
+        watchlist_num, num_like, wishlist_num, movieslist_num, coverimage, mid, is_user_rate,is_release
     } = thisItem;
     const _nameList = [...[director || ""]];
     const _cast = [];
@@ -349,20 +349,24 @@ const ImageDom = ({
             }
           {
             isLogin && !isNotMyself && <div className={"operation"}>
-              <div
-                onClick={()=>{
-                  changeOperation(1)
-                }}
-                className={"operation-image"}>{
-                svgGet(1,is_user_watch)
-              }</div>
-              <div
-                onClick={()=>{
-                  changeOperation(0)
-                }}
-                className={"operation-image"}>{
-                svgGet(0,is_user_like)
-              }</div>
+                {!!is_release &&
+                    <>
+                        <div
+                          onClick={()=>{
+                            changeOperation(1)
+                          }}
+                          className={"operation-image"}>{
+                          svgGet(1,is_user_watch)
+                        }</div>
+                        <div
+                          onClick={()=>{
+                            changeOperation(0)
+                          }}
+                          className={"operation-image"}>{
+                          svgGet(0,is_user_like)
+                        }</div>
+                    </>
+                }
               <div
                 onClick={()=>{
                   changeOperation(2)
@@ -370,56 +374,75 @@ const ImageDom = ({
                 className={"operation-image"}>{
                 svgGet(2,is_user_wish)
               }</div>
-              <Popover
-                zIndex={13}
-                overlayClassName='popUpStatus'
-                placement="rightTop" title={"More Operations"} content={()=>{
-                return <div className={"swiper-component-operation"}>
-                  {/*<div*/}
-                  {/*  onClick={()=>{*/}
-                  {/*    ratingRef && ratingRef.current && ratingRef.current.changeVisible*/}
-                  {/*    && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),*/}
-                  {/*      mid,uid,is_user_rate);*/}
-                  {/*  }}*/}
-                  {/*  className={"swiper-component-operation-item padding1"}>*/}
-                  {/*  Rate*/}
-                  {/*</div>*/}
-                  <div
-                    onClick={()=>{
-                      reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                      && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
-                        mid,uid,is_user_rate);
-                    }}
-                    className={"swiper-component-operation-item"}>
-                    Add review and rating
-                  </div>
-                  <div
-                    onClick={()=>{
-                      changeOperation(3,index)
-                    }}
-                    className={"swiper-component-operation-item"}>
-                    {is_user_dislike ? "Cancel Dislike" : "Dislike"}
-                  </div>
-                  <div
-                      onClick={() => {
-                        changeOperation(4, index)
-                        setShowModel(true)
-                        queryMoviesList()
-                      }}
-                      className={"swiper-component-operation-item border-no padding2"}>
-                    Add to movielist
+                {
+                  !is_release &&
+                    <div
+                        onClick={() => {
+                          changeOperation(4, index)
+                          setShowModel(true)
+                          queryMoviesList()
+                        }}
+                        className={"operation-image"}>
+                      <PlaySquareOutlined  style={{
+                        cursor: "pointer",
+                        fontSize : "16px",
+                        marginTop : "4px",
+                        color:"#dcdcdc"
+                      }}/>
+                    </div>
+                }
+                {!!is_release &&
+                    <Popover
+                        zIndex={13}
+                        overlayClassName='popUpStatus'
+                        placement="rightTop" title={"More Operations"} content={() => {
+                      return <div className={"swiper-component-operation"}>
+                        {/*<div*/}
+                        {/*  onClick={()=>{*/}
+                        {/*    ratingRef && ratingRef.current && ratingRef.current.changeVisible*/}
+                        {/*    && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),*/}
+                        {/*      mid,uid,is_user_rate);*/}
+                        {/*  }}*/}
+                        {/*  className={"swiper-component-operation-item padding1"}>*/}
+                        {/*  Rate*/}
+                        {/*</div>*/}
+                        <div
+                            onClick={() => {
+                              reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                              && reviewsInfoRef.current.changeVisible(true, moviename + (year && ("(" + year + ")") || ""),
+                                  mid, uid, is_user_rate);
+                            }}
+                            className={"swiper-component-operation-item"}>
+                          Add review and rating
+                        </div>
+                        <div
+                            onClick={() => {
+                              changeOperation(3, index)
+                            }}
+                            className={"swiper-component-operation-item"}>
+                          {is_user_dislike ? "Cancel Dislike" : "Dislike"}
+                        </div>
+                        <div
+                            onClick={() => {
+                              changeOperation(4, index)
+                              setShowModel(true)
+                              queryMoviesList()
+                            }}
+                            className={"swiper-component-operation-item border-no padding2"}>
+                          Add to movielist
 
-                  </div>
-                </div>
-              }}>
-                <div
-                  className={"operation-image"}>
-                  <EllipsisOutlined  style={{
-                    fontSize : "18px",
-                    cursor : "pointer"
-                  }}/>
-                </div>
-              </Popover>
+                        </div>
+                      </div>
+                    }}>
+                      <div
+                          className={"operation-image"}>
+                        <EllipsisOutlined style={{
+                          fontSize: "18px",
+                          cursor: "pointer"
+                        }}/>
+                      </div>
+                    </Popover>
+                }
             </div>
           }
 

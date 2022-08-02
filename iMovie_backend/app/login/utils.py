@@ -198,3 +198,37 @@ def compare_time(timeA, timeB):
     d1 = datetime.date(int(timeAList[0]), int(timeAList[1]), int(timeAList[2]))
     d2 = datetime.date(int(timeBList[0]), int(timeBList[1]), int(timeBList[2]))
     return (d1 - d2).days
+
+# return 0: not release ; 1: release
+def check_release(release_data):
+    time_stamp = time.localtime(time.time())  # 132131232434
+    now = time.strftime('%Y-%m-%d', time_stamp)
+    # now = getTime[0]
+    nowlist = now.split("-")
+    release_data.strip()
+    if " " in release_data:
+        new_release = release_data.split(" ")[0]
+        release_data = new_release
+    release_datalist = release_data.split("-")
+
+    #check year
+    if int(nowlist[0]) < int(release_datalist[0]):
+        return 0
+    elif int(nowlist[0]) == int(release_datalist[0]):
+        # check month
+        if int(nowlist[1]) < int(release_datalist[1]):
+            return 0
+        elif int(nowlist[1]) == int(release_datalist[1]):
+            # check day
+            if int(nowlist[2]) < int(release_datalist[2]):
+                return 0
+            else:
+                return 1
+        else:
+            return 1
+    else:
+        return 1
+
+
+
+

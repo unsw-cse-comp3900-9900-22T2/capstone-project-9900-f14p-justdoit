@@ -34,6 +34,10 @@ def res_movie_detail(uid, user, movie):
     else:
         result["avg_rate"] = -1
     result["release_date"] = movie.release_date
+    if movie.release_date:
+        result["is_release"] = check_release(movie.release_date)
+    else:
+        result["is_release"] = 1
     if movie.year:
         result["year"] = movie.year
     else:
@@ -325,6 +329,9 @@ def rating_movie():
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Sorry you can not view the movie details'})
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
 
     rate_tentimes = float(rate) * 10
     if rate_tentimes % 5 != 0:
@@ -1143,7 +1150,9 @@ def create_review():
 
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
-
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
     if review is None or len(review) == 0 or review.isspace():
         return jsonify({'code': 400, 'msg': 'text is empty'})
 

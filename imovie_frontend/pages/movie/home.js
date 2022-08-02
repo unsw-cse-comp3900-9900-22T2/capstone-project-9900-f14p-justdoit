@@ -114,7 +114,7 @@ const Home = ({USERMESSAGE}) => {
     return (<PageBase USERMESSAGE={USERMESSAGE}>
         <style dangerouslySetInnerHTML={{__html: homeStyle}}/>
         <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
-                              listCount={200}
+                              listCount={16}
                               isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
                               list={list} title={"RECENT POPULAR FILMS"}/>
         {recentMoviesList && recentMoviesList.length >0 &&

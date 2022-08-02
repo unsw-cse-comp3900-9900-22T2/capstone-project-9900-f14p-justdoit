@@ -366,6 +366,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             }}
                             onChange={(newValue) => {
                                 setSearchKeyWord(newValue);
+                                if(!!newValue){
+                                    addMovieListDetails(newValue);
+                                }
                             }}
                             style={{
                                 width: '90%',
@@ -390,10 +393,6 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                                                         whiteSpace: 'normal',
                                                     }}
                                                     className={"label_data_user_movie_list_mid_search"}
-                                                    onClick={()=>{
-                                                        addMovieListDetails(item.mid)
-                                                        // window.location.href = "/movie/detail?movieId=" + item.mid;
-                                                    }}
                                                 >
                                                     <h5>{item.moviename}{!!item.year && ("(" + item.year +")")}</h5>
                                                 </div>

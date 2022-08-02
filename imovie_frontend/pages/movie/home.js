@@ -145,7 +145,7 @@ const Home = ({USERMESSAGE}) => {
                             // getMoviesListDetails(item.molid)
                             // setChangeList(false)
 
-                            window.location.href = `/onlyshowML?molid=${item.molid}`
+                            window.location.href = `/movie/onlyshowML?molid=${item.molid}`
                         }}
                     >
                         {/*<Meta title={item.title} description={item.description} />*/}

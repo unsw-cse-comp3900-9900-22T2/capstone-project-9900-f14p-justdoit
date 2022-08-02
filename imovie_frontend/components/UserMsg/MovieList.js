@@ -79,6 +79,8 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
         }).finally(() => {
             fetchData();
             setShowModel(false)
+            setListName('')
+            setListDescription('')
         })
     }
 
@@ -109,7 +111,11 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                     } else {
                         message.error("Clear failed");
                     }
-                }).finally(() => setChangeList(true))
+                }).finally(() => {
+                    setMovieList([])
+                    fetchData();
+                    setChangeList(true)
+                })
             }
         });
     }
@@ -165,6 +171,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             mid
         }).then(res => {
             console.log(res)
+            message.success('delete successfully')
         }).finally(() => {
             fetchData()
             setMovieListDetail([])
@@ -249,7 +256,13 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                             {/*<Meta title={item.title} description={item.description} />*/}
                             <h6>{item.title}</h6>
                         </Card>
-                    </React.Fragment>):<img style={{margin:'0 auto'}} alt="example" src={"/static/empty.png"} />}
+                    </React.Fragment>):<div className={"empty"}>
+                            <img src={"/static/empty.png"}/>
+                            <h5>
+                                No movielist yet
+                            </h5>
+                        </div>
+                        }
                 </div>
             </div>
             :
@@ -279,7 +292,10 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                                             fetchData()
                                         }}>Back to movielist</Button>
                                         <DeleteTwoTone style={{marginLeft: 50}}
-                                                       onClick={() => deleteMovieList(item.molid)}/>
+                                                       onClick={() => {
+                                                           deleteMovieList(item.molid)
+
+                                                       }}/>
                                     </div>
                                     {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
                                                                 onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
@@ -451,7 +467,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                     {/*/>*/}
                 </div>
                 <div className={"imgBox"} style={{position: "relative", top: 50}}>
-                    {movieListDetail.map((item, index) => <React.Fragment>
+                    {
+                        movieListDetail.length !==0?
+                        movieListDetail.map((item, index) => <React.Fragment>
                         <ImageDom
                             item={item}
                             isLogin={true}
@@ -490,7 +508,14 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
                         {/*>*/}
                         {/*    {item.moviename}*/}
                         {/*</Card>*/}
-                    </React.Fragment>)}
+                    </React.Fragment>)
+                    :<div className={"empty"}>
+                                <img src={"/static/empty.png"}/>
+                                <h5>
+                                    No films yet
+                                </h5>
+                            </div>
+                    }
                 </div>
             </div>
         }

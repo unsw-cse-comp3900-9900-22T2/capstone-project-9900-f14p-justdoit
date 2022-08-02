@@ -946,7 +946,7 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                 title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
 
             {/*推荐列表*/}
-            {recommendedMovieList.length != 0 &&<h4 style={{marginLeft:190}}>RECOMMEND MOVIE LIST</h4>}
+            {recommendedMovieList.length != 0 &&<h6 style={{marginLeft:190}}>RECOMMEND MOVIE LIST</h6>}
             <div className={"imgBox"} style={{display: 'flex'}}>
             {recommendedMovieList.map((item, index) => 
                   <div className='card' style={{display: 'flex',marginLeft:190,marginRight:'-99px'}}>

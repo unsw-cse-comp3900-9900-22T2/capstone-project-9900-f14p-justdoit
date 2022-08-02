@@ -190,7 +190,7 @@ const MovieListComponent = ({uid, isMySelf, loginUid}) => {
     return (<React.Fragment>
         <style dangerouslySetInnerHTML={{__html: MovieListStyle}}/>
         {
-            <div className="watchListComponent">
+            <div className="movieListComponentComponent">
                 <div className={"title-box"}>
                     <p className="title">
                         {movieList.map((item, index) => {

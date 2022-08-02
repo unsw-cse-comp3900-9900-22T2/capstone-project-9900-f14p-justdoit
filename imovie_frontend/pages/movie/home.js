@@ -98,6 +98,10 @@ const Home = ({USERMESSAGE}) => {
                     const {result} = res;
                     if (result) {
                         console.log(result, '影单列表');
+                        const length = (result.result_list || []).length;
+                        for(let i = 0 ; i < (4-length) ; i++){
+                            result.result_list.push({})
+                        }
                         setMovieList(result.result_list)
                     }
                 }
@@ -110,7 +114,7 @@ const Home = ({USERMESSAGE}) => {
     return (<PageBase USERMESSAGE={USERMESSAGE}>
         <style dangerouslySetInnerHTML={{__html: homeStyle}}/>
         <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}
-                              listCount={200}
+                              listCount={16}
                               isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
                               list={list} title={"RECENT POPULAR FILMS"}/>
         {recentMoviesList && recentMoviesList.length >0 &&
@@ -126,33 +130,27 @@ const Home = ({USERMESSAGE}) => {
         {/*{!!USERMESSAGE && <ScrollImageComponent uid={USERMESSAGE && USERMESSAGE.uid || null}*/}
         {/*                                        isLogin={!!USERMESSAGE} list={list} title={"GUESS LIKE"}/>}*/}
         {/* 主页推荐影单 */}
-        <div style={{position:"relative",width: "90%",margin : "0 auto"}}>
-        {movieList.length != 0 &&<h4 style={{marginLeft:50}}>RECOMMEND MOVIE LIST</h4>}
-        <div className={"imgBox"} style={{display: 'flex'}}>
-            {movieList.map((item, index) => <React.Fragment>
-                <div className='card' style={{display: 'flex',marginLeft:50,marginRight:'-57px'}}>
-                    <Card
-                        // width={267}
-                        // height={400}
-
-                        hoverable
-                        style={{width:370.06, height:555 ,marginRight:'-50px' }}
-                        cover={item.cover_image === null ?
-                            <img alt="example" src={"/static/emptyLogo.png"}/> :
-                            <img alt="example" src={item.cover_image}/>}
-                        onClick={() => {
-                            // setMolid(item.molid)
-                            // getMoviesListDetails(item.molid)
-                            // setChangeList(false)
-
-                            window.location.href = `/movie/onlyshowML?molid=${item.molid}`
+        <div
+            className={"movieList-box"}>
+        {movieList.length != 0 &&<h4>RECOMMEND MOVIE LIST</h4>}
+        <div className={"imgBox-home"}>
+            {movieList.map((item, index) =>{
+                if(!item.title && !item.cover_image){
+                    return <div className="empty_box_for_image"/>
+                }
+                return <div
+                    onClick={()=>{
+                        window.location.href = `/movie/onlyshowML?molid=${item.molid}`
+                    }}
+                    className={"img-background-box"}>
+                    <div
+                        style={{
+                            backgroundImage:"url(" + (item.cover_image === null ? "/static/emptyLogo.png" : item.cover_image)+ ")"
                         }}
-                    >
-                        {/*<Meta title={item.title} description={item.description} />*/}
-                        <h6>{item.title}</h6>
-                    </Card>
+                        className={"img-background"}/>
+                    <h6>{item.title}</h6>
                 </div>
-            </React.Fragment>)}
+            })}
         </div>
         </div>
     </PageBase>)

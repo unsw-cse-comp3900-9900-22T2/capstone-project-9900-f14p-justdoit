@@ -961,38 +961,32 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                 title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
 
             {/*推荐列表*/}
-            {recommendedMovieList.length != 0 &&<h6 style={{width : "80%",
+            {recommendedMovieList.length !== 0 &&<h6 style={{width : "80%",
                 margin:"50px 10% 20px 10%",
                 fontSize: "16px",
                 fontWeight: 700,
                 height: "40px",
                 borderBottom: "1px solid #d7d7d7"
             }}>RECOMMEND MOVIE LIST WITH CURRENT FILM</h6>}
-            <div className={"imgBox"} style={{display: 'flex'}}>
-            {recommendedMovieList.map((item, index) => 
-                  <div className='card' style={{display: 'flex',width : "80%",
-                      margin:"0px 10% 10px 10%",marginRight:'-99px'}}>
-                    <Card
-                        // width={267}
-                        // height={400}
-                        hoverable
-                        style={{width: 349.36, height: 524.03,marginRight:'-50px' }}
-                        cover={item.cover_image === null ?
-                            <img alt="example" src={"/static/emptyLogo.png"}/> :
-                            <img alt="example" src={item.cover_image}/>}
-                        onClick={() => {
-                            // window.location.href = "/movie/recommendMovie?movieId=" +''
-                            window.location.href = `/onlyshowML?molid=${item.molid}`
-
+            <div className={"imgBox-detail-home"}>
+                {recommendedMovieList &&
+                    recommendedMovieList.map((item, index) =>{
+                    if(!item.title && !item.cover_image){
+                        return <div className="empty_box_for_image"/>
+                    }
+                    return <div
+                        onClick={()=>{
+                            window.location.href = `/movie/onlyshowML?molid=${item.molid}`
                         }}
-                    >
-                        {/*<Meta title={item.title} description={item.description} />*/}
+                        className={"img-background-box"}>
+                        <div
+                            style={{
+                                backgroundImage:"url(" + (item.cover_image === null ? "/static/emptyLogo.png" : item.cover_image)+ ")"
+                            }}
+                            className={"img-background"}/>
                         <h6>{item.title}</h6>
-                    </Card>
-                  </div>
-                )
-               
-            }
+                    </div>
+                })}
             </div>
 
             <RatingComponent

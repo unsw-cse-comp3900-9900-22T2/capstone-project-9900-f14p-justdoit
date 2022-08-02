@@ -419,7 +419,7 @@ const BrowseBy = ({USERMESSAGE,queryForBrowseBy}) => {
         changeIsSearch(isSear)
       }}/>
       {!isSearch && <ScrollImageComponent
-          listCount={200}
+          listCount={16}
           uid={USERMESSAGE && USERMESSAGE.uid || null}
                             isLogin={!!USERMESSAGE && !isVisitor(USERMESSAGE)}
           list={list} title={"RECENT POPULAR FILMS"}/>}

@@ -19,6 +19,9 @@
 
 from urllib.parse import quote_plus as urlquote
 
+
+
+
 SECRET_KEY = "123456789"
 DIALECT = 'mysql'
 DRIVER = 'pymysql'

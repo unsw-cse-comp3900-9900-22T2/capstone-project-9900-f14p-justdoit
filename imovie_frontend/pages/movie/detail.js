@@ -946,20 +946,22 @@ const Detail = ({USERMESSAGE, initQuery}) => {
                 title={isLogin && !isVisitor(USERMESSAGE) ? "RECOMMEND FOR YOU SIMILAR" : "SIMILAR MOVIES"}/>}
 
             {/*推荐列表*/}
-            {recommendedMovieList.length != 0 &&<h4 style={{marginLeft:125}}>RECOMMEND MOVIE LIST</h4>}
+            {recommendedMovieList.length != 0 &&<h6 style={{marginLeft:190}}>RECOMMEND MOVIE LIST WITH CURRENT FILM</h6>}
             <div className={"imgBox"} style={{display: 'flex'}}>
             {recommendedMovieList.map((item, index) => 
-                  <div className='card' style={{display: 'flex',marginLeft:125,marginRight:'-43px'}}>
+                  <div className='card' style={{display: 'flex',marginLeft:190,marginRight:'-99px'}}>
                     <Card
                         // width={267}
                         // height={400}
                         hoverable
-                        style={{width: 277, height: 416,marginRight:'-50px' }}
+                        style={{width: 349.36, height: 524.03,marginRight:'-50px' }}
                         cover={item.cover_image === null ?
                             <img alt="example" src={"/static/emptyLogo.png"}/> :
                             <img alt="example" src={item.cover_image}/>}
                         onClick={() => {
                             // window.location.href = "/movie/recommendMovie?movieId=" +''
+                            window.location.href = `/onlyshowML?molid=${item.molid}`
+
                         }}
                     >
                         {/*<Meta title={item.title} description={item.description} />*/}

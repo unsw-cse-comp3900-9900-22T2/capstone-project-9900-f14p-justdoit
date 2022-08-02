@@ -16,7 +16,12 @@ def res_movie_detail(uid, user, movie):
     # split string (去空格)
     genre = movie.genre
     genre.lower()
-    genre_list = genre.split(" ")
+    # print(genre)
+    if "\xa0" in genre:
+        genre_list = genre.split("\xa0")
+    else:
+        genre_list = genre.split(" ")
+    # print(genre_list)
     genre_cap = []
     for i in genre_list:
         genre_cap.append(i.capitalize())

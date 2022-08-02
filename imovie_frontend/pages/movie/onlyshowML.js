@@ -23,7 +23,7 @@ const {confirm} = Modal;
 
 
 const OnlyShowML = ({USERMESSAGE}) => {
-    const {uid} = USERMESSAGE;
+    const uid = USERMESSAGE  && USERMESSAGE.uid || null;
     const [setTimeOutFun, changeSetTimeOut] = useState(null);
     const [showModel, setShowModel] = useState(false);//添加movieList的弹窗
     const [changeList, setChangeList] = useState(false);//切换movieList和详情列表

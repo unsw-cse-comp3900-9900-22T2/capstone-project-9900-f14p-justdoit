@@ -35,7 +35,7 @@ const {Option} = Select;
 const {TextArea} = Input;
 
 const Detail = ({USERMESSAGE, initQuery}) => {
-    const {uid} = USERMESSAGE
+    const uid = USERMESSAGE  && USERMESSAGE.uid || null;
     const [isLogin] = useState(!!USERMESSAGE);
     const [detailMsgLook, changeDetailMsgLook] = useState(false);
     const [movieDetail, changeMovieDetail] = useState(null);
@@ -543,7 +543,7 @@ const Detail = ({USERMESSAGE, initQuery}) => {
     const queryRecommendedList = () => {
         if (initQuery && initQuery.movieId) {
             getMoviesListInDetail({
-                uid: USERMESSAGE&& USERMESSAGE.uid,
+                uid: USERMESSAGE && USERMESSAGE.uid,
                 mid: initQuery.movieId,
             }).then(res => {
                 if (res.code === 200) {

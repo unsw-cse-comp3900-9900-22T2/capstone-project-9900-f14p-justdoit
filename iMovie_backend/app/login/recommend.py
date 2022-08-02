@@ -265,6 +265,9 @@ def movie_recommend_user():
             # print(similar)
             remList = []
             if similar.get(uid) != None:
+                # print(len(similar[uid]), "000000000000")
+                if len(similar[uid]) == 0:
+                    return jsonify({'code': 400})
                 most_similar_user = max(similar[uid], key=similar[uid].get)
                 # print(most_similar_user)
 

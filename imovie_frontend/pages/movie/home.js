@@ -39,7 +39,7 @@ const Home = ({USERMESSAGE}) => {
             }
         })
         getRecentMovies({
-
+            uid: USERMESSAGE && USERMESSAGE.uid || null
         }).then(res => {
             if(res.code === 200){
                 const {result} = res;

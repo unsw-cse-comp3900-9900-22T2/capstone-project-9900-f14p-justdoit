@@ -164,6 +164,7 @@ def rate_display():
 
     return jsonify({'code': 200, 'result': result})
 
+
 def rate_distribution():
     data = request.get_json(force=True)
     mid = data["mid"]
@@ -193,15 +194,6 @@ def rate_distribution():
     result["count"] = count
     result["userList"] = userlist
     return jsonify({'code': 200, 'result': result})
-
-
-
-
-
-
-
-
-
 
 
 # simplify the res_movie_detail
@@ -246,6 +238,7 @@ def get_movie_detail():
     result = res_movie_detail(uid, user, movie)
 
     return jsonify({'code': 200, 'result': result})
+
 
 def count_history():
     history_dict = {}
@@ -400,23 +393,22 @@ def rating_movie():
         return jsonify({'code': 400, 'msg': 'Rating failure', 'error_msg': str(e)})
 
 
-# 0: add time, 1: highest  rating,2: lowest rating , 3:released data，null: not sort
+# get this user's wishlist
 def get_wishlist():
     data = request.get_json(force=True)
-    # print(data)
-    page_index = data["page_index"]
-    page_size = data["page_size"]
+    page_index, page_size = data["page_index"], data["page_size"]
     sort_by = data["sort_by"]
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
                                            wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
-    # print(wishlist)
+
     try:
         result = {"count": len(wishlist)}
         list = []
@@ -425,7 +417,7 @@ def get_wishlist():
             if movie:
                 movie_info = res_movie_detail(uid, user, movie)
                 list.append(movie_info)
-        # print(sort_by)
+        # 0: add time, 1: highest  rating,2: lowest rating , 3:released date/year，null: not sort
         if sort_by is not None:
             if sort_by == 0:
                 # when add
@@ -451,21 +443,21 @@ def get_wishlist():
             result["list"] = res_list[start:]
 
         return jsonify({'code': 200, 'result': result})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
+# add or delete a movie to this user's wishlist
 def wishlist_add_or_delete():
     data = request.get_json(force=True)
-    # print(data)
-    add_or_del = data["add_or_del"]
-    uid = data["uid"]
-    mid = data["mid"]
+    add_or_del, uid, mid = data["add_or_del"], data["uid"], data["mid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
+
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
 
@@ -481,6 +473,7 @@ def wishlist_add_or_delete():
             watch_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Add movie from watchlist to wishlist.'})
+
         try:
             wid = getUniqueid()
             timeform = getTime()[0]
@@ -488,64 +481,80 @@ def wishlist_add_or_delete():
             db.session.add(wishlist)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+
     elif add_or_del == "delete":
         wish_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
                                                  wishWatchModel.type == 0, wishWatchModel.active == 1).first()
         if not wish_movie:
             return jsonify({'code': 400, 'msg': 'Movie is not in wish list.'})
+
         try:
             wish_movie.active = 0
             wish_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+
     else:
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+# clear wishlist
 def clear_wishlist():
     data = request.get_json(force=True)
-    # print(data)
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
                                            wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty'})
+
     try:
         for wish_m in wishlist:
             wish_m.active = 0
             wish_m.utime = getTime()[0]
             db.session.commit()
         return jsonify({'code': 200, 'msg': 'Wishlist clear succeed'})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
 
+# Move all movies except not released movies to watchlist with on click
 def wish_to_watch():
     data = request.get_json(force=True)
-    # print(data)
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
+
     wishlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 0,
                                            wishWatchModel.active == 1).all()
     if not wishlist:
         return jsonify({'code': 200, 'msg': 'Wishlist is empty.'})
+
     try:
         for wish_m in wishlist:
+            movie = MoviesModel.query.filter(MoviesModel.mid == wish_m.mid, MoviesModel.active == 1).first()
+            if movie.release_date:
+                if check_release(movie.release_date) == 0:
+                    # if movie is not released, it cannot be added to watchlist, so skip this movie.
+                    continue
             wish_m.type = 1
             wish_m.utime = getTime()[0]
             db.session.commit()
-        return jsonify({'code': 200, 'msg': 'Turn all movies on wishlist to watchlist successfully.'})
+        return jsonify({'code': 200, 'msg': 'Trans all movies on wishlist to watchlist successfully.'})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get wishlist failed.', 'error_msg': str(e)})
 
@@ -750,17 +759,16 @@ def search_result():
         return jsonify({'code': 400, 'msg': 'search result return failed.'})
 
 
+# get this user's watchlist
 def get_watchlist():
     data = request.get_json(force=True)
-    # print(data)
-    page_index = data["page_index"]
-    page_size = data["page_size"]
-    sort_by = data["sort_by"]
-    uid = data["uid"]
+    page_index, page_size = data["page_index"], data["page_size"]
+    sort_by, uid = data["sort_by"], data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     watchlist = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.type == 1,
                                             wishWatchModel.active == 1).all()
     if not watchlist:
@@ -804,19 +812,22 @@ def get_watchlist():
         return jsonify({'code': 400, 'msg': 'Get watchlist failed.', 'error_msg': str(e)})
 
 
+# add or delete a movie from this user's watchlist
 def watchlist_add_or_delete():
     data = request.get_json(force=True)
-    # print(data)
-    add_or_del = data["add_or_del"]
-    uid = data["uid"]
-    mid = data["mid"]
+    add_or_del, uid, mid = data["add_or_del"], data["uid"], data["mid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # if movie is not released, it cannot be added to watchlist
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
 
     if add_or_del == "add":
         watch_movie = wishWatchModel.query.filter(wishWatchModel.uid == uid, wishWatchModel.mid == mid,
@@ -855,11 +866,10 @@ def watchlist_add_or_delete():
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+# get movies which are liked by this user
 def get_like():
     data = request.get_json(force=True)
-    # print(data)
-    page_index = data["page_index"]
-    page_size = data["page_size"]
+    page_index, page_size = data["page_index"], data["page_size"]
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
@@ -893,19 +903,21 @@ def get_like():
         return jsonify({'code': 400, 'msg': 'Get likelist failed.', 'error_msg': str(e)})
 
 
+# like or cancel like of a movie
 def like_add_or_delete():
     data = request.get_json(force=True)
-    # print(data)
-    add_or_del = data["add_or_del"]
-    uid = data["uid"]
-    mid = data["mid"]
-    # check uid and mid
+    add_or_del, uid, mid = data["add_or_del"], data["uid"], data["mid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # cannot like a movie which is not released
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
 
     if add_or_del == "add":
         like_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
@@ -919,6 +931,7 @@ def like_add_or_delete():
             dislike_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Trans movie from dislike to like.'})
+
         try:
             mlid = getUniqueid()
             timeform = getTime()[0]
@@ -926,6 +939,7 @@ def like_add_or_delete():
             db.session.add(like)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
     elif add_or_del == "delete":
@@ -938,24 +952,26 @@ def like_add_or_delete():
             like_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+
     else:
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+# get movies which are disliked by the user
 def get_dislike():
     data = request.get_json(force=True)
-    # print(data)
-    page_index = data["page_index"]
-    page_size = data["page_size"]
+    page_index, page_size = data["page_index"], data["page_size"]
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     dislikelist = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.type == 1,
-                                           movielikeModel.active == 1).all()
+                                              movielikeModel.active == 1).all()
     if not dislikelist:
         return jsonify({'code': 200, 'msg': 'Dislikelist is empty'})
 
@@ -978,23 +994,27 @@ def get_dislike():
             result["list"] = res_list[start:]
 
         return jsonify({'code': 200, 'result': result})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Get dislikelist failed.', 'error_msg': str(e)})
 
 
+# dislike or cancel dislike of a movie
 def dislike_add_or_delete():
     data = request.get_json(force=True)
-    # print(data)
-    add_or_del = data["add_or_del"]
-    uid = data["uid"]
-    mid = data["mid"]
+    add_or_del, uid, mid = data["add_or_del"], data["uid"], data["mid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
+    # cannot dislike a movie which is not released
+    if movie.release_date:
+        if check_release(movie.release_date) == 0:
+            return jsonify({'code': 400, 'msg': 'This movie is not release'})
 
     if add_or_del == "add":
         dislike_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
@@ -1015,8 +1035,10 @@ def dislike_add_or_delete():
             db.session.add(dislike)
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Addition succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+
     elif add_or_del == "delete":
         dislike_movie = movielikeModel.query.filter(movielikeModel.uid == uid, movielikeModel.mid == mid,
                                                     movielikeModel.type == 1, movielikeModel.active == 1).first()
@@ -1027,22 +1049,25 @@ def dislike_add_or_delete():
             dislike_movie.utime = getTime()[0]
             db.session.commit()
             return jsonify({'code': 200, 'msg': 'Deletion succeed.'})
+
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Deletion failed.', 'error_msg': str(e)})
+
     else:
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+# get user's latest 20 view history
 def get_view_history():
     data = request.get_json(force=True)
-    # print(data)
     uid = data["uid"]
     # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
 
-    view_history = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.active == 1).order_by(viewhistoryModel.utime.desc()).all()
+    view_history = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.active == 1).order_by(
+                   viewhistoryModel.utime.desc()).all()
     if not view_history:
         return jsonify({'code': 200, 'msg': 'View history is empty'})
 
@@ -1065,16 +1090,15 @@ def get_view_history():
         return jsonify({'code': 400, 'msg': 'Get view history failed.', 'error_msg': str(e)})
 
 
+# add or delete view history
 def view_history_add_or_delete():
     data = request.get_json(force=True)
-    # print(data)
-    add_or_del = data["add_or_del"]
-    uid = data["uid"]
-    mid = data["mid"]
+    add_or_del, uid, mid = data["add_or_del"], data["uid"], data["mid"]
     # check uid and mid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
+
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist'})
@@ -1097,6 +1121,7 @@ def view_history_add_or_delete():
             return jsonify({'code': 200, 'msg': 'Addition succeed.'})
         except Exception as e:
             return jsonify({'code': 400, 'msg': 'Addition failed.', 'error_msg': str(e)})
+
     elif add_or_del == "delete":
         viewed_movie = viewhistoryModel.query.filter(viewhistoryModel.uid == uid, viewhistoryModel.mid == mid,
                                                      viewhistoryModel.active == 1).first()
@@ -1113,11 +1138,10 @@ def view_history_add_or_delete():
         return jsonify({'code': 400, 'msg': 'Invalid command.'})
 
 
+# clear view history
 def clear_view_history():
     data = request.get_json(force=True)
-    # print(data)
     uid = data["uid"]
-    # check uid
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist'})
@@ -1132,6 +1156,7 @@ def clear_view_history():
             v_m.utime = getTime()[0]
             db.session.commit()
         return jsonify({'code': 200, 'msg': 'View history clear succeed'})
+
     except Exception as e:
         return jsonify({'code': 400, 'msg': 'Clear View history failed.', 'error_msg': str(e)})
 
@@ -1242,7 +1267,7 @@ def like_review():
             return jsonify({'code': 400, 'msg': 'cancel like failed.'})
 
 
-# fucntion of display movie review details, includes the userReview for it
+# function of display movie review details, includes the userReview for it
 def res_movieReview_detail(movieReview, mainUser):
     result = {}
     uid = movieReview.uid
@@ -1356,15 +1381,14 @@ def res_movieReview_detail_spf(movieReview):
     return result
 
 
-# # display all movie Reviews user post before
+# display all movie Reviews user post before
 def display_usersMovieReview():
     data = request.get_json(force=True)
     uid = data["uid"]
     page_index = data["page_index"]
     page_size = data["page_size"]
     movieReviews = movieReviewModel.query.filter(movieReviewModel.uid == uid, movieReviewModel.active == 1)\
-        .order_by(movieReviewModel.utime.desc())\
-        .all()
+        .order_by(movieReviewModel.utime.desc()).all()
 
     try:
         movieReviews_list = []
@@ -1437,23 +1461,21 @@ def delete_userReview():
         return jsonify({'code': 400, 'msg': 'delete userReview failure', 'error_msg': str(e)})
 
 
+# create a movielist with title
 def create_movielist():
     data = request.get_json(force=True)
-    title = data["title"]
+    uid, mid, title, description = data["uid"], data["mid"], data["title"], data["description"]
     if not title:
         return jsonify({'code': 400, 'msg': 'Empty title.'})
 
-    uid = data["uid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
 
-    mid = data["mid"]
     if mid:
         movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
         if not movie:
             return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
-    description = data["description"]
 
     try:
         molid = getUniqueid()
@@ -1468,20 +1490,18 @@ def create_movielist():
         return jsonify({'code': 400, 'msg': 'Create movie list failed', 'error_msg': str(e)})
 
 
+# edit movie list title or description
 def edit_movielist():
     data = request.get_json(force=True)
-    uid = data["uid"]
+    uid, molid, title, description = data["uid"], data["molid"], data["title"], data["description"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    molid = data["molid"]
     movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid, movielistModel.active == 1).first()
     if not movie_list:
         return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
 
-    title = data["title"]
-    description = data["description"]
     if not title and not description:
         return jsonify({'code': 400, 'msg': 'Please enter a content.'})
 
@@ -1500,14 +1520,14 @@ def edit_movielist():
         return jsonify({'code': 400, 'msg': 'Edit movie list failed', 'error_msg': str(e)})
 
 
+# delete a movie list which is created by this user
 def delete_movielist():
     data = request.get_json(force=True)
-    uid = data["uid"]
+    uid, molid = data["uid"], data["molid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    molid = data["molid"]
     movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
                                              movielistModel.active == 1).first()
     if not movie_list:
@@ -1524,20 +1544,19 @@ def delete_movielist():
         return jsonify({'code': 400, 'msg': 'Delete movie list failed', 'error_msg': str(e)})
 
 
+# add a movie to this movie list
 def add_movie_to_movielist():
     data = request.get_json(force=True)
-    uid = data["uid"]
+    uid, molid, mid = data["uid"], data["molid"], data["mid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    molid = data["molid"]
     movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
                                              movielistModel.active == 1).first()
     if not movie_list:
         return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
 
-    mid = data["mid"]
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
@@ -1564,20 +1583,19 @@ def add_movie_to_movielist():
         return jsonify({'code': 400, 'msg': 'Add movie failed', 'error_msg': str(e)})
 
 
+# delete movie from this movie list
 def delete_movie_from_movielist():
     data = request.get_json(force=True)
-    uid = data["uid"]
+    uid, molid, mid = data["uid"], data["molid"], data["mid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    molid = data["molid"]
     movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.uid == uid,
                                              movielistModel.active == 1).first()
     if not movie_list:
         return jsonify({'code': 400, 'msg': 'The user does not have this movie list.'})
 
-    mid = data["mid"]
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
@@ -1600,6 +1618,7 @@ def delete_movie_from_movielist():
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
 
+# get movie lists which created by this user in user profile page
 def get_movielists():
     data = request.get_json(force=True)
     uid = data["uid"]
@@ -1613,7 +1632,6 @@ def get_movielists():
 
     try:
         result_list = []
-        # print(movie_lists)
         for ml in movie_lists:
             cover_image = None
             if ml.mid:
@@ -1631,29 +1649,24 @@ def get_movielists():
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
 
-# get movies from movielists
+# get movies from this movie list
 def get_movies_in_movielist():
     data = request.get_json(force=True)
-    page_index = data["page_index"]
-    page_size = data["page_size"]
-
-    uid = data["uid"]
+    page_index, page_size = data["page_index"], data["page_size"]
+    uid, molid = data["uid"], data["molid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    molid = data["molid"]
     movie_list = movielistModel.query.filter(movielistModel.molid == molid, movielistModel.active == 1).first()
     if not movie_list:
         return jsonify({'code': 400, 'msg': 'Movie list does not exist.'})
-
     if not movie_list.mid:
         return jsonify({'code': 200, 'msg': "Empty movie list."})
 
     creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
     if not creator:
         return jsonify({'code': 400, 'msg': 'Creator does not exist.'})
-
 
     try:
         creator_info = {"uid": creator.uid, "username": creator.username}
@@ -1679,6 +1692,7 @@ def get_movies_in_movielist():
         return jsonify({'code': 400, 'msg': 'Get movies in movie list failed.', 'error_msg': str(e)})
 
 
+# get 4 latest movie lists in home page
 def get_latest_movielists():
     data = request.get_json(force=True)
     uid = data["uid"]
@@ -1695,7 +1709,6 @@ def get_latest_movielists():
         if len(nonempty_movielists) > 4:
             latest_movielists = nonempty_movielists[:4]
         result_list = []
-        # print(movie_lists)
         for ml in latest_movielists:
             cover_image = None
             if ml.mid:
@@ -1712,22 +1725,22 @@ def get_latest_movielists():
         return jsonify({'code': 400, 'msg': 'Delete movie failed', 'error_msg': str(e)})
 
 
+# get movie lists which contain this movie in movie detail page.
 def get_movielists_in_mdp():
     data = request.get_json(force=True)
-    uid = data["uid"]
+    uid, mid = data["uid"], data["mid"]
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return jsonify({'code': 400, 'msg': 'User does not exist.'})
 
-    mid = data["mid"]
     movie = MoviesModel.query.filter(MoviesModel.mid == mid, MoviesModel.active == 1).first()
     if not movie:
         return jsonify({'code': 400, 'msg': 'Movie does not exist.'})
 
     nonempty_movielists = movielistModel.query.filter(movielistModel.active == 1, movielistModel.mid != "").order_by(
-        desc(movielistModel.utime)).all()
+                          desc(movielistModel.utime)).all()
     if not nonempty_movielists:
-        return jsonify({'code': 400, 'msg': 'There is no movie list.'})
+        return jsonify({'code': 200, 'msg': 'No movie list has this movie.'})
 
     try:
         latest_movielists = nonempty_movielists
@@ -1742,10 +1755,12 @@ def get_movielists_in_mdp():
                     cover_image = latest_movie.coverimage
                 ml_dict = {"molid": ml.molid, "title": ml.title, "description": ml.description, "cover_image": cover_image}
                 result_list.append(ml_dict)
+                # get 4 movie lists at most
                 if len(result_list) == 4:
                     break
         if len(result_list) == 0:
             return jsonify({'code': 200, 'msg': "No movie list has this movie."})
+
         result = {"count": len(result_list), "result_list": result_list}
         return jsonify({'code': 200, 'result': result})
 

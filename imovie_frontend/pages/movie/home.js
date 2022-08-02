@@ -48,7 +48,7 @@ const Home = ({USERMESSAGE}) => {
                 let  childList = [];
                 if(mlist){
                     changeRecentMoviesListCount(result.count);
-                    for(let i = 0 ; i < (mlist.length >= 16 ? 14 : mlist.length) ; i++){
+                    for(let i = 0 ; i < mlist.length ; i++){
                         childList.push(mlist[i]);
                         if(i % 4 === 3){
                             _list.push(childList);

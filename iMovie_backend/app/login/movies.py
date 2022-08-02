@@ -1671,7 +1671,7 @@ def get_movies_in_movielist():
     if not movie_list.mid:
         return jsonify({'code': 200, 'msg': "Empty movie list."})
 
-    creator = UserModel.query.filter(UserModel.uid == movielistModel.uid).first()
+    creator = UserModel.query.filter(UserModel.uid == movie_list.uid).first()
     if not creator:
         return jsonify({'code': 400, 'msg': 'Creator does not exist.'})
 

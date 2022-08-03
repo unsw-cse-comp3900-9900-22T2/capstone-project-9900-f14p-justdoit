@@ -99,10 +99,12 @@ const Home = ({USERMESSAGE}) => {
                     if (result) {
                         console.log(result, '影单列表');
                         const length = (result.result_list || []).length;
-                        for(let i = 0 ; i < (4-length) ; i++){
-                            result.result_list.push({})
+                        if(length > 0){
+                            for(let i = 0 ; i < (4-length) ; i++){
+                                result.result_list.push({})
+                            }
+                            setMovieList(result.result_list)
                         }
-                        setMovieList(result.result_list)
                     }
                 }
             }).catch(err => {

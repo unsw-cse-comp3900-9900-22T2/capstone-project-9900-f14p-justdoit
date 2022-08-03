@@ -548,7 +548,12 @@ const Detail = ({USERMESSAGE, initQuery}) => {
             }).then(res => {
                 if (res.code === 200) {
                     if (res.hasOwnProperty("result")) {
-                        if (res.result.result_list) {
+                        if (res.result && res.result.result_list
+                            && res.result.result_list.length > 0) {
+                            const length = (res.result.result_list || []).length;
+                            for(let i = 0 ; i < (4-length) ; i++){
+                                res.result.result_list.push({})
+                            }
                             setRecommendedMovieList(res.result.result_list)
                         }
                     }

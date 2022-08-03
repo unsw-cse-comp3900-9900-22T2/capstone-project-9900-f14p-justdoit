@@ -414,7 +414,13 @@ const Detail = ({USERMESSAGE, initQuery}) => {
             default:
                 name = ""
         }
-        const _avg = sumRateNumber && ((rateNumber / sumRateNumber) * 100) || 0;
+        let _avg = sumRateNumber && ((rateNumber / sumRateNumber) * 100) || 0;
+        const _avg_str_list = (_avg + "").split(".");
+        if(_avg_str_list.length > 1 && _avg_str_list[1].length > 2){
+            const _avg_str_list_right = _avg_str_list[1].split("");
+            const _avg_ = ((_avg_str_list_right[0] + _avg_str_list_right[1] + _avg_str_list_right[2]) / 1000).toFixed(2);
+            _avg = _avg_str_list[0] * 1 + _avg_ * 1;
+        }
         if (rateNumber === 0 || rateNumber === 1) {
             return rateNumber + " " + name + " rating (" + _avg + "%)"
         }

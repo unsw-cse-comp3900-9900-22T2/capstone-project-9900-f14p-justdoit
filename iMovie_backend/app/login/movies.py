@@ -1349,8 +1349,6 @@ def display_movieReview():
     movieReview_list = []
     result = {}
     count = 0
-    print("here")
-    print("main user: ", user.username)
     for m in movieReview:  # movies: [movies0, movies[1]....]
         b_name = (UserModel.query.filter(UserModel.uid == m.uid, UserModel.active == 1).first()).username
         print("block user: ", b_name)

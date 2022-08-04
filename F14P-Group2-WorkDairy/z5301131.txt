@@ -47,4 +47,12 @@ Had a meeting and prepared for sprint3 with group members.
 Week 9
 
 Wrote the functions of movie lists in sprint3.
+----------------------------------------------------------------------------------------------------
+Week 10
+
+Installed the virtual environment of Linux and tested the project on it. Worked well!
+Tested all functions between frontend and backend.
+Drew the ER diagram.
+Wrote the final report.
+Prepared for the final demo and presentation.
  

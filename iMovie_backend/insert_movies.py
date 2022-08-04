@@ -6,8 +6,8 @@ from builtins import int
 
 import random
 import time
-# conn = pymysql.connect(host='localhost',user='root',passwd='qwer1234',db="imovie")
-conn = pymysql.connect(host='rm-bp16q3qua05mfx407lo.mysql.rds.aliyuncs.com',user='root',passwd='1234@qwer!',db="imovie")
+conn = pymysql.connect(host='localhost',user='root',passwd='1234',db="imovie")
+# conn = pymysql.connect(host='rm-bp16q3qua05mfx407lo.mysql.rds.aliyuncs.com',user='root',passwd='1234@qwer!',db="imovie")
 # sql = 'select * from movies'
 # conn.ping(reconnect=True)  # reconnecting mysql
 cur = conn.cursor()

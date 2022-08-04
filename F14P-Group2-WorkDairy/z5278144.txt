@@ -72,3 +72,12 @@ Week 9
 
 Wrote the frontend pages of movie lists in sprint3.
 Wrote the frontend pages of blocklist in [sprint3
+
+----------------------------------------------------------------------------------------------------
+week 10
+
+check leader's Lubuntu virtual machine startup steps
+Prepare final demo
+Test system Fix bugs in the system
+set up some users information for presetation
+write some part of 9900 submission document

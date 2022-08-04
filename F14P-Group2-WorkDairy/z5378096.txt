@@ -56,4 +56,44 @@ Week5
 
 write date: 27/06/2022
 
+* Week5 done
+1. done the sprint 1 plan
+
+
+* Week6 plan:
+1. start sprint2
+2. fill the browse by function
+3. design the api for search funciton
+
+
+* Week6 done
+1. done the api for searching includes directores, actors or films
+2. done the api for browse by according to different countries, years and language
+
+
+
+* Week7 plan:
+1. design comment
+
+
+* Week7 done:
+1. done the comment api
+2. display comments on user profile
 -----------------------------------------------------------------------------------------
+
+Week 8 plan:
+
+Finished all the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+
+Week 8 done:
+
+Finished all the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+-------------------------------------------------------------
+Week 9 plan:
+
+start the sprint3. finish the api for insert_movie,  block, unblock,follow and unfollow
+------------------------------------------------------------------

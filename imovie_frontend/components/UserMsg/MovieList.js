@@ -125,6 +125,9 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
 
     //查询影单详情列表
     const getMoviesListDetails = (molid) => {
+        setMovieListDetail([]);
+        setListDescription("");
+        setListDescriptionFlag(true);
         getMoviesInList({
             page_index: pages.pages_index,
             page_size: pages.pages_size,
@@ -135,10 +138,21 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             if (res.code === 200) {
                 if (res.hasOwnProperty("result")) {
                     if (res.result.result_list) {
-                        setMovieListDetail(res.result.result_list)
+                        setMovieListDetail(res.result.result_list);
+                        setListDescription(res.result.description || null)
+
+                    }else{
+                        setMovieListDetail([]);
+                        setListDescription(null)
                     }
+                }else{
+                    setMovieListDetail([]);
+                    setListDescription(null)
                 }
 
+            }else{
+                setMovieListDetail([]);
+                setListDescription(null)
             }
         })
     }
@@ -233,7 +247,11 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             ?
             <div className="watchListComponent">
                 <div className={"title-box"}>
-                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() => setShowModel(true)}>+
+                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() =>{
+                        setShowModel(true);
+                        setListDescription("");
+                        setListName("");
+                    }}>+
                         Create</Button></p>
                 </div>
                 <div className={"imgBox"}>
@@ -297,14 +315,19 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
 
                                                        }}/>
                                     </div>
-                                    {listDescriptionFlag ? <div style={{cursor: 'pointer'}}
+                                    {listDescriptionFlag && (!!listDescription || listDescription === "") ? <div style={{cursor: 'pointer',
+                                            lineHeight: "initial",
+                                            wordBreak: "break-word",
+                                            marginTop: "20px"}}
                                                                 onClick={() => setListDescriptionFlag(false)}>{item.description}</div> :
                                         <TextArea autoSize={{maxRows: 2}}
                                             //   width={400}
+
+                                                  maxLength={250} showCount={true}
                                                   style={{width: 400}}
                                                   allowClear value={listDescription}
                                                   onChange={e => setListDescription(e.target.value)}
-                                                  placeholder={item.description}
+                                                  placeholder={item.description || "Please enter this movie list description"}
                                                   onKeyDown={e => {
                                                       if (e.key === 'Enter') {
                                                           editMovieList(item.molid)

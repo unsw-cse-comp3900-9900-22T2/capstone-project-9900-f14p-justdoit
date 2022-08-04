@@ -96,8 +96,9 @@ def init_app(app: Flask):
                                 username = user.username
                                 moviename = i.moviename
                                 check_email_send = recentmovieModel.query.filter(recentmovieModel.uid == j.uid,
-                                                                                 recentmovieModel.mid == i.mid).count()
-                                if check_email_send == 0:
+                                                                                 recentmovieModel.mid == j.mid).all()
+                                # print(len(check_email_send))
+                                if not check_email_send:
 
                                     msg = Message('Only Movie', recipients=[user.email])
                                     msg.body = 'Dear ' + str(username) + ',\n' \
@@ -106,14 +107,15 @@ def init_app(app: Flask):
                                                      "Thank you for your attention.\n" \
                                                      "The OnlyMovie Team.\n"
                                     try:
-
-                                        sender.send(msg)
                                         time_form = getTime()[0]
                                         count = 1
-                                        recent_new = recentmovieModel(uid=j.uid, mid=i.mid, count=count, ctime=time_form,
+                                        recent_new = recentmovieModel(uid=j.uid, mid=j.mid, count=count,
+                                                                      ctime=time_form,
                                                                       utime=time_form)
                                         db.session.add(recent_new)
                                         db.session.commit()
+                                        sender.send(msg)
+
                                     except Exception as e:
                                         continue
         return jsonify({'code': 200, 'msg': 'sent email succesfully'})

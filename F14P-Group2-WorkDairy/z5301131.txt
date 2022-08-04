@@ -23,3 +23,36 @@ Week 4
 Set environment successfully and started to write code.
 Finish the functions of get, add, delete and clear movies from wishlist.
 Finish the test of these functions between frontend and backend.
+----------------------------------------------------------------------------------------------------
+Week 5
+
+Tested project sprint1.
+Prepared for demo A.
+Had a meeting and prepared for sprint2 with group members.
+----------------------------------------------------------------------------------------------------
+Week 7
+
+Finished and tested the functions of get, add and delete movies in watchlist.
+Finished and tested the functions of move movies from wishlist to watchlist with one-click.
+Finished and tested the functions of get, add and delete movies in like and dislike lists.
+Finished and tested the functions of get and add movie view history.
+Tested these functions between frontend and backend with Xin Qiu.
+----------------------------------------------------------------------------------------------------
+Week 8
+
+Finished the the test of all functions in sprint2 between frontend and backend.
+Prepared for the demo B.
+Had a meeting and prepared for sprint3 with group members.
+----------------------------------------------------------------------------------------------------
+Week 9
+
+Wrote the functions of movie lists in sprint3.
+----------------------------------------------------------------------------------------------------
+Week 10
+
+Installed the virtual environment of Linux and tested the project on it. Worked well!
+Tested all functions between frontend and backend.
+Drew the ER diagram.
+Wrote the final report.
+Prepared for the final demo and presentation.
+ 

@@ -44,3 +44,40 @@ Week 4
 2. Organize the movie database, filter and replace the wrong movie data, and improve the movie information with missing information
 
 write date: 24/06/2022
+----------------------------------------------------------------------------------------------------
+
+Week 5
+
+Tested project sprint1.
+Prepared for demo A.
+Had a meeting and prepared for sprint2 with group members.
+----------------------------------------------------------------------------------------------------
+
+Week 7
+
+Finished frontend pages and finally tested the functions of get, add and delete movies in watchlist.
+Finished frontend pages and finally tested the functions of move movies from wishlist to watchlist with one-click.
+Finished frontend pages and finally tested the functions of get, add and delete movies in like and dislike lists.
+Finished frontend pages and finally tested the functions of get and add movie view history.
+Tested these functions between frontend and backend with Yaxin Su.
+----------------------------------------------------------------------------------------------------
+Week 8
+
+Completed the test of all functions of the front and back ends in sprint2.
+Confirm that the logic between watchlist and wishlist proposed by the teacher after the first demo display has been modified (guaranteed mutual exclusion)
+Prepare for presentation B.
+Meet with team members and prepare for sprint3.
+----------------------------------------------------------------------------------------------------
+Week 9
+
+Wrote the frontend pages of movie lists in sprint3.
+Wrote the frontend pages of blocklist in [sprint3
+
+----------------------------------------------------------------------------------------------------
+week 10
+
+check leader's Lubuntu virtual machine startup steps
+Prepare final demo
+Test system Fix bugs in the system
+set up some users information for presetation
+write some part of 9900 submission document

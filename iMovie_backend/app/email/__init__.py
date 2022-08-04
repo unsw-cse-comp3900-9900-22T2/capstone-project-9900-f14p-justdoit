@@ -7,18 +7,18 @@ from app.models import *
 
 def init_app(app: Flask):
 
-    #放在config文件没config成功，先写在这
+
     #0
     app.config['MAIL_SERVER'] = 'smtp.qq.com'
     app.config['MAIL_PORT'] = 465
     app.config['MAIL_USERNAME'] = '1191367164@qq.com'
-    app.config['MAIL_PASSWORD'] = 'dzhkerjqqedkjbcf'        #smtp修改后的code
+    app.config['MAIL_PASSWORD'] = 'dzhkerjqqedkjbcf'
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     app.config['MAIL_DEFAULT_SENDER'] = '1191367164@qq.com'
     #sent email
-    def send_email():     #不知道怎么在view funct 中传入参数 app 和 captcha， 才放在这
-        verifycode = create_verifycode(4)  # 生成随机4位验证码
+    def send_email():
+        verifycode = create_verifycode(4)
         receiver = request.json.get('email')
         sender = Mail(app)
         # mail ： https://temp-mail.org/en/

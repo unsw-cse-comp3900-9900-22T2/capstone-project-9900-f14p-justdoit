@@ -155,15 +155,15 @@ def check_email():
 
 
 def get_user_detail():
-    #前端给的
+
     data = request.get_json(force=True)
     uid = data["uid"]
-    # 数据库找判断
+
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    # 判断
+
     if not user:
         return jsonify({'code': 400, 'msg': 'User is not defined'})
-    # 给 backend
+
     result = {}
     result["username"] = user.username
     result["email"] = user.email
@@ -171,27 +171,6 @@ def get_user_detail():
     result["following_count"] = followModel.query.filter(and_(followModel.uid == uid, followModel.active == 1)).count()
     result["followers_count"] = followModel.query.filter(and_(followModel.fuid == uid, followModel.active == 1)).count()
     return jsonify({'code': 200, "result": result})
-
-
-# def send_email():
-#     email = request.json.get('email')
-#     user = UserModel.query.filter(UserModel.email == email, UserModel.active == 1).first()
-#     if not user:
-#         return jsonify({'code': 400, 'msg': 'This email is not defined'})
-#     verifycode = create_verifycode(4)
-    # send email
-
-    # save verifycode to sql
-    # try:
-    #     user.verifycode = verifycode
-    #     user.utime = getTime()[0]
-    #     db.session.commit()
-    #     msg = "Verification code sent successfully, your Verification code is %(verifycode)s" %{"verifycode":verifycode}
-    #     return jsonify({'code': 200, 'msg': msg})
-    # except Exception as e:
-    #     return jsonify({'code': 400, 'msg': 'Verification code send failure, please try again', 'error_msg': str(e)})
-
-
 
 
 def change_password():
@@ -247,9 +226,9 @@ def modify_user_detail():
     username = data["username"]
     description = data["description"]
     #
-    #数据库找判断
+
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
-    # 判断
+
 
     if not user:
         return jsonify({'code': 400, 'msg': 'User is not defined'})
@@ -269,7 +248,7 @@ def modify_user_detail():
             return jsonify({'code': 400, 'msg': 'Your username is too short.'})
         if not validateUsername(username):
             return jsonify({'code': 400, 'msg': 'Your username is not follow the rule.'})
-    # # 给 backend
+
     try:
         time_form = getTime()[0]
         user.username = username

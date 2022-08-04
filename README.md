@@ -75,3 +75,4 @@ USERNAME = 'root'\
 PASSWORD = '1234@qwer!'\
 PORT = '3306'\
 DATABASE = 'imovie'
+

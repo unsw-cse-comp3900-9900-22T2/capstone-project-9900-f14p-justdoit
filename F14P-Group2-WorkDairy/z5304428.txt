@@ -75,5 +75,16 @@ On weekends, I finished the Retrospective B report.
 write data: 22/07/2022
 
 -----------------------------------------------------------------------------------------
+week9
 
+Held a meeting with other group members. This week, we have basically completed the project. We are ready to prepare for our final demonstration. In this week, I kept fixing bugs showing up in some modules, and made it work as expected. Also start to test of all functions in the system and fix the bugs. In addition, I have finished the software architecture and Third-Party Functionalities parts in the final report. Moreover, the "Data Model" part in the report is updated. Eventually, I proofread the whole report.
 
+write data: 29/07/2022
+
+-----------------------------------------------------------------------------------------
+week10
+This is last week, so we mainly test our function. Configure the Lubuntu virtual machine to start to our project. Prepare for our final demonstration and test our system. Rehearse the speech process with the team members several time in advance. Finish the final report. 
+
+write data: 04/08/2022
+
+-----------------------------------------------------------------------------------------

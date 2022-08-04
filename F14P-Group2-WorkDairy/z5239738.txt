@@ -119,8 +119,9 @@ write date: 17/07/2022
 Week8
 
 * Week8 done work:
-1. test sprint2 function
-2. demoB
+1. test sprint2 function and fix the bug
+2. Demo B preparation exercise
+3. fix some issue that tutor told us
 
 * Week9 plan:
 1.create visitor account limit some functions. backend and frontend
@@ -133,3 +134,40 @@ Week8
 write date: 25/07/2022
 
 -----------------------------------------------------------------------------------------
+Week9
+
+* Week9 done work:
+
+1.create visitor account limit some functions. backend and frontend
+2.insert movie (admin user) frontend
+3.popular movies backend and frontend
+4. following user frontend
+5. recent movie notice to users backend and frontend
+
+* Week10 plan:
+
+1.Lubuntu virtual machine startup project and write relevant reports
+2.Prepare final demo
+3.Test system Fix bugs in the system
+4. Write readme.txt document
+5. Sort out 9900 final submission materials
+
+
+write date: 30/07/2022
+
+-----------------------------------------------------------------------------------------
+Week10
+
+* Week10 done work:
+
+1.Lubuntu virtual machine startup project and write relevant reports
+2.Prepare final demo
+3.Test system Fix bugs in the system
+4. Write readme.txt document
+5. Sort out 9900 final submission materials
+
+
+write date: 4/08/2022
+
+-----------------------------------------------------------------------------------------
+

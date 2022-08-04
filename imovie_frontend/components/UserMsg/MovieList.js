@@ -247,7 +247,11 @@ const MovieListComponent = ({uid, isMySelf, loginUid, USERMESSAGE}) => {
             ?
             <div className="watchListComponent">
                 <div className={"title-box"}>
-                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() => setShowModel(true)}>+
+                    <p className="title">Movie List&nbsp;&nbsp;&nbsp;<Button onClick={() =>{
+                        setShowModel(true);
+                        setListDescription("");
+                        setListName("");
+                    }}>+
                         Create</Button></p>
                 </div>
                 <div className={"imgBox"}>

@@ -11,6 +11,7 @@ def init_db(app):
     migrate.init_app(app, db)
     return db
 
+
 # users
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -30,6 +31,7 @@ class UserModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 # movies
 class MoviesModel(db.Model):
@@ -59,7 +61,7 @@ class MoviesModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
+## 去掉
 class GenreModel(db.Model):
     __tablename__ = 'genre'
 
@@ -127,7 +129,6 @@ class userReviewModel(db.Model):
         db.session.commit()
 
 
-
 class movielikeModel(db.Model):
     __tablename__ = 'movielike'
 
@@ -161,6 +162,7 @@ class reviewlikeModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class wishWatchModel(db.Model):
     __tablename__ = 'wishWatch'
 
@@ -177,13 +179,14 @@ class wishWatchModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class movielistModel(db.Model):
     __tablename__ = 'movielist'
 
     id = db.Column(db.Integer, primary_key=True)
-    molid  = db.Column(db.String(256), unique=True, nullable=False)
+    molid = db.Column(db.String(256), unique=True, nullable=False)
     uid = db.Column(db.String(256), nullable=False)  # users.uid
-    mid = db.Column(db.String(256), nullable=False)  # movies.uid
+    mid = db.Column(db.String(256))  # movies.mid
     title = db.Column(db.String(256), nullable=False)
     description = db.Column(db.TEXT)
     # public = db.Column(db.Integer, nullable=False, default=1) # 0:not public,  1: public
@@ -194,6 +197,7 @@ class movielistModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 class viewhistoryModel(db.Model):
     __tablename__ = 'viewHistory'
@@ -228,7 +232,6 @@ class blocklistModel(db.Model):
         db.session.commit()
 
 
-
 class followModel(db.Model):
     __tablename__ = 'follow'
 
@@ -251,6 +254,21 @@ class verifycodeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(256), nullable=False)  # users.uid (follow)
     verifycode = db.Column(db.String(256), nullable=False)  # users.uid (be followed)
+    ctime = db.Column(db.DateTime, nullable=False)  # create time
+    utime = db.Column(db.DateTime, nullable=False)  # update time
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+class recentmovieModel(db.Model):
+    __tablename__ = 'recentmovie'
+
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String(256), nullable=False)  # users.uid
+    mid = db.Column(db.String(256), nullable=False)  #
+    count = db.Column(db.Integer) #
     ctime = db.Column(db.DateTime, nullable=False)  # create time
     utime = db.Column(db.DateTime, nullable=False)  # update time
 

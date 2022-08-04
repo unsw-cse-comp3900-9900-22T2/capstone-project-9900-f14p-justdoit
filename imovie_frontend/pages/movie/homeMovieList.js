@@ -131,7 +131,7 @@ const similarMovie = ({USERMESSAGE,queryForBrowseBy,listType}) => {
               }
               <div className={"imgBox"}>
                 {page.total > 0 && imgList && imgList.map((item,index)=>{
-                  return <ImageDomComponent
+                  return <ImageDomComponent                    
                     item={item}
                     index={index}
                     isLogin={!!USERMESSAGE && !!USERMESSAGE.uid && !isVisitor(USERMESSAGE)}

@@ -7,6 +7,37 @@
     font-size: 20px;
     font-weight: bold;
   }
+  .echarts-dom{
+    width:100%;
+    display: flex;
+    margin-top:10px;
+    align-items: baseline;
+    position:relative;
+    .start-position{
+      color:#999;
+      position: absolute;
+      bottom: 5.5px;
+      right: -76px;
+      .start-position-item{
+        margin-right : 2px;
+      }
+    }
+    .rate-list-dom{
+       .rate-list-size{
+          background: #666;
+          border-top-left-radius: 2px;
+          border-top-right-radius: 2px;
+          cursor:pointer;
+       }
+      h4{
+        font-size: 12px;
+        color:#999;
+        margin-top:5px;
+        text-align: center;
+        cursor:pointer;
+      }
+    }
+  }
   .href_broswe_by{
     cursor:pointer;
     text-decoration: underline;
@@ -26,7 +57,7 @@
     width:100%;
     position: relative;
     .movie-msg-box-left{
-      width: 20%;
+      width: 25%;
       .movie-logo{
         width : 100%;
         background-size: cover;
@@ -50,6 +81,13 @@
           }
         }
       }
+      .ratings-box{
+        margin-top: 10px;
+        .rating-title{
+          font-size: 15px;
+          font-weight: bold;
+        }
+      }
       .rating{
         display: flex;
         align-items: center;
@@ -68,8 +106,9 @@
       }
     }
     .movie-msg-box-right{
-      width : 75%;
+      width : 70%;
       margin-left: 5%;
+      padding-right: 308px;
       .movie-message-body{
         width:100%;
         margin-bottom: 10px;
@@ -237,4 +276,48 @@
       }
     }
   }
+
 }
+.imgBox-detail-home{
+   position: relative;
+   width: 80%;
+   margin : 0 auto 40px auto;
+   display: flex;
+   justify-content: space-between;
+   .empty_box_for_image{
+     width: 23%;
+     position: relative;
+     overflow: hidden;
+     display: flex;
+     &:after {
+       content: "";
+       padding-top: 150%;
+     }
+   }
+   .img-background-box{
+     width: 23%;
+     position: relative;
+     overflow: hidden;
+     h6 {
+       font-size: 14px;
+       margin: 0;
+       color: #666;
+       text-decoration: underline;
+       cursor: pointer;
+       white-space: nowrap;
+       overflow: hidden;
+       text-overflow: ellipsis;
+     }
+     .img-background{
+       width: 100%;
+       background-size: cover;
+       background-repeat: no-repeat;
+       background-position: 50%;
+       display: flex;
+       &:after {
+         content: "";
+         padding-top: 150%;
+       }
+     }
+   }
+ }

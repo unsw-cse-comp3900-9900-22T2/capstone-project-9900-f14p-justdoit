@@ -2,10 +2,10 @@ import PageBase from '../basePage'
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, message, Avatar } from "antd";
 const {TabPane} = Tabs;
-import {getUserDetail} from "../MockData";
+import {getUserDetail,followOrNot,checkFollow,checkBlock,blockOrNot} from "../MockData";
 import userMsgStyle from "./userMsg.less";
 import { UserOutlined ,LikeOutlined ,DislikeOutlined,
-  HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined} from "@ant-design/icons";
+  HistoryOutlined,EyeOutlined,PlaySquareOutlined,HeartOutlined,HighlightOutlined,FrownOutlined} from "@ant-design/icons";
 import {delCookie, isVisitor} from "../../util/common";
 import EditMsgComponent from "../../components/UserMsg/EditMsg"
 import WishListComponent from "../../components/UserMsg/WishList"
@@ -13,8 +13,11 @@ import ReviewsComponent from "../../components/UserMsg/Review"
 import WatchListComponent from "../../components/UserMsg/WatchList"
 // 改了这
 import HisToryComponent from "../../components/UserMsg/HisTory"
+import MovieListComponent from "../../components/UserMsg/MovieList"
 import DisLikeComponent from "../../components/UserMsg/DisLike"
 import LiKeComponent from "../../components/UserMsg/LiKe"
+import FollowComponent from "../../components/UserMsg/Follow"
+import BlockComponent from "../../components/UserMsg/Block"
 import {addHref} from "../../util/common";
 import { Base64 } from "js-base64";
 const UserMsg = ({USERMESSAGE,initQuery}) => {
@@ -28,6 +31,9 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     username : ""
   });
   const [showDom,changeShowDom] = useState(false);
+  const [isFollow,changeIsFollow] = useState(false);
+  const [isBlock,changeIsBlock] = useState(false);
+  const followerRef = useRef();
   const [tabList] = useState([{
      key : 1,
      value : "Wishlist",
@@ -38,15 +44,16 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     value : "Watchlist",
     icon : <EyeOutlined />
   },
-  // {
-  //   key : 3,
-  //   value : "movielist",
-  //   icon : <PlaySquareOutlined />
-  // },
+
   {
     key : 4,
     value : "History",
     icon : <HistoryOutlined />
+  },
+  {
+    key : 3,
+    value : "Movielist",
+    icon : <PlaySquareOutlined />
   },
   {
     key : 5,
@@ -57,10 +64,16 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
     key : 6,
     value : "Like",
     icon : <LikeOutlined />
-  },{
+  },
+  {
     key : 7,
     value : "Dislike",
     icon : <DislikeOutlined />
+  },
+  {
+    key : 8,
+    value : "Block",
+    icon : <FrownOutlined />
   }
   ])
   useEffect(()=>{
@@ -72,6 +85,25 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         addHref("uid","");
         if(!USERMESSAGE || isVisitor(USERMESSAGE)){
            window.location.href = "/movie/home"
+        }
+      }else{
+        if(!isVisitor(USERMESSAGE)){
+          checkFollow({
+              o_uid :initQuery.uid,
+              f_uid : (USERMESSAGE && USERMESSAGE.uid) || null
+          }).then(res => {
+            if(res.code === 200){
+              changeIsFollow(!!res.result);
+            }
+          })
+          checkBlock({
+            buid :initQuery.uid,
+            uid : (USERMESSAGE && USERMESSAGE.uid) || null
+        }).then(res => {
+          if(res.code === 200){
+            changeIsBlock(!!res.result);
+          }
+        })
         }
       }
       getUserDetail({
@@ -106,6 +138,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         return <WishListComponent uid={_uid} isMySelf={isMySelf}/>;
       case 2:
         return <WatchListComponent uid={_uid} isMySelf={isMySelf}/>;
+      case 3:
+        return <MovieListComponent uid={_uid} isMySelf={isMySelf} USERMESSAGE={USERMESSAGE}/>;
       case 4:
         return <HisToryComponent uid={_uid} isMySelf={isMySelf}/>;
       case 5:
@@ -114,6 +148,8 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         return <LiKeComponent uid={_uid} isMySelf={isMySelf}/>;
       case 7:
         return <DisLikeComponent uid={_uid} isMySelf={isMySelf}/>;
+      case 8:
+        return <BlockComponent uid={_uid} isMySelf={isMySelf} USERMESSAGE={USERMESSAGE} initQuery={initQuery}/>;  
       default:
         return <div>{item.key}</div>
     }
@@ -127,6 +163,33 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
         !showDom ? null :
           (
             !edit ?  <div className={"user-message-box"}>
+              {!initQuery.nouser &&
+                  <div className={"following-box"}>
+                 <div className={"following"}>
+                    <h6>{userMsg.followers_count || 0}</h6>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.followers_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWING",0);
+                        }}
+                        className={"border-none"}>FOLLOWING</h5>
+                 </div>
+                  <div className={"following"}>
+                    <h6>{userMsg.following_count || 0}</h6>
+                    <h5
+                        onClick={()=>{
+                          if((userMsg.following_count || 0) === 0){
+                            return;
+                          }
+                          followerRef && followerRef.current && followerRef.current.changeVisible &&
+                          followerRef.current.changeVisible(true,"FOLLOWERS",1);
+                        }}
+                    >FOLLOWERS</h5>
+                  </div>
+              </div>}
               {!initQuery.nouser && <div className="user-message-title">
                 <div className="user-logo">
                   <Avatar size={60}
@@ -142,7 +205,7 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                   <h6>
                     {userMsg.description}
                   </h6>
-                  {isMySelf &&
+                  {isMySelf && USERMESSAGE.role !== 1 &&
                   <div
                     onClick={()=>{
                       changeEdit(true)
@@ -150,6 +213,57 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
                     className={"edit"}>
                     EDIT PROFILE
                   </div>}
+                  {
+                    !isMySelf && !isVisitor(USERMESSAGE) &&
+                      <div
+                          onClick={()=>{
+                            followOrNot({
+                              o_uid : initQuery.uid,
+                              f_uid : USERMESSAGE && USERMESSAGE.uid || null,
+                              follow_status : !isFollow ? 1 : 0
+                            }).then(res => {
+                              if(res.code === 200){
+                                message.success((!isFollow ? "follow" : "cancel")
+                                    +" successfully")
+                                const _userMsg = _.cloneDeep(userMsg);
+                                if(!isFollow){
+                                  _userMsg.following_count =(_userMsg.following_count || 0) + 1;
+                                }else{
+                                  _userMsg.following_count =(_userMsg.following_count || 0) - 1;
+                                  _userMsg.following_count = _userMsg.following_count < 0 ? 0 : _userMsg.following_count;
+                                }
+                                changeUserMsg(_userMsg);
+                                changeIsFollow(!isFollow);
+                              }else{
+                                message.error((!isFollow ? "follow" : "cancel")
+                                    +" failed")
+                              }
+                            })
+                          }}
+                          className={!isFollow ? "follow-button" : "follow-button-cancel"}>{!isFollow ? "FOLLOW" : "CANCEL FOLLOW"}</div>
+                  }
+                  &nbsp;&nbsp;
+                  {
+                    !isMySelf && !isVisitor(USERMESSAGE) &&
+                      <div
+                          onClick={()=>{
+                            blockOrNot({
+                              b_uid : initQuery.uid,
+                              o_uid : USERMESSAGE && USERMESSAGE.uid || null,
+                              block_status : !isBlock ? 1 : 0
+                            }).then(res => {
+                              if(res.code === 200){
+                                message.success((!isBlock ? "block" : "cancel")
+                                    +" successfully")
+                                changeIsBlock(!isBlock);
+                              }else{
+                                message.error((!isBlock ? "block" : "cancel")
+                                    +" failed")
+                              }
+                            })
+                          }}
+                          className={!isBlock ? "follow-button" : "follow-button-cancel"}>{!isBlock ? "BLOCK" : "CANCEL BLOCK"}</div>
+                  }  
                 </div>
               </div>}
               <div className={"tab-pane-box"}>
@@ -194,13 +308,17 @@ const UserMsg = ({USERMESSAGE,initQuery}) => {
               }}/>
           )
       }
+      <FollowComponent followRef={followerRef}
+                       isMySelf={isMySelf}
+                       USERMESSAGE={USERMESSAGE} initQuery={initQuery}/>
+
     </PageBase>
   )
 }
 UserMsg.getInitialProps = async (status) => {
 
   const profile = status && status.query && status.query.profile;
-  const activeKey = status && status.query && status.query.activeKey <= 7 &&
+  const activeKey = status && status.query && status.query.activeKey <= 8 &&
     status.query.activeKey || "1";
   const nouser = status && status.query && status.query.nouser || null
   const uid = status && status.query && status.query.uid || null

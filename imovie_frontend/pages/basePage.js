@@ -4,7 +4,7 @@ import React from 'react'
 import basePageStyle from "./basePage.less"
 import {Select,Avatar,Popover,message} from "antd";
 const { Option } = Select;
-import { SearchOutlined,UserOutlined} from "@ant-design/icons";
+import { SearchOutlined,UserOutlined,PlusOutlined} from "@ant-design/icons";
 import DocunceSelectComponent from "../components/DounceSelect"
 import LoginComponent from "../components/Login"
 import RegesterComponent from "../components/Regester"
@@ -23,6 +23,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
     value : 3,
     name : "REGISTER",
     login : false,
+  },{
+      value : 6,
+      name : "ADD MOVIE",
+      href : "/movie/addMovie",
+      login : true,
+      icon : <PlusOutlined style={{marginRight : "5px"}}/>
   },{
     value : 1,
     name : "HOME",
@@ -109,12 +115,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
                   hasBorder : false,
                   href : "/movie/userMsg?activeKey=4&nouser=1"
               },
-              // {
-              //   key : 7,
-              //   value : "movie lists",
-              //   hasBorder : false,
-              //   href : "/movie/userMsg?activeKey=3&nouser=1"
-              // },
+              {
+                key : 7,
+                value : "Movielist",
+                hasBorder : false,
+                href : "/movie/userMsg?activeKey=3&nouser=1"
+              },
               {
                   key : 8,
                   value : "Review",
@@ -126,15 +132,22 @@ const Page = ({ router, children,USERMESSAGE }) => {
                   value : "Like",
                   hasBorder : false,
                   href : "/movie/userMsg?activeKey=6&nouser=1"
-              },{
+              },
+              {
                   key : 10,
                   value : "Dislike",
-                  hasBorder : true,
+                  hasBorder : false,
                   href : "/movie/userMsg?activeKey=7&nouser=1"
+              },
+              {
+                  key : 11,
+                  value : "Block",
+                  hasBorder : true,
+                  href : "/movie/userMsg?activeKey=8&nouser=1"
               }]]
       }
       changeUserTabList([...MSGList,...[{
-        key : 11,
+        key : 12,
         value : "Sigh Out",
         hasBorder : false
       }]])
@@ -157,10 +170,12 @@ const Page = ({ router, children,USERMESSAGE }) => {
     if(!!href){
       window.location.href = href;
     }
-    if(key === 11){
+    if(key === 12){
       delCookie('USER_MESSAGE');
       window.localStorage.removeItem("USER_MESSAGE_FOR_USER");
-      if((window.location.pathname || "").indexOf("/movie/userMsg") >= 0){
+      const _pathname = (window.location.pathname || "");
+      if(_pathname.indexOf("/movie/userMsg") >= 0 ||
+          _pathname.indexOf("/movie/addMovie") >= 0){
         window.location.href = "/movie/home"
       }else{
           window.location.reload();
@@ -187,6 +202,13 @@ const Page = ({ router, children,USERMESSAGE }) => {
                          if(!item.login){
                            return null;
                          }
+                         if(item.login && item.value === 6 && USERMESSAGE.role !== 1){
+                             return null
+                         }
+                       }else{
+                           if( item.value === 6 ){
+                               return null
+                           }
                        }
                        return <div
                          onMouseEnter={()=>{
@@ -204,6 +226,9 @@ const Page = ({ router, children,USERMESSAGE }) => {
                              (chooseTab === item.value ||
                              enterTab === item.value )&&
                              <div className={"tab-select-item-top-line"}/>
+                           }
+                           {
+                               item.icon
                            }
                          {item.name}
                        </div>

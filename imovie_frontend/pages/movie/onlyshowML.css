@@ -1,47 +1,42 @@
-.liKeComponent {
+.Center {
+  width: 80%;
+  margin: 20px auto;
+}
+.Center .watchListComponent {
   width: 100%;
-  margin-top: 20px;
   padding-bottom: 20px;
 }
-.liKeComponent .title-box {
+.Center .watchListComponent .title-box {
   display: flex;
   justify-content: space-between;
   height: 60px;
   border-bottom: 1px solid #ececec;
 }
-.liKeComponent .title-box .title {
+.Center .watchListComponent .title-box .title {
   font-size: 16px;
   color: #333;
   font-weight: bold;
   line-height: 60px;
   margin: 0;
 }
-.liKeComponent .title-box .operation {
+.Center .watchListComponent .des-box {
   display: flex;
+  justify-content: space-between;
+  height: 60px;
 }
-.liKeComponent .title-box .operation .operation-item {
-  font-size: 14px;
-  color: #1d39c4;
-  text-decoration: underline;
+.Center .watchListComponent .des-box .des {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
   line-height: 60px;
   margin: 0;
-  cursor: pointer;
 }
-.liKeComponent .title-box .operation .line {
-  width: 1px;
-  height: 20px;
-  margin: 20px 15px 0 15px;
-  background: #dcdcdc;
-}
-.liKeComponent .title-box .operation .select-operation .ant-select-selector {
-  margin-top: 14px;
-}
-.liKeComponent .list-detail-pagination {
+.Center .watchListComponent .list-detail-pagination {
   justify-content: center;
   display: flex;
   flex-wrap: wrap;
 }
-.liKeComponent .imgBox {
+.Center .watchListComponent .imgBox {
   position: relative;
   width: 100%;
   display: flex;
@@ -50,19 +45,19 @@
   margin: 40px auto 20px auto;
   /*overflow : hidden;*/
 }
-.liKeComponent .imgBox .swiper-image-list-item {
+.Center .watchListComponent .imgBox .swiper-image-list-item {
   margin-bottom: 20px;
 }
-.liKeComponent .empty {
+.Center .watchListComponent .empty {
   width: 100%;
   margin: 0 auto;
 }
-.liKeComponent .empty img {
+.Center .watchListComponent .empty img {
   display: block;
   width: 15%;
   margin: 10px auto 10px auto;
 }
-.liKeComponent .empty h5 {
+.Center .watchListComponent .empty h5 {
   text-align: center;
   font-size: 14px;
   color: #cdcdcd;

@@ -1,0 +1,96 @@
+.watchListComponent{
+    width : 100%;
+    margin-top:20px;
+    padding-bottom: 20px;
+    .search-movie{
+      width: 237px;
+      display: flex;
+      position: absolute;
+      right: 0;
+      top: 15px;
+      align-items: center;
+    }
+    .title-box{
+      display: flex;
+      justify-content: space-between;
+      height: 60px;
+      border-bottom: 1px solid #ececec;
+      .title{
+        font-size : 16px;
+        color:#333;
+        font-weight: bold;
+        line-height: 60px;
+        margin: 0;
+
+      }
+
+      .operation{
+        display: flex;
+        .operation-item{
+          font-size: 14px;
+          color: #1d39c4;
+          text-decoration: underline;
+          line-height: 60px;
+          margin: 0;
+          cursor:pointer;
+        }
+        .line{
+          width:1px;
+          height:20px;
+          margin : 20px 15px 0 15px;
+          background: #dcdcdc;
+        }
+        .select-operation{
+          .ant-select-selector{
+            margin-top: 14px;
+          }
+
+        }
+      }
+    }
+    .list-detail-pagination{
+      justify-content: center;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .imgBox{
+      position: relative;
+      //top:50px;
+      width : 100%;
+      display: flex;
+      /*justify-content: space-between;*/
+      flex-wrap: wrap;
+      margin: 40px auto 20px auto;
+      .swiper-image-list-item{
+        margin-bottom: 20px;
+      }
+
+      /*overflow : hidden;*/
+    }
+    .empty{
+        width : 100%;
+        margin:  0 auto;
+       img {
+          display: block;
+         width: 15%;
+         margin: 10px auto 10px auto;
+       }
+      h5{
+        text-align: center;
+        font-size: 14px;
+        color:#cdcdcd;
+      }
+    }
+  }
+.label_data_user_movie_list_mid_search {
+  h5{
+    font-size: 12px;
+    line-height: 30px;
+    color:#666;
+    margin: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

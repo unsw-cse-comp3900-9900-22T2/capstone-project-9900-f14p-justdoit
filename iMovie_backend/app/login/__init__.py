@@ -71,7 +71,31 @@ def init_route(app: Flask):
     # delete user review
     app.add_url_rule('/app/movies/delete_userReview', view_func=movies.delete_userReview, methods=['POST'])
 
+    #followe / not follow users
+    app.add_url_rule('/app/views/follow_or_not', view_func=views.follow_or_not, methods=['POST'])
+    app.add_url_rule('/app/views/get_followers', view_func=views.get_followers, methods=['POST'])
+    app.add_url_rule('/app/views/check_follow', view_func=views.check_follow, methods=['POST'])
+    app.add_url_rule('/app/views/block_user', view_func=views.block_user, methods=['POST'])
+    app.add_url_rule('/app/views/get_blockers', view_func=views.get_blockers, methods=['POST'])
+    app.add_url_rule('/app/views/check_block', view_func=views.check_block, methods=['POST'])
+
     # similar movies
     app.add_url_rule('/app/recommend/movie_similer_recommend', view_func=recommend.movie_similer_recommend, methods=['POST'])
     # similar user movies
     app.add_url_rule('/app/recommend/movie_recommend_user', view_func=recommend.movie_recommend_user, methods=['POST'])
+
+    app.add_url_rule('/app/movies/insert_movie', view_func=movies.insert_movie, methods=['POST'])
+    app.add_url_rule('/app/movies/rate_display', view_func=movies.rate_display, methods=['POST'])
+    app.add_url_rule('/app/movies/rate_distribution', view_func=movies.rate_distribution, methods=['POST'])
+    # movie_list
+    app.add_url_rule('/app/movies/create_movielist', view_func=movies.create_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/edit_movielist', view_func=movies.edit_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/delete_movielist', view_func=movies.delete_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/add_movie_to_movielist', view_func=movies.add_movie_to_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/delete_movie_from_movielist', view_func=movies.delete_movie_from_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/get_movielists', view_func=movies.get_movielists, methods=['POST'])
+    app.add_url_rule('/app/movies/get_movies_in_movielist', view_func=movies.get_movies_in_movielist, methods=['POST'])
+    app.add_url_rule('/app/movies/get_latest_movielists', view_func=movies.get_latest_movielists, methods=['POST'])
+    app.add_url_rule('/app/movies/get_movielists_in_mdp', view_func=movies.get_movielists_in_mdp, methods=['POST'])
+
+    app.add_url_rule('/app/movies/get_recent_movies', view_func=movies.get_recent_movies, methods=['POST'])

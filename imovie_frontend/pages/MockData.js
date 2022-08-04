@@ -168,3 +168,75 @@ export function movieRecommendUser(param) {
 export function registerVisitor(param){
     return fetchData('http://127.0.0.1:5000/app/views/register_visitor', param);
 }
+export function followOrNot(param){
+    return fetchData('http://127.0.0.1:5000/app/views/follow_or_not', param);
+}
+export function getFollowers(param){
+    return fetchData('http://127.0.0.1:5000/app/views/get_followers', param);
+}
+export function checkFollow(param){
+    return fetchData('http://127.0.0.1:5000/app/views/check_follow', param);
+}
+export function insertMovie(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/insert_movie', param);
+}
+export function blockOrNot(param){
+    return fetchData('http://127.0.0.1:5000/app/views/block_user', param);
+}
+export function getBlockers(param){
+    return fetchData('http://127.0.0.1:5000/app/views/get_blockers', param);
+}
+export function checkBlock(param){
+    return fetchData('http://127.0.0.1:5000/app/views/check_block', param);
+}
+export function rateDisplay(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_display', param);
+}
+export function rateDistribution(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/rate_distribution', param);
+}
+export function sentRecentMovie(param){
+    return fetchData('http://127.0.0.1:5000/app/views/sent_recent_movie', param);
+}
+export function getRecentMovies(param){
+    return fetchData('http://127.0.0.1:5000/app/movies/get_recent_movies', param);
+}
+/*
+movies list
+ */
+//查询影单列表
+export function getMoviesList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_movielists', param);
+}
+//创建一个影单
+export function addMoviesList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/create_movielist', param);
+}
+//编辑影单
+export function editMoviesList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/edit_movielist', param);
+}
+//删除一个影单
+export function delMoviesList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/delete_movielist', param);
+}
+//添加一个电影到影单
+export function addMovieToList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/add_movie_to_movielist', param);
+}
+//从影单删除一个电影
+export function delMovieFromList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/delete_movie_from_movielist', param);
+}
+//获取影单的电影列表
+export function getMoviesInList(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_movies_in_movielist', param);
+}
+//查询主页的影单列表
+export function getMoviesListInHome(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_latest_movielists', param);
+}
+//查询详情页的影单列表
+export function getMoviesListInDetail(param) {
+    return fetchData('http://127.0.0.1:5000/app/movies/get_movielists_in_mdp', param);
+}

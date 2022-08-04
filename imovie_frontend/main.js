@@ -17,76 +17,13 @@ app.prepare().then(()=>{
     server.use(bodyParser.json());
     server.use(express.json());
     server.use(express.urlencoded({
-        extends: true
+        extended: true
     }));
     server.use(cookieParser());
     server.use('/static', express.static(path.join(__dirname, 'static')))
 
     serverRouters(server);
     routerConfig(app,server);
-    server.all(`/movie/*`, (req, res, next) => {
-
-    })
-    server.all(`/api/*`, (req, res, next) => {
-        let token_data = req.cookies['USER_MESSAGE'];
-        console.log(123123123)
-        const getToken = (token) => {
-            let _token = "";
-            const tokenJson = {}
-            if(!!token){
-                try{
-                    _token = baseJs.Base64.decode(token);
-                    const tokenList = _token.split("&&");
-                    if(tokenList.length > 0){
-                        tokenJson["name"] = tokenList[0]
-                    }
-                    if(tokenList.length > 1){
-                        tokenJson["id"] = tokenList[1]
-                    }
-                    if(tokenList.length > 2){
-                        tokenJson["time"] = tokenList[2]
-                    }
-                }catch (e) {
-
-                }
-            }
-            return tokenJson
-        }
-        if(!!token_data){
-            try {
-                token_data = JSON.parse(token_data)
-            }catch (e) {
-
-            }
-        }
-        let tokenMsg = {}
-        if(!!token_data && !!token_data.token){
-            tokenMsg = getToken(token_data["token"])
-        }
-        let {time} = tokenMsg;
-        if(!!time){
-            time = parseInt(time,10)
-        }
-        const _thisTime =  (new Date()).getTime();
-        console.log(time && time > _thisTime,_thisTime,time)
-        if(time && time > _thisTime){
-            next();
-        }else{
-            if(req.url.indexOf("/login") >= 0){
-                next();
-            }else{
-                res.send({
-                    code : "fail",
-                    err : "登陆失效"
-                })
-            }
-        }
-    })
-    server.all('/login', (req, res,next)=> {
-        console.log(12313123)
-        res.clearCookie('USER_MESSAGE');
-        next();
-    })
     server.listen(8080, (err)=>{
         if(err)
             throw err

@@ -89,7 +89,10 @@ def movie_similer_recommend():
     page_size = request.json.get('page_size')
     user = None
     # count = 0
+    result = {}
     target_movie = MoviesModel.query.filter(MoviesModel.active == 1, MoviesModel.mid == mid).first()
+    if not target_movie:
+        return jsonify({'code': 400})
     result = {}
     mlist = []
     if uid:
@@ -262,6 +265,9 @@ def movie_recommend_user():
             # print(similar)
             remList = []
             if similar.get(uid) != None:
+                # print(len(similar[uid]), "000000000000")
+                if len(similar[uid]) == 0:
+                    return jsonify({'code': 400})
                 most_similar_user = max(similar[uid], key=similar[uid].get)
                 # print(most_similar_user)
 
@@ -333,7 +339,3 @@ def movie_recommend_user():
         return jsonify({'code': 200, 'result': result})
     else:
         return jsonify({'code': 200})
-
-
-
-

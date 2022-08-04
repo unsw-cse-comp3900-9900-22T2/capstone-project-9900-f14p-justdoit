@@ -1,34 +1,70 @@
-
-import React, { useImperativeHandle, useRef, useState } from "react";
-import {EllipsisOutlined,DeleteOutlined} from '@ant-design/icons'
-import { Rate,Popover ,Tooltip,message} from 'antd';
+import React, {useImperativeHandle, useRef, useState} from "react";
+import {PlaySquareOutlined,DeleteOutlined, EllipsisOutlined, PlayCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import {Input, message, Modal, Popover, Select, Tooltip} from 'antd';
 import ImageDomStyle from "./ImageDom.less"
 import _ from "lodash";
-import {wishlistAddOrDelete,watchlistAddOrDelete} from "../../pages/MockData";
-import {dislikeAddOrDelete,likeAddOrDelete} from "../../pages/MockData";
+import {
+    addMoviesList,
+    addMovieToList,
+    dislikeAddOrDelete,
+    getMoviesList,
+    likeAddOrDelete,
+    watchlistAddOrDelete,
+    wishlistAddOrDelete
+} from "../../pages/MockData";
 import RatingComponent from "./Rating"
 import ReviewsInfoComponent from "./ReviewsInfo"
 import RateComponent from "../Rate/RateComponent"
+
+const {TextArea} = Input;
+const {Option} = Select;
 // 下面这个watch是新加的
-const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,disLikeDo,liKeDo,
-                    ratingRefChangeVisible,reviewsInfoRefVisible,showClear,clearMovie,marginRight,uid,isNotMyself}) => {
-  const [thisItem,changeThisItem] = useState(item);
-  const ratingRef = useRef();
-  const reviewsInfoRef = useRef();
-  const [rateChange,changeRateChange]= useState(true);
-  const {director,cast,genre,avg_rate,moviename,
-    is_user_like,is_user_watch,is_user_wish,release_date,is_user_dislike,year,
-    watchlist_num,num_like,wishlist_num,coverimage,mid,is_user_rate} = thisItem;
-  const _nameList = [...[director || ""]];
-  const _cast = [];
-  if(cast && cast.length > 0){
-    for(let castI = 0 ; castI < 3 ; castI ++){
-        if(!cast[castI]){
-          break;
+const ImageDom = ({
+                      imageDomRef,
+                      item,
+                      index,
+                      isLogin,
+                      from,
+                      wishListDo,
+                      watchListDo,
+                      disLikeDo,
+                      liKeDo,
+                      ratingRefChangeVisible,
+                      reviewsInfoRefVisible,
+                      showClear,
+                      clearMovie,
+                      marginRight,
+                      uid,
+                      isNotMyself
+                  }) => {
+    const [thisItem, changeThisItem] = useState(item);
+    const ratingRef = useRef();
+    const reviewsInfoRef = useRef();
+    const [rateChange, changeRateChange] = useState(true);
+    const {
+        director, cast, genre, avg_rate, moviename,
+        is_user_like, is_user_watch, is_user_wish, release_date, is_user_dislike, year,
+        watchlist_num, num_like, wishlist_num, movieslist_num, coverimage, mid, is_user_rate,is_release
+    } = thisItem;
+    const _nameList = [...[director || ""]];
+    const _cast = [];
+
+    const [movieList, setMovieList] = useState([]);//影单列表
+    const [showModel, setShowModel] = useState(false);//选择movieList的弹窗
+    const [showAddMoviesListModel, setShowAddMoviesListModel] = useState(false);//添加movieList的弹窗
+    const [listName, setListName] = useState("");//影单title
+    const [listDescription, setListDescription] = useState("");//影单描述
+    const [molid, setMolid] = useState(-1);//影单id
+
+
+    if (cast && cast.length > 0) {
+        for (let castI = 0; castI < 3; castI++) {
+            if (!cast[castI]) {
+                break;
+            }
+            _cast.push(cast[castI]);
         }
-      _cast.push(cast[castI]);
     }
-  }
 
   function goMovieDetail(id) {
     window.location.href = "/movie/detail?movieId=" + id;
@@ -38,6 +74,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
       changeThisItem(changeitem);
     },
   }));
+
   function changeOperation(type) {
     const _type = type === 0 ? "is_user_like" : type === 1 ?  "is_user_watch" : type === 2 ? "is_user_wish" : "is_user_dislike";
     const _thisItem = _.cloneDeep(thisItem);
@@ -216,6 +253,55 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
   function setToolTitle(type,number){
     return type + " by " + (number || 0) +" " + (number && number > 1 && "members" || "member");
   }
+
+
+
+
+
+  //查询影单列表
+  const queryMoviesList = () => {
+    getMoviesList({uid}).then(res => {
+      if (res.code === 200) {
+        const {result} = res;
+        if (result) {
+          console.log(result, '影单列表');
+          setMovieList(result.result_list)
+        }
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+  //添加电影到影单
+  const addToMovieList = (molid, mid) => {
+    addMovieToList({
+      uid,
+      molid,
+      mid
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg)
+        setShowModel(false)
+      }
+      console.log(res, '添加心愿列表')
+    })
+  }
+
+  //创建影单一个moveList影单
+  const createMovieList = () => {
+    addMoviesList({
+      "uid": uid, "title": listName, "mid": item.mid, "description": listDescription
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg);
+      }
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+      queryMoviesList();
+      setShowAddMoviesListModel(false)
+    })
+  }
   return (
     <React.Fragment>
       <style dangerouslySetInnerHTML={{ __html: ImageDomStyle }} />
@@ -224,7 +310,7 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
                 key={"swiper_child_" + index}>
       <Tooltip
         destroyTooltipOnHide={true}
-        mouseEnterDelay={0.2}
+        mouseEnterDelay={0.1}
         placement={left ? "rightTop" : "leftTop"}
         trigger="hover"
         zIndex={12}
@@ -263,20 +349,24 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
             }
           {
             isLogin && !isNotMyself && <div className={"operation"}>
-              <div
-                onClick={()=>{
-                  changeOperation(1)
-                }}
-                className={"operation-image"}>{
-                svgGet(1,is_user_watch)
-              }</div>
-              <div
-                onClick={()=>{
-                  changeOperation(0)
-                }}
-                className={"operation-image"}>{
-                svgGet(0,is_user_like)
-              }</div>
+                {!!is_release &&
+                    <>
+                        <div
+                          onClick={()=>{
+                            changeOperation(1)
+                          }}
+                          className={"operation-image"}>{
+                          svgGet(1,is_user_watch)
+                        }</div>
+                        <div
+                          onClick={()=>{
+                            changeOperation(0)
+                          }}
+                          className={"operation-image"}>{
+                          svgGet(0,is_user_like)
+                        }</div>
+                    </>
+                }
               <div
                 onClick={()=>{
                   changeOperation(2)
@@ -284,46 +374,75 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
                 className={"operation-image"}>{
                 svgGet(2,is_user_wish)
               }</div>
-              <Popover
-                zIndex={13}
-                overlayClassName='popUpStatus'
-                placement="rightTop" title={"More Operations"} content={()=>{
-                return <div className={"swiper-component-operation"}>
-                  <div
-                    onClick={()=>{
-                      ratingRef && ratingRef.current && ratingRef.current.changeVisible
-                      && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),
-                        mid,uid,is_user_rate);
-                    }}
-                    className={"swiper-component-operation-item padding1"}>
-                    Rate
-                  </div>
-                  <div
-                    onClick={()=>{
-                      reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
-                      && reviewsInfoRef.current.changeVisible(true,moviename +  (year && ("(" + year + ")") || ""),
-                        mid,uid);
-                    }}
-                    className={"swiper-component-operation-item"}>
-                    Reviews and info
-                  </div>
-                  <div
-                    onClick={()=>{
-                      changeOperation(3,index)
-                    }}
-                    className={"swiper-component-operation-item border-no padding2"}>
-                    {is_user_dislike ? "Cancel Dislike" : "Dislike"}
-                  </div>
-                </div>
-              }}>
-                <div
-                  className={"operation-image"}>
-                  <EllipsisOutlined  style={{
-                    fontSize : "18px",
-                    cursor : "pointer"
-                  }}/>
-                </div>
-              </Popover>
+                {
+                  !is_release &&
+                    <div
+                        onClick={() => {
+                          changeOperation(4, index)
+                          setShowModel(true)
+                          queryMoviesList()
+                        }}
+                        className={"operation-image"}>
+                      <PlaySquareOutlined  style={{
+                        cursor: "pointer",
+                        fontSize : "16px",
+                        marginTop : "4px",
+                        color:"#dcdcdc"
+                      }}/>
+                    </div>
+                }
+                {!!is_release &&
+                    <Popover
+                        zIndex={13}
+                        overlayClassName='popUpStatus'
+                        placement="rightTop" title={"More Operations"} content={() => {
+                      return <div className={"swiper-component-operation"}>
+                        {/*<div*/}
+                        {/*  onClick={()=>{*/}
+                        {/*    ratingRef && ratingRef.current && ratingRef.current.changeVisible*/}
+                        {/*    && ratingRef.current.changeVisible(true,moviename  + (year && ("(" + year + ")") || ""),*/}
+                        {/*      mid,uid,is_user_rate);*/}
+                        {/*  }}*/}
+                        {/*  className={"swiper-component-operation-item padding1"}>*/}
+                        {/*  Rate*/}
+                        {/*</div>*/}
+                        <div
+                            onClick={() => {
+                              reviewsInfoRef && reviewsInfoRef.current && reviewsInfoRef.current.changeVisible
+                              && reviewsInfoRef.current.changeVisible(true, moviename + (year && ("(" + year + ")") || ""),
+                                  mid, uid, is_user_rate);
+                            }}
+                            className={"swiper-component-operation-item"}>
+                          Add review and rating
+                        </div>
+                        <div
+                            onClick={() => {
+                              changeOperation(3, index)
+                            }}
+                            className={"swiper-component-operation-item"}>
+                          {is_user_dislike ? "Cancel Dislike" : "Dislike"}
+                        </div>
+                        <div
+                            onClick={() => {
+                              changeOperation(4, index)
+                              setShowModel(true)
+                              queryMoviesList()
+                            }}
+                            className={"swiper-component-operation-item border-no padding2"}>
+                          Add to movielist
+
+                        </div>
+                      </div>
+                    }}>
+                      <div
+                          className={"operation-image"}>
+                        <EllipsisOutlined style={{
+                          fontSize: "18px",
+                          cursor: "pointer"
+                        }}/>
+                      </div>
+                    </Popover>
+                }
             </div>
           }
 
@@ -412,7 +531,62 @@ const ImageDom = ({imageDomRef,item,index,isLogin,from,wishListDo,watchListDo,di
           }
         }}
         ratingRef={ratingRef}/>
-      <ReviewsInfoComponent reviewsInfoRef={reviewsInfoRef}/>
+      <ReviewsInfoComponent
+          changeRating={(mid,rate,avg_rate)=>{
+            if(mid === thisItem.mid){
+              const _thisItem = _.cloneDeep(thisItem);
+              _thisItem.avg_rate = avg_rate;
+              _thisItem.is_user_rate = rate;
+              _thisItem.is_user_wish = false;
+              _thisItem.is_user_watch = false;
+              _thisItem.wishlist_num = (_thisItem.wishlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.wishlist_num || 0) - 1);
+              _thisItem.watchlist_num = (_thisItem.watchlist_num || 0) - 1 < 0 ? 0 : ((_thisItem.watchlist_num || 0) - 1);
+              const _is_user_watch = _thisItem.is_user_watch;
+              if(!_is_user_watch){
+                _thisItem.is_user_watch = true;
+                _thisItem.watchlist_num = (_thisItem.watchlist_num || 0)+ 1;
+              }
+              changeThisItem(_thisItem);
+              changeRateChange(false);
+              setTimeout(()=>{
+                changeRateChange(true);
+              },0)
+              if(from === "wishList"){
+                wishListDo && wishListDo();
+              }
+              if(from === "watchList"){
+                watchListDo && watchListDo();
+              }
+              if(from === "disLike"){
+                disLikeDo && disLikeDo();
+              }
+              if(from === "liKe"){
+                liKeDo && liKeDo();
+              }
+            }
+          }}
+          reviewsInfoRef={reviewsInfoRef}/>
+      {/*添加和编辑的弹窗*/}
+      <Modal visible={showModel} onCancel={() => setShowModel(false)} onOk={() => addToMovieList(molid, item.mid)}>
+        <Select placeholder={'existing movie list'} style={{margin: '20px 0', width: '100%',}} onChange={(v) => setMolid(v)}>
+          {movieList.map((item, index) => <Option value={item.molid} key={index}>{item.title}</Option>)}
+        </Select>
+        <a onClick={() => {
+          setShowModel(false)
+          setShowAddMoviesListModel(true)
+        }}><PlusOutlined/>&nbsp;Create new movielist</a>
+      </Modal>
+
+      <Modal visible={showAddMoviesListModel} onCancel={() => setShowAddMoviesListModel(false)} onOk={() => {
+        createMovieList()
+      }}>
+        <label>List Name</label>
+        <Input type="text" value={listName} onChange={e => setListName(e.target.value)}/>
+        <label>List Description</label>
+        <TextArea allowClear value={listDescription}
+                  maxLength={250} autoSize={{minRows: 4, maxRows: 6}}
+                  onChange={e => setListDescription(e.target.value)}/>
+      </Modal>
     </React.Fragment>
     )
 }

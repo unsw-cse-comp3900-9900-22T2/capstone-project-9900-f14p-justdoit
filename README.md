@@ -12,6 +12,8 @@ Python3 version is 3.8 or 3.9
 ### nodejs
 node version is 16.16.0\
 node download link: https://nodejs.org/en/download/
+### npm
+npm version is 8.11.0
 
 ## Backend setting
 ### creat a database named imovie
@@ -21,7 +23,7 @@ mysql -u root -p
 enter the password is "1234"\
 in the mysql enter:
 ```shell
-create database imovie
+create database imovie;
 ```
 
 ###  Under folder /iMovie_backend run
@@ -45,22 +47,31 @@ python3 app.py runserver
 
 
 ## Frontend setting
-1. check install: node v16.15.0
+1. check install: node v16.16.0
 ```bash
 node -v
 ```
 2. install package.json
 ```bash
-npm config set registry https://registry.npmjs.org
 npm install
-```
-or
-```bash
-npm run bootstrap
 ```
 3 run the development server:
 ```bash
 npm run dev
 ```
 
+## Enter link 
+You can enter link: http://localhost:8080/movie/home 
 
+
+in Google or Firefox browsers
+
+## Cloud mysql database
+we use aliyuncs' Cloud database, you can connect our Cloud mysql to view our project's data.\
+Some cloud mysql database's details are:
+
+HOST = 'rm-bp16q3qua05mfx407lo.mysql.rds.aliyuncs.com'\
+USERNAME = 'root'\
+PASSWORD = '1234@qwer!'\
+PORT = '3306'\
+DATABASE = 'imovie'

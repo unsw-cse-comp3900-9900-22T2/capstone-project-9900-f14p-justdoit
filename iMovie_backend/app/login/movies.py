@@ -1285,6 +1285,7 @@ def res_movieReview_detail(movieReview, mainUser):
     user = UserModel.query.filter(UserModel.uid == uid, UserModel.active == 1).first()
     if not user:
         return
+
     username = user.username
     result["username"] = username
     result["review"] = movieReview.review
@@ -1313,6 +1314,12 @@ def res_movieReview_detail(movieReview, mainUser):
     userReview_lst = list()
     if userReview:
         for ur in userReview:
+            is_block = blocklistModel.query.filter(
+                and_(blocklistModel.uid == mainUser.uid, blocklistModel.buid == ur.uid, blocklistModel.active == 1)).all()
+
+            if is_block:
+                print("this has been blockedr: ", username)
+                continue
             ur_dic = dict()
             ur_dic["urid"] = ur.urid
             ur_dic["uid"] = ur.uid
@@ -1342,10 +1349,13 @@ def display_movieReview():
     movieReview_list = []
     result = {}
     count = 0
+    print("here")
+    print("main user: ", user.username)
     for m in movieReview:  # movies: [movies0, movies[1]....]
+        b_name = (UserModel.query.filter(UserModel.uid == m.uid, UserModel.active == 1).first()).username
+        print("block user: ", b_name)
         is_block = blocklistModel.query.filter(and_(blocklistModel.uid == uid, blocklistModel.buid == m.uid, blocklistModel.active == 1)).all()
         if is_block:
-            print("this has been blockedr")
             continue
 
         movieReview_info = res_movieReview_detail(m,user)
